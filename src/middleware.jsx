@@ -9,6 +9,13 @@ export default clerkMiddleware((auth, request) => {
 
 
 
+  console.log('Middleware: Before isPublicRoute check', { 
+    url: request.url, 
+    userId, 
+    isPublicRoute: isPublicRoute(request) 
+  });
+
+
   if (!isPublicRoute(request)) {
     if (!userId) {
       return NextResponse.redirect(new URL('/sign-in', request.url));
