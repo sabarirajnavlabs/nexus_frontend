@@ -2,8 +2,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/theme-provider";
-import LogoutOnTabClose from "@/components/Logoutontabclose";
-import { ErrorBoundary } from "@/components/ErrorBoundary";
+import LogoutOnTabClose from "../components/Logoutontabclose";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -37,9 +36,7 @@ export default function RootLayout({ children }) {
             enableSystem
             disableTransitionOnChange
           >
-            <ErrorBoundary>
-              {children}
-            </ErrorBoundary>
+            {children}
           </ThemeProvider>
         </body>
       </html>

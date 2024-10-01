@@ -4,19 +4,15 @@ import React, { useState } from "react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 
-export default function ProductSideNavbar() {
+export default function ProductSideNavbar({ section, setsection }) {
   const { theme } = useTheme();
   const [showDIY, setShowDIY] = useState(false);
   const [showModels, setShowModels] = useState(false);
   const [showWhatsNew, setShowWhatsNew] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleDIY = () => setShowDIY(!showDIY);
   const toggleModels = () => setShowModels(!showModels);
   const toggleWhatsNew = () => setShowWhatsNew(!showWhatsNew);
-
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
 
   return (
     <div
@@ -50,7 +46,7 @@ export default function ProductSideNavbar() {
             showDIY ? "font-bold" : "hover:text-teal-500"
           }`}
         >
-          Build Yourself
+          IDE Hub
           <span
             className={`transform transition-transform ${
               showDIY ? "rotate-90" : ""
@@ -63,8 +59,7 @@ export default function ProductSideNavbar() {
           <ul className="mt-4 space-y-2 pl-0">
             <li>
               <a
-                href="#"
-                onClick={openModal}
+                onClick={() => setsection("vscode")}
                 className="hover:text-teal-500 hover:font-bold relative p-0 rounded transition duration-300 ease-in-out group"
               >
                 VS Code Editor
@@ -73,7 +68,7 @@ export default function ProductSideNavbar() {
             </li>
             <li>
               <a
-                href="#elevate-ai"
+                onClick={() => setsection("jupyter")}
                 className="hover:text-teal-500 hover:font-bold relative p-0 rounded transition duration-300 ease-in-out group"
               >
                 Jupyter Lab
@@ -82,66 +77,6 @@ export default function ProductSideNavbar() {
             </li>
           </ul>
         )}
-        {/* {isModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-6 rounded shadow-lg w-fit">
-              <button onClick={closeModal} className="text-red-500 float-right">
-                X
-              </button>
-              <div className="flex justify-around items-center mt-6 space-x-8">
-                <div className="text-center">
-                  <Image
-                    src="/vscodeimage.jpg"
-                    alt="Code Editor App"
-                    width={48}
-                    height={48}
-                    className="mx-auto"
-                  />
-                  <p className="mt-2 text-black">Code Editor App</p>
-                </div>
-                <div className="text-center">
-                  <Image
-                    src="/ec2logo.png"
-                    alt="Intel"
-                    width={48}
-                    height={48}
-                    className="mx-auto"
-                  />
-                  <p className="mt-2 text-black">Intel</p>
-                  <p className="mt-2 text-black">ml.t3.medium</p>
-                  <p className="text-black mt-2">vCPU: 2</p>
-                  <p className="text-black mt-2">Memory: 4GB</p>
-                </div>
-                <div className="text-center">
-                  <Image
-                    src="/storagelogo.png"
-                    alt="Storage"
-                    width={48}
-                    height={48}
-                    className="mx-auto"
-                  />
-                  <p className="mt-2 text-black">EBS Volume</p>
-                  <p className="mt-2 text-black">Memory: 5GB</p>
-                </div>
-                <div className="text-center">
-                  <Image
-                    src="/githublogo.png"
-                    alt="Git Repo"
-                    width={48}
-                    height={48}
-                    className="mx-auto"
-                  />
-                  <p className="mt-2 text-black">Git Repo</p>
-                </div>
-                <div className="text-center">
-                  <button className="bg-blue-500 text-white py-2 px-4 rounded">
-                    Launch
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )} */}
       </div>
 
       {/* Models Dropdown */}
@@ -152,7 +87,7 @@ export default function ProductSideNavbar() {
             showModels ? "font-bold" : "hover:text-teal-500"
           }`}
         >
-          MODELS
+          Models
           <span
             className={`transform transition-transform ${
               showModels ? "rotate-90" : ""
@@ -166,13 +101,13 @@ export default function ProductSideNavbar() {
             <li>
               <span
                 className="hover:text-teal-500 hover:font-bold relative p-0 rounded transition duration-300 ease-in-out group"
-                onClick={(e) => e.preventDefault()}
+                onClick={() => setsection("textmodel")}
               >
                 Text
                 <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
-                <span className="ml-2 bg-black text-white text-xs p-1 rounded opacity-100 transition-opacity duration-200 shadow-lg shadow-gradient">
-                  Coming Soon
-                </span>
+              </span>
+              <span className="ml-2 bg-black text-white text-xs p-1 rounded opacity-100 transition-opacity duration-200 shadow-lg shadow-gradient">
+                Coming Soon
               </span>
             </li>
 
@@ -180,7 +115,7 @@ export default function ProductSideNavbar() {
             <li className="relative flex items-center">
               <span
                 className="hover:text-teal-500 relative p-0 rounded transition duration-300 ease-in-out group"
-                onClick={(e) => e.preventDefault()}
+                onClick={() => setsection("imagemodel")}
               >
                 Images
                 <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
@@ -192,7 +127,7 @@ export default function ProductSideNavbar() {
             <li className="relative flex items-center">
               <span
                 className="hover:text-teal-500 relative p-0 rounded transition duration-300 ease-in-out group"
-                onClick={(e) => e.preventDefault()}
+                onClick={() => setsection("multimodel")}
               >
                 Multi Model
                 <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
@@ -204,7 +139,7 @@ export default function ProductSideNavbar() {
             <li className="relative flex items-center">
               <span
                 className="hover:text-teal-500 relative p-0 rounded transition duration-300 ease-in-out group"
-                onClick={(e) => e.preventDefault()}
+                onClick={() => setsection("audiomodel")}
               >
                 Audio
                 <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
@@ -216,17 +151,6 @@ export default function ProductSideNavbar() {
           </ul>
         )}
       </div>
-
-      {/* Contact Us Link */}
-      {/* <div className="mb-8">
-        <a
-          href="#contact-us"
-          className="hover:text-teal-500 hover:font-bold relative p-0 rounded transition duration-300 ease-in-out group"
-        >
-          CONTACT US
-          <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
-        </a>
-      </div> */}
     </div>
   );
 }

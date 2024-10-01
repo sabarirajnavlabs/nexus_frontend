@@ -9,8 +9,8 @@ const LogoutOnTabClose = () => {
   useEffect(() => {
     const handleBeforeUnload = (event) => {
       signOut();
-      event.preventDefault();
-      event.returnValue = "";
+      // event.preventDefault();
+      // event.returnValue = "";
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);

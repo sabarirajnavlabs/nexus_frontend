@@ -1,13 +1,19 @@
 "use client";
-import NexusAI from "@/components/MainPage/Main";
 import ProductSideNavbar from "@/components/MainPage/Sidebar";
 import NavBar from "@/components/constants/Navbar";
-import React from "react";
+import React, { useState } from "react";
 import { useTheme } from "next-themes";
 import Footer from "@/components/constants/Fotter";
+import Vscode from "@/components/MainPage/vscode";
+import JupyterNotebook from "@/components/MainPage/jupyternotebook";
+import TextModel from "@/components/models/text";
+import ImagesModel from "@/components/models/images";
+import MultiModel from "@/components/models/multimodel";
+import AudioModel from "@/components/models/audio";
 
 const Page = () => {
-  const { theme } = useTheme(); // Get current theme
+  const { theme } = useTheme();
+  const [showSection, setShowSection] = useState();
 
   return (
     <div
@@ -21,10 +27,22 @@ const Page = () => {
           theme === "dark" ? "bg-[#181818]" : "bg-gray-200"
         }`}
       >
-        <ProductSideNavbar />
+        <ProductSideNavbar section={showSection} setsection={setShowSection} />
 
         <div className="p-8 max-w-[85%]">
-          <NexusAI />
+          {showSection === "vscode" ? (
+            <Vscode />
+          ) : showSection === "jupyter" ? (
+            <JupyterNotebook />
+          ) : showSection === "textmodel" ? (
+            <TextModel />
+          ) : showSection === "imagemodel" ? (
+            <ImagesModel />
+          ) : showSection === "multimodel" ? (
+            <MultiModel />
+          ) : showSection === "audiomodel" ? (
+            <AudioModel />
+          ) : null}
         </div>
       </div>
       {/* <Footer /> */}
