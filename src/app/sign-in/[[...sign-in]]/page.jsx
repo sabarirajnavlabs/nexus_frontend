@@ -88,6 +88,11 @@ const AIPlatformComponent = () => {
             allowedIdentifiers: ["email"],
             oauthProviders: [],
           }}
+          appearance={{
+            elements: {
+              footerAction: { display: "none" },
+            },
+          }}
         />
       </div>
     </div>
