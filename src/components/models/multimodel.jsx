@@ -52,7 +52,7 @@ const TextModel = () => {
           }`}
         >
           <div className="md:w-1/2 md:mt-6 md:mb-6">
-            <h1 className="text-3xl font-bold">Multi Model</h1>
+            <h1 className="text-3xl font-bold">Multi Modal</h1>
             <p
               className={`mt-2 ${
                 theme === "dark" ? "text-gray-400" : "text-gray-700"

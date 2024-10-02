@@ -9,10 +9,12 @@ export default function ProductSideNavbar({ section, setsection }) {
   const [showDIY, setShowDIY] = useState(false);
   const [showModels, setShowModels] = useState(false);
   const [showWhatsNew, setShowWhatsNew] = useState(false);
+  const [showDashboard, setShowDashboard] = useState(false);
 
   const toggleDIY = () => setShowDIY(!showDIY);
   const toggleModels = () => setShowModels(!showModels);
   const toggleWhatsNew = () => setShowWhatsNew(!showWhatsNew);
+  const toggleDashboard = () => setShowDashboard(!showDashboard);
 
   return (
     <div
@@ -29,13 +31,13 @@ export default function ProductSideNavbar({ section, setsection }) {
       </div>
 
       <div className="mb-8">
-        <a
-          href="#"
+        <button
+          onClick={() => setsection("whatsnew")}
           className="hover:text-teal-500 hover:font-bold relative p-0 rounded transition duration-300 ease-in-out group"
         >
           Whats New
           <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
-        </a>
+        </button>
       </div>
 
       {/* DIY Dropdown */}
@@ -98,6 +100,18 @@ export default function ProductSideNavbar({ section, setsection }) {
         </button>
         {showModels && (
           <ul className="mt-4 space-y-2 pl-0">
+            <li className="relative flex items-center">
+              <span
+                className="hover:text-teal-500 relative p-0 rounded transition duration-300 ease-in-out group"
+                onClick={() => setsection("multimodel")}
+              >
+                Multi Modal
+                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
+              </span>
+              <span className="ml-2 bg-black text-white text-xs p-1 rounded opacity-100 transition-opacity duration-200 shadow-lg shadow-gradient">
+                Coming Soon
+              </span>
+            </li>
             <li>
               <span
                 className="hover:text-teal-500 hover:font-bold relative p-0 rounded transition duration-300 ease-in-out group"
@@ -124,24 +138,48 @@ export default function ProductSideNavbar({ section, setsection }) {
                 Coming Soon
               </span>
             </li>
-            <li className="relative flex items-center">
-              <span
-                className="hover:text-teal-500 relative p-0 rounded transition duration-300 ease-in-out group"
-                onClick={() => setsection("multimodel")}
-              >
-                Multi Model
-                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
-              </span>
-              <span className="ml-2 bg-black text-white text-xs p-1 rounded opacity-100 transition-opacity duration-200 shadow-lg shadow-gradient">
-                Coming Soon
-              </span>
-            </li>
-            <li className="relative flex items-center">
+
+            {/* <li className="relative flex items-center">
               <span
                 className="hover:text-teal-500 relative p-0 rounded transition duration-300 ease-in-out group"
                 onClick={() => setsection("audiomodel")}
               >
                 Audio
+                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
+              </span>
+              <span className="ml-2 bg-black text-white text-xs p-1 rounded opacity-100 transition-opacity duration-200 shadow-lg shadow-gradient">
+                Coming Soon
+              </span>
+            </li> */}
+          </ul>
+        )}
+      </div>
+
+      {/* Dashboard */}
+      <div className="mb-8">
+        <button
+          onClick={toggleDashboard}
+          className={`flex items-center justify-between w-full relative p-0 rounded transition duration-300 ease-in-out group ${
+            showModels ? "font-bold" : "hover:text-teal-500"
+          }`}
+        >
+          Dashboard
+          <span
+            className={`transform transition-transform ${
+              showModels ? "rotate-90" : ""
+            }`}
+          >
+            ▶
+          </span>
+        </button>
+        {showDashboard && (
+          <ul className="mt-4 space-y-2 pl-0">
+            <li className="relative flex items-center">
+              <span
+                className="hover:text-teal-500 relative p-0 rounded transition duration-300 ease-in-out group text-[14px]"
+                // onClick={() => setsection("multimodel")}
+              >
+                Usage Report
                 <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
               </span>
               <span className="ml-2 bg-black text-white text-xs p-1 rounded opacity-100 transition-opacity duration-200 shadow-lg shadow-gradient">

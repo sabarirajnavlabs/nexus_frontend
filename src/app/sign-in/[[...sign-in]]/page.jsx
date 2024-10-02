@@ -25,30 +25,36 @@ const AIPlatformComponent = () => {
           </div>
           <div className="flex flex-col gap-4 items-start justify-start bg-transparent">
             <div className="relative w-[500px] h-[300px] bg-[#e9f6fe] overflow-hidden">
-              <Image
-                src="/output.gif"
+              {/* <Image
+                src="/intro.gif"
                 alt="Animated GIF showcasing platform features"
                 fill
-                style={{ objectFit: "cover" }}
-              />
+                style={{ objectFit: "contain" }}
+              /> */}
+              <video autoPlay loop muted className="w-full h-full">
+                <source
+                  src="https://mahesh-mens-touch.s3.ap-south-1.amazonaws.com/intro.mp4"
+                  type="video/mp4"
+                />
+              </video>
             </div>
           </div>
         </div>
 
-        <div className="relative mt-6 pl-28">
-          <h1 className="text-3xl font-bold text-black">
-            All in one AI platform for
+        <div className="relative mt-6 pl-28 items-center justify-center">
+          <h1 className="text-3xl font-bold text-black text-center">
+            ALL-IN-ONE AI PLATFORM FOR <br />
             <span className={`ml-2 ${styles.gradientText}`}>
               <ReactTyped
                 strings={[
-                  "Software Teams",
-                  "Developers",
-                  "Researchers",
-                  "Data Scientists",
-                  "ML Engineers",
+                  "SOFTWARE TEAMS",
+                  "DEVELOPERS",
+                  "RESEARCHERS",
+                  "DATA SCIENTISTS",
+                  "ML ENGINEERS",
                 ]}
-                typeSpeed={100}
-                backSpeed={50}
+                typeSpeed={130}
+                backSpeed={80}
                 loop={true}
                 showCursor={false}
               />

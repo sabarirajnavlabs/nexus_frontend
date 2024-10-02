@@ -25,34 +25,40 @@ const Vscode = () => {
         }
       );
 
-      if (!res.ok) {
-        throw new Error(`Error: ${res.statusText}`);
+      if (res.status === 409) {
+        let storedVSCUrl = Cookies.get("storedVSCUrl");
+        storedVSCUrl = storedVSCUrl.split("/auth")[0];
+        storedVSCUrl = storedVSCUrl + "/codeeditor/default";
+        return storedVSCUrl || null;
       }
 
-      const data = await res.json();
-      return data.url;
+      if (res.status === 200) {
+        const data = await res.json();
+        Cookies.set("storedVSCUrl", data.url, {
+          expires: 1,
+          secure: window.location.hostname !== "localhost",
+          sameSite: "strict",
+        });
+
+        return data.url;
+      }
+
+      throw new Error(`Unexpected status code: ${res.status}`);
     } catch (error) {
       console.error("Failed to fetch data:", error);
       return null;
     }
   };
 
-  const [isDisabled, setIsDisabled] = useState(false);
-
   const handleLaunchVSC = async () => {
-    setIsDisabled(true);
-
     const orgName = "testing";
     const url = await postData(orgName);
+
     if (url) {
       window.open(url, "_blank");
     } else {
       console.error("Failed to retrieve URL");
     }
-
-    setTimeout(() => {
-      setIsDisabled(false);
-    }, 60000);
   };
 
   return (
@@ -277,21 +283,12 @@ const Vscode = () => {
                 <p className="mt-2 ">Coding Assistant</p>
               </div>
               <div className="text-center mt-10">
-                {isDisabled ? (
-                  <button
-                    className="bg-gray-400 text-black py-2 px-4 rounded"
-                    disabled
-                  >
-                    Launching...
-                  </button>
-                ) : (
-                  <button
-                    className="bg-blue-500 text-white py-2 px-4 rounded"
-                    onClick={() => handleLaunchVSC()}
-                  >
-                    Launch
-                  </button>
-                )}
+                <button
+                  className="bg-blue-500 text-white py-2 px-4 rounded"
+                  onClick={() => handleLaunchVSC()}
+                >
+                  Launch
+                </button>
               </div>
             </div>
           </div>
