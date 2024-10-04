@@ -6,10 +6,10 @@ import Image from "next/image";
 
 export default function ProductSideNavbar({ section, setsection }) {
   const { theme } = useTheme();
-  const [showDIY, setShowDIY] = useState(false);
-  const [showModels, setShowModels] = useState(false);
-  const [showWhatsNew, setShowWhatsNew] = useState(false);
-  const [showDashboard, setShowDashboard] = useState(false);
+  const [showDIY, setShowDIY] = useState(true);
+  const [showModels, setShowModels] = useState(true);
+  const [showWhatsNew, setShowWhatsNew] = useState(true);
+  const [showDashboard, setShowDashboard] = useState(true);
 
   const toggleDIY = () => setShowDIY(!showDIY);
   const toggleModels = () => setShowModels(!showModels);

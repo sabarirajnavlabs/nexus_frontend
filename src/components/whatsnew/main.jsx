@@ -1,39 +1,87 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useTheme } from "next-themes";
 import styles from "./main.module.css";
 import Image from "next/image";
+import { ReactTyped } from "react-typed";
 
 const WhatsNew = () => {
   const { theme } = useTheme();
+  const [hoverText, setHoverText] = useState("");
 
   return (
     <div
       className={`w-[80vw] relative items-center justify-center ${
-        theme === "dark" ? "text-white" : "text-black"
+        theme === "dark" ? "text-white border-white" : "text-black border-black"
       }`}
     >
-      <div className="flex flex-col gap-4 m-4 g-4 items-center justify-center">
+      <div className="flex flex-col gap-4 m-4 items-center justify-center">
         <h1 className="text-[65px] text-center font-semibold font-sans">
-          Welcome <span className={styles.gradientText}>User</span>
+          <span className={styles.gradientText}>Nexus AI</span> <br />
+          {/* <span className="text-[40px] font-normal flex">
+            All-In-One AI Platform For
+            <div className="">
+              <span className={`ml-2 ${styles.gradientText}`}>
+                <ReactTyped
+                  strings={[
+                    "SOFTWARE TEAMS",
+                    "DEVELOPERS",
+                    "RESEARCHERS",
+                    "DATA SCIENTISTS",
+                    "ML ENGINEERS",
+                  ]}
+                  typeSpeed={30}
+                  backSpeed={30}
+                  loop={true}
+                  showCursor={false}
+                />
+              </span>
+            </div>
+          </span> */}
         </h1>
+        {/* <h1 className="text-5xl font-bold text-black text-center">
+          All-In-One AI Platform For <br />
+          <span className={`ml-2 ${styles.gradientText}`}>
+            <ReactTyped
+              strings={[
+                "SOFTWARE TEAMS",
+                "DEVELOPERS",
+                "RESEARCHERS",
+                "DATA SCIENTISTS",
+                "ML ENGINEERS",
+              ]}
+              typeSpeed={10}
+              backSpeed={10}
+              loop={true}
+              showCursor={false}
+            />
+          </span>
+        </h1> */}
       </div>
-      
+
       <div className="h-[720px] flex gap-2 relative justify-center items-center text-[20px]">
         <div className="group relative w-[180px] h-[90%] m-2 p-2">
-          <div className="w-full h-full rounded-md flex justify-center items-center text-center bg-[#EFF7FF] border-[3px] border-black group-hover:invisible hover:transform-none">
+          <div
+            className={`w-full h-full rounded-md flex justify-center items-center text-center border-[3px] group-hover:invisible hover:transform-none ${
+              theme === "dark" ? "border-white" : "border-black"
+            }`}
+          >
             <div className="-rotate-90">
               Simplified User <br /> Experience
             </div>
           </div>
           <div className="absolute top-0 left-0 w-full h-full rounded-md flex gap-2 p-2 justify-center items-center text-center  opacity-0 group-hover:opacity-100 transition-opacity hover:transform-none">
             <div
-              className={`relative flex text-black border-[3px] border-black rounded-md w-[45px] h-full bg-[#EFF7FF] items-center justify-center text-center`}
+              className={`relative flex border-[3px] rounded-md w-[45px] h-full items-center justify-center text-center ${
+                theme === "dark" ? "border-white" : "border-black"
+              }`}
             >
               <div className="flex -rotate-90 whitespace-nowrap ">IDE</div>
             </div>
             <div
-              className={`relative flex text-black border-[3px] border-black rounded-md w-[45px] h-full bg-[#EFF7FF] items-center justify-center text-center`}
+              className={`relative flex border-[3px] rounded-md w-[45px] h-full items-center justify-center text-center ${
+                theme === "dark" ? "border-white" : "border-black"
+              }`}
             >
               <div className="flex -rotate-90 whitespace-nowrap">
                 AI CODING ASSISTANT
@@ -41,7 +89,9 @@ const WhatsNew = () => {
             </div>
 
             <div
-              className={`relative flex text-black border-[3px] border-black rounded-md w-[45px] h-full bg-[#EFF7FF] items-center justify-center text-center`}
+              className={`relative flex border-[3px] rounded-md w-[45px] h-full items-center justify-center text-center ${
+                theme === "dark" ? "border-white" : "border-black"
+              }`}
             >
               <div className="flex -rotate-90 whitespace-nowrap">
                 1 CLICK WE ACCESS
@@ -52,7 +102,11 @@ const WhatsNew = () => {
 
         <div className="flex flex-col gap-2 w-[720px] h-[90%] rounded-md m-2 p-2">
           <div className="h-[160px] relative group">
-            <div className="h-[160px] bg-[#EFF7FF] border-[3px] border-black rounded-md flex justify-center items-center group-hover:invisible">
+            <div
+              className={`h-[160px] border-[3px] rounded-md flex justify-center items-center group-hover:invisible ${
+                theme === "dark" ? "border-white" : "border-black"
+              }`}
+            >
               Foundational Model Access
             </div>
 
@@ -101,7 +155,11 @@ const WhatsNew = () => {
           </div>
 
           <div className="h-[160px] relative group">
-            <div className="h-[160px] bg-[#EFF7FF] border-[3px] border-black rounded-md flex justify-center items-center group-hover:invisible">
+            <div
+              className={`${
+                theme === "dark" ? "border-white" : "border-black"
+              } h-[160px] border-[3px] rounded-md flex justify-center items-center group-hover:invisible`}
+            >
               Standardized APIs
             </div>
 
@@ -151,8 +209,12 @@ const WhatsNew = () => {
 
           <div className="h-[160px] flex gap-2 rounded-md p-1">
             <div className="w-[50%] h-full relative group">
-              <div className="rounded-md w-full h-full bg-[#EFF7FF] border-[3px] border-black flex justify-center items-center text-center group-hover:invisible">
-                OPTIMIZED MODEL <br /> TRAINING
+              <div
+                className={`rounded-md w-full h-full border-[3px] flex justify-center items-center text-center group-hover:invisible ${
+                  theme === "dark" ? "border-white" : "border-black"
+                }`}
+              >
+                Optimized Model <br /> Training
               </div>
 
               <div className="absolute top-0 left-0 w-full h-full border-[3px] border-[#36DBB3] bg-[#EFF7FF] rounded-md flex justify-between p-4 items-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -176,8 +238,12 @@ const WhatsNew = () => {
             </div>
 
             <div className="w-[50%] h-full relative group">
-              <div className="rounded-md w-full h-full bg-[#EFF7FF] border-[3px] border-black flex justify-center items-center text-center group-hover:invisible">
-                HYPERSCALE <br /> INTERFACE
+              <div
+                className={`rounded-md w-full h-full border-[3px] flex justify-center items-center text-center group-hover:invisible ${
+                  theme === "dark" ? "border-white" : "border-black"
+                }`}
+              >
+                Hyperscale <br /> Interface
               </div>
 
               <div className="absolute top-0 left-0 w-full h-full border-[3px] border-[#36DBB3] bg-[#EFF7FF] rounded-md flex justify-between p-4 items-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -210,7 +276,11 @@ const WhatsNew = () => {
           </div>
 
           <div className="h-[160px] relative group">
-            <div className="h-[160px] bg-[#EFF7FF] border-[3px] border-black rounded-md flex justify-center items-center group-hover:invisible">
+            <div
+              className={`h-[160px] border-[3px] rounded-md flex justify-center items-center group-hover:invisible ${
+                theme === "dark" ? "border-white" : "border-black"
+              }`}
+            >
               Compute & Storage
             </div>
 
@@ -244,31 +314,55 @@ const WhatsNew = () => {
         </div>
 
         <div className="group relative w-[180px] h-[90%] m-2 p-2">
-          <div className="w-full h-full rounded-md flex justify-center items-center text-center bg-[#EFF7FF] border-[3px] border-black group-hover:invisible hover:transform-none">
-            <div className="rotate-90">RESPONSIBLE AI</div>
+          <div
+            className={`w-full h-full rounded-md flex justify-center items-center text-center border-[3px] group-hover:invisible hover:transform-none ${
+              theme === "dark" ? "border-white" : "border-black"
+            }`}
+          >
+            <div className="rotate-90">Responsible AI</div>
           </div>
 
           <div className="absolute top-0 left-0 w-full h-full rounded-md flex gap-2 p-2 justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity hover:transform-none">
-            <div className="relative flex text-black border-[3px] border-black rounded-md w-[45px] h-full bg-[#EFF7FF] items-center justify-center text-center">
-              <div className="flex whitespace-nowrap rotate-90">MONITORING</div>
+            <div
+              className={` ${
+                theme === "dark" ? "border-white" : "border-black"
+              } relative flex border-[3px] rounded-md w-[45px] h-full items-center justify-center text-center`}
+            >
+              <div className="flex whitespace-nowrap rotate-90">Monitoring</div>
             </div>
-            <div className="relative flex text-black border-[3px] border-black rounded-md w-[45px] h-full bg-[#EFF7FF] items-center justify-center text-center">
+            <div
+              className={`${
+                theme === "dark" ? "border-white" : "border-black"
+              } relative flex border-[3px] rounded-md w-[45px] h-full items-center justify-center text-center`}
+            >
               <div className="flex whitespace-nowrap  rotate-90">
-                ETHICAL AI
+                Ethical AI
               </div>
             </div>
-            <div className="relative flex text-black border-[3px] border-black rounded-md w-[45px] h-full bg-[#EFF7FF] items-center justify-center text-center">
+            <div
+              className={`${
+                theme === "dark" ? "border-white" : "border-black"
+              } relative flex border-[3px] rounded-md w-[45px] h-full items-center justify-center text-center`}
+            >
               <div className="flex whitespace-nowrap  rotate-90">
-                NETWORKING & SECURITY
+                Networking & Security
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="h-[550px] flex flex-col gap-7 m-4 g-4 relative items-center justify-center">
+      {/* <div className="h-[550px] flex flex-col gap-7 m-4 g-4 relative items-center justify-center">
         <div className="flex gap-2 h-[330px]">
-          <div className="w-[215px] rounded-sm border-4 border-black flex relative items-center justify-center">
+          <div
+            className="w-[215px] rounded-sm border-4 border-black flex relative items-center justify-center hover:scale-110 hover:mr-2 transition-transform duration-300"
+            onMouseEnter={() =>
+              setHoverText(
+                "State-of-art foundational model access including OpenAl, Anthropic Claude, Meta Llama3 and more. Custom APIs for secure model access"
+              )
+            }
+            onMouseLeave={() => setHoverText("")}
+          >
             <div className="relative w-[120px] h-[120px]">
               <Image
                 src="/whatsnew/Vector.svg"
@@ -278,7 +372,16 @@ const WhatsNew = () => {
               />
             </div>
           </div>
-          <div className="w-[215px] rounded-sm border-4 border-black flex relative items-center justify-center">
+
+          <div
+            className="w-[215px] rounded-sm border-4 border-black flex relative items-center justify-center hover:scale-110 hover:mx-2 transition-transform duration-300"
+            onMouseEnter={() =>
+              setHoverText(
+                "Access to wide range of GPUs, CPUs with support for Single-GPU, Multi-GPU/node fine-tuning with PEFT LoRA and a selection of inference options"
+              )
+            }
+            onMouseLeave={() => setHoverText("")}
+          >
             <div className="relative w-[120px] h-[120px]">
               <Image
                 src="/whatsnew/gpuicon.svg"
@@ -288,7 +391,16 @@ const WhatsNew = () => {
               />
             </div>
           </div>
-          <div className="w-[215px] rounded-sm border-4 border-black flex relative items-center justify-center">
+
+          <div
+            className="w-[215px] rounded-sm border-4 border-black flex relative items-center justify-center hover:scale-110 hover:mx-2 transition-transform duration-300"
+            onMouseEnter={() =>
+              setHoverText(
+                "Fully integrated coding IDEs (VSCode) and JupyterLab environment with Al coding assistant support. Docker container with ML, DL and Al libraries"
+              )
+            }
+            onMouseLeave={() => setHoverText("")}
+          >
             <div className="relative w-[120px] h-[120px]">
               <Image
                 src="/whatsnew/webapp.svg"
@@ -298,7 +410,15 @@ const WhatsNew = () => {
               />
             </div>
           </div>
-          <div className="w-[215px] rounded-sm border-4 border-black flex relative items-center justify-center">
+          <div
+            className="w-[215px] rounded-sm border-4 border-black flex relative items-center justify-center hover:scale-110 hover:mx-2 transition-transform duration-300"
+            onMouseEnter={() =>
+              setHoverText(
+                "Cloud native platform with simple web browser access. High performance and cost optimized compute, storage, network and security"
+              )
+            }
+            onMouseLeave={() => setHoverText("")}
+          >
             <div className="relative w-[120px] h-[120px]">
               <Image
                 src="/whatsnew/cloud.svg"
@@ -308,7 +428,15 @@ const WhatsNew = () => {
               />
             </div>
           </div>
-          <div className="w-[215px] rounded-sm border-4 border-black flex relative items-center justify-center">
+          <div
+            className="w-[215px] rounded-sm border-4 border-black flex relative items-center justify-center hover:scale-110 hover:ml-2 transition-transform duration-300"
+            onMouseEnter={() =>
+              setHoverText(
+                "End-to-end monitoring for reliability, availability, and performance with metrics and alarms. Audit of API calls for every user of the platform"
+              )
+            }
+            onMouseLeave={() => setHoverText("")}
+          >
             <div className="relative w-[120px] h-[120px]">
               <Image
                 src="/whatsnew/website.svg"
@@ -319,8 +447,12 @@ const WhatsNew = () => {
             </div>
           </div>
         </div>
-        <div className="h-[160px] w-full flex items-center justify-center text-center bg-[#EFF7FF] border-4 border-black rounded-md"></div>
-      </div>
+        <div className="h-[160px] w-full flex items-center justify-center text-center border-4 border-black rounded-md text-[25px] p-4 px-14">
+          <p className="h-full flex justify-center items-center text-center">
+            {hoverText}
+          </p>
+        </div>
+      </div> */}
     </div>
   );
 };
