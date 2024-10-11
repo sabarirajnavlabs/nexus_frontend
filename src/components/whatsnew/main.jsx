@@ -352,7 +352,7 @@ const WhatsNew = () => {
         </div>
       </div>
 
-      {/* <div className="h-[550px] flex flex-col gap-7 m-4 g-4 relative items-center justify-center">
+      <div className="h-[550px] flex flex-col gap-7 m-4 g-4 relative items-center justify-center">
         <div className="flex gap-2 h-[330px]">
           <div
             className="w-[215px] rounded-sm border-4 border-black flex relative items-center justify-center hover:scale-110 hover:mr-2 transition-transform duration-300"
@@ -452,7 +452,7 @@ const WhatsNew = () => {
             {hoverText}
           </p>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };

@@ -69,12 +69,12 @@ const JupyterNotebook = () => {
         className={
           theme === "dark"
             ? "bg-[#181818] text-white"
-            : "bg-white text-black mt-[-20px] p-2"
+            : " text-black mt-[-20px] p-2"
         }
       >
         <div
           className={`flex flex-col md:flex-row justify-between items-center pl-4 md:pl-8 rounded-lg shadow-lg border ${
-            theme === "dark" ? "border-[#333333]" : "border-gray-300"
+            theme === "dark" ? "border-[#333333]" : "bg-white border-gray-300"
           }`}
         >
           <div className="md:w-1/2 md:mt-6 md:mb-6">
