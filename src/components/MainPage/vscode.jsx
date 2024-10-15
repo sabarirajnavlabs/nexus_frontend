@@ -7,12 +7,13 @@ import image from "/public/vscode.png";
 import Cookies from "js-cookie";
 
 const Vscode = () => {
+  const endpoint = process.env.NEXT_PUBLIC_API_URL;
   const { theme } = useTheme();
 
   const postData = async (orgName) => {
     try {
       const res = await fetch(
-        `https://nsh6zxrxlj.execute-api.us-east-1.amazonaws.com/testing/diy/${orgName}`,
+        `${endpoint}/diy/${orgName}`,
         {
           method: "POST",
           headers: {

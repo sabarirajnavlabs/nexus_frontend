@@ -9,12 +9,13 @@ import image from "/public/jupyter.png";
 import Cookies from "js-cookie";
 
 const JupyterNotebook = () => {
+  const endpoint = process.env.NEXT_PUBLIC_API_URL;
   const { theme } = useTheme();
 
   const postData = async (orgName) => {
     try {
       const res = await fetch(
-        `https://nsh6zxrxlj.execute-api.us-east-1.amazonaws.com/testing/jupyter/${orgName}`,
+        `${endpoint}/jupyter/${orgName}`,
         {
           method: "POST",
           headers: {
