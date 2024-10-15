@@ -8,66 +8,51 @@ import { SignIn } from "@clerk/nextjs";
 
 const AIPlatformComponent = () => {
   return (
-    <div className="flex relative min-h-screen bg-[#e9f6fe] gap-6">
+    <div className="flex relative min-h-screen bg-[#e9f6fe] gap-6 justify-center items-start pt-8">
       {/* Left Side */}
-      <div className="relative flex flex-col gap-4 w-2/4 h-screen items-start justify-start">
-        <div className="p-28 flex flex-col gap-6 pb-0">
-          <div className="flex mt-16 gap-4 items-start justify-center">
-            <div className="w-[40px] h-[40px] relative">
-              <Image
-                src="/Navbar/logo-circle.png"
-                alt="Navigate Labs Logo"
-                fill
-                style={{ objectFit: "contain" }}
-              />
-            </div>
-            <h1 className="text-3xl font-bold text-black">Navigate Labs</h1>
-          </div>
-          <div className="flex flex-col gap-4 items-start justify-start bg-transparent">
-            <div className="relative w-[500px] h-[300px] bg-[#e9f6fe] overflow-hidden">
-              <Image
-                src="/output.gif"
-                alt="Animated GIF showcasing platform features"
-                fill
-                style={{ objectFit: "cover" }}
-              />
-            </div>
-          </div>
+      {/* <div className="relative flex flex-col gap-4 w-2/4 h-screen items-center justify-center">
+        <div className="w-[400px] h-[140px] relative">
+          <Image
+            src="/logo.png"
+            alt="Navigate Labs Logo"
+            fill
+            style={{ objectFit: "contain" }}
+          />
         </div>
 
-        <div className="relative mt-6 pl-28">
-          <h1 className="text-3xl font-bold text-black">
-            All in one AI platform for
+        <div className="relative mt-6 flex items-center justify-center">
+          <h1 className="text-5xl font-bold text-black text-center">
+            All-In-One AI Platform For <br />
             <span className={`ml-2 ${styles.gradientText}`}>
               <ReactTyped
                 strings={[
-                  "Software Teams",
-                  "Developers",
-                  "Researchers",
-                  "Data Scientists",
-                  "ML Engineers",
+                  "SOFTWARE TEAMS",
+                  "DEVELOPERS",
+                  "RESEARCHERS",
+                  "DATA SCIENTISTS",
+                  "ML ENGINEERS",
                 ]}
-                typeSpeed={100}
-                backSpeed={50}
+                typeSpeed={10}
+                backSpeed={10}
                 loop={true}
                 showCursor={false}
               />
             </span>
           </h1>
         </div>
-      </div>
+      </div> */}
 
       {/* Right Side */}
       <div className="flex flex-col w-2/4 items-center justify-center mt-4">
-        <div className="w-[350px] h-[180px] relative">
+        <div className="w-[350px] h-[200px] relative">
           <Image
-            src="/kpr.png"
+            src="/kpriet.png"
             alt="AI Platform Feature Image"
             fill
             style={{ objectFit: "contain" }}
           />
         </div>
-        <div className="flex flex-col items-center justify-center ml-6 m-2 gap-2">
+        <div className="flex flex-col items-center justify-center ml-6 m-2 mb-4 gap-2">
           <h1 className="text-3xl font-bold text-black capitalize">
             Artificial Intelligence
           </h1>
@@ -82,7 +67,20 @@ const AIPlatformComponent = () => {
             allowedIdentifiers: ["email"],
             oauthProviders: [],
           }}
+          appearance={{
+            elements: {
+              footerAction: { display: "none" },
+            },
+          }}
         />
+        <div className="relative w-[240px] h-[160px]">
+          <Image
+            src="/logo.png"
+            alt="Navigate Labs Logo"
+            fill
+            style={{ objectFit: "contain" }}
+          />
+        </div>
       </div>
     </div>
   );

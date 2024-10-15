@@ -42,8 +42,8 @@ const TextModel = () => {
       <div
         className={
           theme === "dark"
-            ? "bg-[#181818] text-white"
-            : "bg-white text-black mt-[-20px] p-2"
+            ? " text-white"
+            : " text-black mt-[-20px] p-2"
         }
       >
         <div
@@ -52,7 +52,7 @@ const TextModel = () => {
           }`}
         >
           <div className="md:w-1/2 md:mt-6 md:mb-6">
-            <h1 className="text-3xl font-bold">Multi Model</h1>
+            <h1 className="text-3xl font-bold">Multi Modal</h1>
             <p
               className={`mt-2 ${
                 theme === "dark" ? "text-gray-400" : "text-gray-700"
@@ -84,7 +84,7 @@ const TextModel = () => {
         <section
           id="ai-products"
           className={`my-12 ${
-            theme === "dark" ? "bg-[#0C0C0C] text-white" : "bg-white text-black"
+            theme === "dark" ? " text-white" : " text-black"
           } px-4 py-8 rounded-md`}
         >
           <h2 className="text-3xl font-semibold  mb-4">Base Models</h2>

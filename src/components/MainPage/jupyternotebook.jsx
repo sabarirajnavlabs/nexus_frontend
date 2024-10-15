@@ -9,29 +9,13 @@ import image from "/public/jupyter.png";
 import Cookies from "js-cookie";
 
 const JupyterNotebook = () => {
+  const endpoint = process.env.NEXT_PUBLIC_API_URL;
   const { theme } = useTheme();
-  const [isDisabled, setIsDisabled] = useState(false);
 
-  const handleLaunchJPN = async () => {
-    setIsDisabled(true);
-
-    const orgName = "testing";
-    const url = await postData1(orgName);
-    if (url) {
-      window.open(url, "_blank");
-    } else {
-      console.error("Failed to retrieve URL");
-    }
-
-    setTimeout(() => {
-      setIsDisabled(false);
-    }, 300000);
-  };
-
-  const postData1 = async (orgName) => {
+  const postData = async (orgName) => {
     try {
       const res = await fetch(
-        `https://nsh6zxrxlj.execute-api.us-east-1.amazonaws.com/testing/jupyter/${orgName}`,
+        `${endpoint}/jupyter/${orgName}`,
         {
           method: "POST",
           headers: {
@@ -44,15 +28,39 @@ const JupyterNotebook = () => {
         }
       );
 
-      if (!res.ok) {
-        throw new Error(`Error: ${res.statusText}`);
+      if (res.status === 409) {
+        let storedJPNUrl = Cookies.get("storedJPNUrl");
+        storedJPNUrl = storedJPNUrl.split("/auth")[0];
+        storedJPNUrl = storedJPNUrl + "/jupyterlab/default";
+        return storedJPNUrl || null;
       }
 
-      const data = await res.json();
-      return data.url;
+      if (res.status === 200) {
+        const data = await res.json();
+        Cookies.set("storedJPNUrl", data.url, {
+          expires: 1,
+          secure: window.location.hostname !== "localhost",
+          sameSite: "strict",
+        });
+
+        return data.url;
+      }
+
+      throw new Error(`Unexpected status code: ${res.status}`);
     } catch (error) {
       console.error("Failed to fetch data:", error);
       return null;
+    }
+  };
+
+  const handleLaunchJPN = async () => {
+    const orgName = "testing";
+    const url = await postData(orgName);
+
+    if (url) {
+      window.open(url, "_blank");
+    } else {
+      console.error("Failed to retrieve URL");
     }
   };
 
@@ -62,12 +70,12 @@ const JupyterNotebook = () => {
         className={
           theme === "dark"
             ? "bg-[#181818] text-white"
-            : "bg-white text-black mt-[-20px] p-2"
+            : " text-black mt-[-20px] p-2"
         }
       >
         <div
           className={`flex flex-col md:flex-row justify-between items-center pl-4 md:pl-8 rounded-lg shadow-lg border ${
-            theme === "dark" ? "border-[#333333]" : "border-gray-300"
+            theme === "dark" ? "border-[#333333]" : "bg-white border-gray-300"
           }`}
         >
           <div className="md:w-1/2 md:mt-6 md:mb-6">
@@ -186,27 +194,12 @@ const JupyterNotebook = () => {
                 <p className="mt-2 ">Coding Assistant</p>
               </div>
               <div className="text-center mt-10">
-                {/* <button
+                <button
                   className="bg-blue-500 text-white py-2 px-4 rounded"
                   onClick={() => handleLaunchJPN()}
                 >
                   Launch
-                </button> */}
-                {isDisabled ? (
-                  <button
-                    className="bg-gray-500 text-white py-2 px-4 rounded"
-                    disabled
-                  >
-                    Launching...
-                  </button>
-                ) : (
-                  <button
-                    className="bg-blue-500 text-white py-2 px-4 rounded"
-                    onClick={() => handleLaunchJPN()}
-                  >
-                    Launch
-                  </button>
-                )}
+                </button>
               </div>
             </div>
           </div>

@@ -10,10 +10,11 @@ import TextModel from "@/components/models/text";
 import ImagesModel from "@/components/models/images";
 import MultiModel from "@/components/models/multimodel";
 import AudioModel from "@/components/models/audio";
+import WhatsNew from "@/components/whatsnew/main";
 
 const Page = () => {
   const { theme } = useTheme();
-  const [showSection, setShowSection] = useState();
+  const [showSection, setShowSection] = useState("whatsnew");
 
   return (
     <div
@@ -40,8 +41,10 @@ const Page = () => {
             <ImagesModel />
           ) : showSection === "multimodel" ? (
             <MultiModel />
-          ) : showSection === "audiomodel" ? (
-            <AudioModel />
+          ) : // ) : showSection === "audiomodel" ? (
+          // <AudioModel />
+          showSection === "whatsnew" ? (
+            <WhatsNew />
           ) : null}
         </div>
       </div>
