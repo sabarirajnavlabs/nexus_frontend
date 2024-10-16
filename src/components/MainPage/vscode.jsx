@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import "./main.css";
 import { useTheme } from "next-themes";
@@ -9,22 +9,20 @@ import Cookies from "js-cookie";
 const Vscode = () => {
   const endpoint = process.env.NEXT_PUBLIC_API_URL;
   const { theme } = useTheme();
+  const [orgName, setOrgName] = useState("testing");
 
   const postData = async (orgName) => {
     try {
-      const res = await fetch(
-        `${endpoint}/diy/${orgName}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Token: Cookies.get("__session") || "",
-          },
-          body: JSON.stringify({
-            orgName: orgName,
-          }),
-        }
-      );
+      const res = await fetch(`${endpoint}/diy/${orgName}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Token: Cookies.get("__session") || "",
+        },
+        body: JSON.stringify({
+          orgName: orgName,
+        }),
+      });
 
       if (res.status === 409) {
         let storedVSCUrl = Cookies.get("storedVSCUrl");
@@ -52,7 +50,6 @@ const Vscode = () => {
   };
 
   const handleLaunchVSC = async () => {
-    const orgName = "testing";
     const url = await postData(orgName);
 
     if (url) {
@@ -61,6 +58,18 @@ const Vscode = () => {
       console.error("Failed to retrieve URL");
     }
   };
+
+  useEffect(() => {
+    const hostname = window.location.hostname;
+
+    const subdomain = hostname.split(".")[0];
+
+    if (hostname === "localhost" || subdomain === "dev") {
+      setOrgName("testing");
+    } else {
+      setOrgName(subdomain);
+    }
+  }, []);
 
   return (
     <>

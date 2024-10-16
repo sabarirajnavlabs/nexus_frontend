@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ExclamationCircleIcon } from "@heroicons/react/solid";
 import Image from "next/image";
 import "./main.css";
@@ -11,22 +11,20 @@ import Cookies from "js-cookie";
 const JupyterNotebook = () => {
   const endpoint = process.env.NEXT_PUBLIC_API_URL;
   const { theme } = useTheme();
+  const [orgName, setOrgName] = useState("");
 
   const postData = async (orgName) => {
     try {
-      const res = await fetch(
-        `${endpoint}/jupyter/${orgName}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Token: Cookies.get("__session") || "",
-          },
-          body: JSON.stringify({
-            orgName: orgName,
-          }),
-        }
-      );
+      const res = await fetch(`${endpoint}/jupyter/${orgName}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Token: Cookies.get("__session") || "",
+        },
+        body: JSON.stringify({
+          orgName: orgName,
+        }),
+      });
 
       if (res.status === 409) {
         let storedJPNUrl = Cookies.get("storedJPNUrl");
@@ -54,7 +52,6 @@ const JupyterNotebook = () => {
   };
 
   const handleLaunchJPN = async () => {
-    const orgName = "testing";
     const url = await postData(orgName);
 
     if (url) {
@@ -63,6 +60,18 @@ const JupyterNotebook = () => {
       console.error("Failed to retrieve URL");
     }
   };
+
+  useEffect(() => {
+    const hostname = window.location.hostname;
+
+    const subdomain = hostname.split(".")[0];
+
+    if (hostname === "localhost" || subdomain === "dev") {
+      setOrgName("testing");
+    } else {
+      setOrgName(subdomain);
+    }
+  }, []);
 
   return (
     <>
