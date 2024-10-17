@@ -7,6 +7,8 @@ import { useTheme } from "next-themes";
 const TextModel = () => {
   const { theme } = useTheme();
   const [description, setDescription] = useState("Text Model");
+  const [iframeUrl, setIframeUrl] = useState("");
+  const [showIframe, setShowIframe] = useState(false);
 
   const data = [
     {
@@ -16,7 +18,11 @@ const TextModel = () => {
       title: "Open AI",
       description:
         "A fast, inexpensive model for simple tasks like text summarization and classification.",
-      tags: ["GPT 3.5 Turbo"],
+      tags: [
+        {
+          name: "GPT 3.5 Turbo",
+        },
+      ],
       link: "https://openai.com",
     },
     {
@@ -26,7 +32,12 @@ const TextModel = () => {
       title: "Anthropic",
       description:
         "A sophisticated model for dialogue and creative content generation.",
-      tags: ["Anthropic Claude v2"],
+      tags: [
+        {
+          name: "Anthropic Claude v2",
+          url: "http://ec2-54-83-251-69.compute-1.amazonaws.com/?model=bedrock-claude-sonnet-v1",
+        },
+      ],
     },
     {
       id: 3,
@@ -35,7 +46,12 @@ const TextModel = () => {
       title: "Meta",
       description:
         "Ideal for limited computational power and resources, edge devices, and faster training times.",
-      tags: ["Llama 3 8B"],
+      tags: [
+        {
+          name: "Llama 3 8B",
+          url: "http://ec2-54-83-251-69.compute-1.amazonaws.com/?model=bedrock-llama-3",
+        },
+      ],
     },
     {
       id: 4,
@@ -44,17 +60,40 @@ const TextModel = () => {
       title: "Amazon",
       description:
         "A light weight efficient model ideal for English-language tasks, including like summarization and copywriting.",
-      tags: ["Titan Text Lite"],
+      tags: [{ name: "Titan Text Lite", url: "#" }],
     },
   ];
 
+  const handleOpenIframe = (url) => {
+    setIframeUrl(url);
+    setShowIframe(true);
+  };
+
+  const handleCloseIframe = () => {
+    setShowIframe(false);
+    setIframeUrl("");
+  };
+
   return (
     <>
+      {showIframe && (
+        <div className="absolute top-0 left-0 w-full h-full z-50">
+          <iframe
+            src={iframeUrl}
+            frameBorder="0"
+            style={{ width: "100%", height: "100%" }}
+          ></iframe>
+          <button
+            className="absolute top-5 right-5 w-9 h-9 z-50 p-2 pt-1 text-xl bg-white rounded-full justify-center items-center"
+            onClick={handleCloseIframe}
+          >
+            &times;
+          </button>
+        </div>
+      )}
       <div
         className={
-          theme === "dark"
-            ? "text-white"
-            : "text-black mt-[-20px] p-2"
+          theme === "dark" ? "text-white" : "text-black mt-[-20px] p-2"
         }
       >
         <div
@@ -94,7 +133,7 @@ const TextModel = () => {
         </div>
         <section
           id="ai-products"
-          className={`my-12 ${
+          className={`${
             theme === "dark" ? "text-white" : " text-black"
           } px-4 py-8 rounded-md`}
         >
@@ -130,8 +169,9 @@ const TextModel = () => {
                           ? "bg-white text-black"
                           : "bg-[#0C0C0C] text-white"
                       } text- px-2 py-1 rounded-2xl font-bold`}
+                      onClick={() => handleOpenIframe(tag.url)}
                     >
-                      {tag}
+                      {tag.name}
                     </button>
                   ))}
                 </div>
