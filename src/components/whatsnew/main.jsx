@@ -15,8 +15,8 @@ const WhatsNew = () => {
         theme === "dark" ? "text-white border-white" : "text-black border-black"
       }`}
     >
-      <div className="flex flex-col gap-4 m-4 items-center justify-center">
-        <h1 className="text-[65px] text-center font-semibold font-sans">
+      <div className="flex flex-col gap-4 items-center justify-center">
+        <h1 className="text-[36px] text-center font-semibold font-sans">
           <span className={styles.gradientText}>Nexus AI</span> <br />
           {/* <span className="text-[40px] font-normal flex">
             All-In-One AI Platform For

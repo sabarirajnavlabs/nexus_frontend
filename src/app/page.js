@@ -30,7 +30,7 @@ const Page = () => {
       >
         <ProductSideNavbar section={showSection} setsection={setShowSection} />
 
-        <div className="p-8 max-w-[85%]">
+        <div className="p-4 max-w-[85%]">
           {showSection === "vscode" ? (
             <Vscode />
           ) : showSection === "jupyter" ? (

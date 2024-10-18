@@ -10,6 +10,7 @@ const Vscode = () => {
   const endpoint = process.env.NEXT_PUBLIC_API_URL;
   const { theme } = useTheme();
   const [orgName, setOrgName] = useState("testing");
+  const [loading, setLoading] = useState(false); // Loading state
 
   const postData = async (orgName) => {
     try {
@@ -50,6 +51,8 @@ const Vscode = () => {
   };
 
   const handleLaunchVSC = async () => {
+    setLoading(true);
+
     const url = await postData(orgName);
 
     if (url) {
@@ -57,11 +60,14 @@ const Vscode = () => {
     } else {
       console.error("Failed to retrieve URL");
     }
+
+    setTimeout(async () => {
+      setLoading(false);
+    }, 30000);
   };
 
   useEffect(() => {
     const hostname = window.location.hostname;
-
     const subdomain = hostname.split(".")[0];
 
     if (hostname === "localhost" || subdomain === "dev") {
@@ -133,97 +139,6 @@ const Vscode = () => {
             <div className="absolute top-0 right-0 mt-4 mr-4">
               <h3 className="text-lg font-semibold text-white">VS Code</h3>
             </div>
-            {/* <div className="flex gap-10">
-              <div className="mb-6 flex-grow">
-                <label
-                  htmlFor="cpuSlider"
-                  className={`block mb-2 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-600"
-                  }`}
-                >
-                  CPU
-                </label>
-                <div className="flex gap-10 justify-center items-center">
-                  <div className="w-[100%]">
-                    <input
-                      type="range"
-                      id="cpuSlider"
-                      min="0"
-                      max="1"
-                      step="0.01"
-                      value={cpu}
-                      onChange={(e) => setCpu(e.target.value)}
-                      className="slider"
-                    />
-                    <div
-                      className={`flex justify-between mt-2 ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-600"
-                      }`}
-                    >
-                      <span>0</span>
-                      <span>0.25</span>
-                      <span>0.5</span>
-                      <span>0.75</span>
-                      <span>1</span>
-                    </div>
-                  </div>
-                  <div
-                    className={`text-center mt-2 inline-block border min-w-[50px] ${
-                      theme === "dark"
-                        ? "border-gray-400 text-gray-400"
-                        : "border-gray-600 text-gray-600"
-                    } p-2`}
-                  >
-                    {cpu}
-                  </div>
-                </div>
-              </div>
-
-              <div className="mb-6 flex-grow">
-                <label
-                  htmlFor="gpuSlider"
-                  className={`block mb-2 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-600"
-                  }`}
-                >
-                  GPU
-                </label>
-                <div className="flex gap-10 justify-center items-center">
-                  <div className="w-[100%]">
-                    <input
-                      type="range"
-                      id="gpuSlider"
-                      min="0"
-                      max="1"
-                      step="0.01"
-                      value={gpu}
-                      onChange={(e) => setGpu(e.target.value)}
-                      className="slider"
-                    />
-                    <div
-                      className={`flex justify-between mt-2 ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-600"
-                      }`}
-                    >
-                      <span>0</span>
-                      <span>0.25</span>
-                      <span>0.5</span>
-                      <span>0.75</span>
-                      <span>1</span>
-                    </div>
-                  </div>
-                  <div
-                    className={`text-center mt-2 inline-block border min-w-[50px] ${
-                      theme === "dark"
-                        ? "border-gray-400 text-gray-400"
-                        : "border-gray-600 text-gray-600"
-                    } p-2`}
-                  >
-                    {gpu}
-                  </div>
-                </div>
-              </div>
-            </div> */}
             <div className="flex justify-around items-start mt-6 space-x-8">
               <div className="text-center">
                 <p className="font-bold">App</p>
@@ -292,10 +207,13 @@ const Vscode = () => {
               </div>
               <div className="text-center mt-10">
                 <button
-                  className="bg-blue-500 text-white py-2 px-4 rounded"
-                  onClick={() => handleLaunchVSC()}
+                  className={`bg-blue-500 text-white py-2 px-4 rounded ${
+                    loading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  onClick={handleLaunchVSC}
+                  disabled={loading}
                 >
-                  Launch
+                  {loading ? "Loading..." : "Launch"}
                 </button>
               </div>
             </div>
