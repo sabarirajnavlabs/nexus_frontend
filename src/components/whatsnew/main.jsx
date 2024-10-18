@@ -16,7 +16,7 @@ const WhatsNew = () => {
       }`}
     >
       <div className="flex flex-col gap-4 items-center justify-center">
-        <h1 className="text-[50px] text-center font-semibold font-sans">
+        <h1 className="text-[36px] text-center font-semibold font-sans">
           <span className={styles.gradientText}>Nexus AI</span> <br />
           {/* <span className="text-[40px] font-normal flex">
             All-In-One AI Platform For
