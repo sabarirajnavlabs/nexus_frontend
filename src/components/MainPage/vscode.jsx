@@ -52,18 +52,34 @@ const Vscode = () => {
 
   const handleLaunchVSC = async () => {
     setLoading(true);
-
-    const url = await postData(orgName);
-
-    if (url) {
-      window.open(url, "_blank");
-    } else {
-      console.error("Failed to retrieve URL");
-    }
-
-    setTimeout(async () => {
+  
+    try {
+      const url = await postData(orgName);
+  
+      if (url) {
+        // Open the URL in a new tab without triggering pop-up
+        const newWindow = window.open('about:blank', '_blank', 'noopener,noreferrer');
+        if (newWindow) {
+          newWindow.location.href = url;
+        } else {
+          console.error("Pop-up blocked. Please allow pop-ups for this site.");
+          setLoading(false);
+          return;
+        }
+  
+        // Set a timeout to change loading state after 30 seconds
+        setTimeout(() => {
+          setLoading(false);
+        }, 30000);
+  
+      } else {
+        console.error("Failed to retrieve URL");
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("Error launching VSC:", error);
       setLoading(false);
-    }, 30000);
+    }
   };
 
   useEffect(() => {
