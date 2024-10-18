@@ -1,17 +1,15 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { ExclamationCircleIcon } from "@heroicons/react/solid";
 import Image from "next/image";
 import "./main.css";
 import { useTheme } from "next-themes";
-// import image from "/public/Main/image.png";
-import image from "/public/jupyter.png";
 import Cookies from "js-cookie";
 
 const JupyterNotebook = () => {
   const endpoint = process.env.NEXT_PUBLIC_API_URL;
   const { theme } = useTheme();
   const [orgName, setOrgName] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const postData = async (orgName) => {
     try {
@@ -52,6 +50,8 @@ const JupyterNotebook = () => {
   };
 
   const handleLaunchJPN = async () => {
+    setLoading(true);
+
     const url = await postData(orgName);
 
     if (url) {
@@ -59,6 +59,10 @@ const JupyterNotebook = () => {
     } else {
       console.error("Failed to retrieve URL");
     }
+
+    setTimeout(async () => {
+      setLoading(false);
+    }, 20000);
   };
 
   useEffect(() => {
@@ -204,10 +208,13 @@ const JupyterNotebook = () => {
               </div>
               <div className="text-center mt-10">
                 <button
-                  className="bg-blue-500 text-white py-2 px-4 rounded"
-                  onClick={() => handleLaunchJPN()}
+                  className={`bg-blue-500 text-white py-2 px-4 rounded ${
+                    loading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  onClick={handleLaunchJPN}
+                  disabled={loading}
                 >
-                  Launch
+                  {loading ? "Loading..." : "Launch"}
                 </button>
               </div>
             </div>
