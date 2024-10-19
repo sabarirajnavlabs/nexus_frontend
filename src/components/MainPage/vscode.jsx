@@ -230,9 +230,6 @@ const Vscode = () => {
                 >
                   {loading ? "Loading..." : "Launch"}
                 </button>
-                <p className="text-sm mt-2">
-                  If the launch fails, please ensure pop-ups are allowed for this site.
-                </p>
               </div>
             </div>
           </div>
