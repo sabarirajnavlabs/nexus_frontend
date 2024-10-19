@@ -58,19 +58,11 @@ const Vscode = () => {
   
       if (url) {
         // Attempt to open the URL
-        const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
+         window.open(url, '_blank', 'noopener,noreferrer');
         
-        if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-          // Pop-up was blocked
-          console.error("Pop-up blocked. Please allow pop-ups for this site.");
-          alert("Pop-up blocked. Please allow pop-ups for this site and try again.");
+        setTimeout(() => {
           setLoading(false);
-        } else {
-          // Pop-up opened successfully
-          setTimeout(() => {
-            setLoading(false);
-          }, 30000);
-        }
+        }, 30000);
       } else {
         console.error("Failed to retrieve URL");
         setLoading(false);
