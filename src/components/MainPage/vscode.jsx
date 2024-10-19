@@ -56,6 +56,8 @@ const Vscode = () => {
     try {
       const url = await postData(orgName);
   
+      console.log('url from post', url);
+      
       if (url) {
         // Create a temporary anchor element
         const link = document.createElement('a');
