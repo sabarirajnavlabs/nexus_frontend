@@ -56,7 +56,8 @@ const Vscode = () => {
     const url = await postData(orgName);
 
     if (url) {
-      window.open(url, "_blank");
+      const newTab = window.open("", "_blank");
+      newTab.location.href = url;
     } else {
       console.error("Failed to retrieve URL");
     }
