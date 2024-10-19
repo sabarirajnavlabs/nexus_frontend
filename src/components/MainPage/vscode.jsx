@@ -57,9 +57,19 @@ const Vscode = () => {
       const url = await postData(orgName);
   
       if (url) {
-        // Attempt to open the URL
-         window.open(url, '_blank', 'noopener,noreferrer');
-        
+        // Create a temporary anchor element
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+  
+        // Append to the document and trigger click
+        document.body.appendChild(link);
+        link.click();
+  
+        // Remove the anchor element after clicking
+        document.body.removeChild(link);
+  
         setTimeout(() => {
           setLoading(false);
         }, 30000);
