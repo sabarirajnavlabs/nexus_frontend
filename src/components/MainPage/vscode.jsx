@@ -57,21 +57,20 @@ const Vscode = () => {
       const url = await postData(orgName);
   
       if (url) {
-        // Open the URL in a new tab without triggering pop-up
-        const newWindow = window.open('about:blank', '_blank', 'noopener,noreferrer');
-        if (newWindow) {
-          newWindow.location.href = url;
-        } else {
+        // Attempt to open the URL
+        const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
+        
+        if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+          // Pop-up was blocked
           console.error("Pop-up blocked. Please allow pop-ups for this site.");
+          alert("Pop-up blocked. Please allow pop-ups for this site and try again.");
           setLoading(false);
-          return;
+        } else {
+          // Pop-up opened successfully
+          setTimeout(() => {
+            setLoading(false);
+          }, 30000);
         }
-  
-        // Set a timeout to change loading state after 30 seconds
-        setTimeout(() => {
-          setLoading(false);
-        }, 30000);
-  
       } else {
         console.error("Failed to retrieve URL");
         setLoading(false);
@@ -231,6 +230,9 @@ const Vscode = () => {
                 >
                   {loading ? "Loading..." : "Launch"}
                 </button>
+                <p className="text-sm mt-2">
+                  If the launch fails, please ensure pop-ups are allowed for this site.
+                </p>
               </div>
             </div>
           </div>
