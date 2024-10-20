@@ -57,27 +57,9 @@ const Vscode = () => {
       const url = await postData(orgName);
   
       if (url) {
-        // Create a visible temporary anchor element to ensure it works
-        const link = document.createElement('a');
-        link.href = url;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-  
-        // Make the anchor visible temporarily for debugging purposes
-        link.style.display = 'inline';
-        link.textContent = 'Temporary Link';
+        // Attempt to open the URL
+         window.open(url, '_blank', 'noopener,noreferrer');
         
-        // Append it to the document
-        document.body.appendChild(link);
-  
-        // Trigger the click on the anchor tag
-        link.click();
-  
-        // Optionally, remove the anchor after a small delay to ensure it's present in the DOM long enough
-        setTimeout(() => {
-          document.body.removeChild(link);
-        }, 5000); // Keep it in the DOM for 5 seconds to inspect
-  
         setTimeout(() => {
           setLoading(false);
         }, 30000);
