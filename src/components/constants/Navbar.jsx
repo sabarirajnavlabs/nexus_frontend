@@ -28,9 +28,13 @@ const NavBar = () => {
 
   return (
     <nav
-      className={`p-4 z-50 fixed top-0 left-4 right-4 flex items-center justify-between rounded-lg shadow-lg transition-all duration-300 ${
-        theme === "dark" ? "bg-black text-white" : "bg-white text-black"
-      } ${isScrolled ? "bg-opacity-70 backdrop-blur-md" : "bg-opacity-100"} space-x-4`}
+      className={`p-4 z-50 fixed top-0 left-0 right-0 flex items-center justify-between transition-all duration-300 ${
+        theme === "dark"
+          ? "bg-black text-white shadow-gray-600 shadow-md"
+          : "bg-white text-black shadow-lg"
+      } ${
+        isScrolled ? "bg-opacity-70 backdrop-blur-md" : "bg-opacity-100"
+      } space-x-4`}
     >
       <div className="flex gap-4 basis-1/2 md:basis-1/4 items-center ml-5">
         <Image src={logoImage} alt="logo" className="w-12 h-12" />
@@ -40,15 +44,9 @@ const NavBar = () => {
       <div className="flex">
         <div className="basis-1/2 md:basis-1/4 flex flex-row-reverse">
           {isMenuOpen ? (
-            <FaTimes
-              className="cursor-pointer"
-              onClick={toggleMenu}
-            />
+            <FaTimes className="cursor-pointer" onClick={toggleMenu} />
           ) : (
-            <FaBars
-              className="cursor-pointer"
-              onClick={toggleMenu}
-            />
+            <FaBars className="cursor-pointer" onClick={toggleMenu} />
           )}
         </div>
 
@@ -75,7 +73,9 @@ const NavBar = () => {
 
         <div className="flex items-center ml-4">
           <label className="flex items-center cursor-pointer">
-            <span className="mr-2 text-sm">{theme === "dark" ? "🌙" : "☀️"}</span>
+            <span className="mr-2 text-sm">
+              {theme === "dark" ? "🌙" : "☀️"}
+            </span>
             <input
               type="checkbox"
               checked={theme === "dark"}
@@ -84,7 +84,13 @@ const NavBar = () => {
               id="toggle"
             />
             <div className="toggle-label bg-gray-200 rounded-full w-12 h-6 flex items-center p-1 transition-all duration-300">
-              <div className={`toggle-dot w-4 h-4 rounded-full transition-transform duration-300 ${theme === "dark" ? "transform translate-x-6 bg-black" : "bg-white"}`}></div>
+              <div
+                className={`toggle-dot w-4 h-4 rounded-full transition-transform duration-300 ${
+                  theme === "dark"
+                    ? "transform translate-x-6 bg-black"
+                    : "bg-white"
+                }`}
+              ></div>
             </div>
           </label>
         </div>
