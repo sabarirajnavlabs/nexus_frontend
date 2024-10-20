@@ -64,9 +64,8 @@ const Vscode = () => {
 
     setTimeout(async () => {
       setLoading(false);
-    }
+    }, 30000);
   };
-  
 
   useEffect(() => {
     const hostname = window.location.hostname;
