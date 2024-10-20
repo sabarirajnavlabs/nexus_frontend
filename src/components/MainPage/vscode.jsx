@@ -52,23 +52,17 @@ const Vscode = () => {
 
   const handleLaunchVSC = async () => {
     setLoading(true);
-  
-    try {
-      const url = await postData(orgName);
-  
-      if (url) {
-        // Attempt to open the URL
-         window.open(url, '_blank', 'noopener,noreferrer');
-        
-        setTimeout(() => {
-          setLoading(false);
-        }, 30000);
-      } else {
-        console.error("Failed to retrieve URL");
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error("Error launching VSC:", error);
+
+    const url = await postData(orgName);
+
+    if (url) {
+      const newTab = window.open("", "_blank");
+      newTab.location.href = url;
+    } else {
+      console.error("Failed to retrieve URL");
+    }
+
+    setTimeout(async () => {
       setLoading(false);
     }
   };
