@@ -10,7 +10,8 @@ const Vscode = () => {
   const endpoint = process.env.NEXT_PUBLIC_API_URL;
   const { theme } = useTheme();
   const [orgName, setOrgName] = useState("testing");
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false);
+  const [url, setUrl] = useState(null);
 
   const postData = async (orgName) => {
     try {
@@ -56,10 +57,12 @@ const Vscode = () => {
     const url = await postData(orgName);
 
     if (url) {
-      const newTab = window.open("", "_blank");
-      newTab.location.href = url;
+      // const newTab = window.open("", "_blank");
+      // newTab.location.href = url;
+      setUrl(url);
     } else {
       console.error("Failed to retrieve URL");
+      setUrl(null);
     }
 
     setTimeout(async () => {
@@ -206,7 +209,7 @@ const Vscode = () => {
                 />
                 <p className="mt-2 ">Coding Assistant</p>
               </div>
-              <div className="text-center mt-10">
+              <div className="flex relative flex-col text-center mt-10">
                 <button
                   className={`bg-blue-500 text-white py-2 px-4 rounded ${
                     loading ? "opacity-50 cursor-not-allowed" : ""
@@ -216,6 +219,11 @@ const Vscode = () => {
                 >
                   {loading ? "Loading..." : "Launch"}
                 </button>
+                {url && (
+                  <a className="text-center mt-2" href={url} target="_blank">
+                    Click Here
+                  </a>
+                )}
               </div>
             </div>
           </div>
