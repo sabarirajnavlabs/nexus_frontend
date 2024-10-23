@@ -67,6 +67,7 @@ const Vscode = () => {
 
     setTimeout(async () => {
       setLoading(false);
+      setUrl(null);
     }, 30000);
   };
 
@@ -209,21 +210,32 @@ const Vscode = () => {
                 />
                 <p className="mt-2 ">Coding Assistant</p>
               </div>
-              <div className="flex relative flex-col text-center mt-10">
+              <div className="flex gap-2 relative flex-col text-center mt-4">
                 <button
-                  className={`bg-blue-500 text-white py-2 px-4 rounded ${
-                    loading ? "opacity-50 cursor-not-allowed" : ""
+                  className={`text-white py-2 px-4 rounded ${
+                    loading
+                      ? "opacity-50 cursor-not-allowed bg-blue-300"
+                      : "bg-blue-500"
                   }`}
                   onClick={handleLaunchVSC}
                   disabled={loading}
                 >
-                  {loading ? "Loading..." : "Launch"}
+                  {loading ? "Create Instance" : "Create Instance"}
                 </button>
-                {url && (
-                  <a className="text-center mt-2" href={url} target="_blank">
-                    Click Here
-                  </a>
-                )}
+
+                <a
+                  className={`text-white py-2 px-4 rounded ${
+                    url ? "bg-blue-500" : "bg-blue-300 cursor-not-allowed"
+                  }`}
+                  href={url || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => {
+                    if (!url) e.preventDefault();
+                  }}
+                >
+                  Open Instance
+                </a>
               </div>
             </div>
           </div>
