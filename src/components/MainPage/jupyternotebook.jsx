@@ -59,14 +59,16 @@ const JupyterNotebook = () => {
       // const newTab = window.open("", "_blank");
       // newTab.location.href = url;
       setUrl(url);
+      const timestamp = Date.now();
+      localStorage.setItem("vscInstanceTimestamp", timestamp);
     } else {
       console.error("Failed to retrieve URL");
     }
 
     setTimeout(async () => {
       setLoading(false);
-      setUrl(null);
-    }, 20000);
+      // setUrl(null);
+    }, 900000);
   };
 
   useEffect(() => {
@@ -78,6 +80,23 @@ const JupyterNotebook = () => {
       setOrgName("testing");
     } else {
       setOrgName(subdomain);
+    }
+  }, []);
+
+  useEffect(() => {
+    const timestamp = localStorage.getItem("vscInstanceTimestamp");
+    const currentTime = Date.now();
+    const timeDiff = currentTime - timestamp;
+
+    if (timeDiff < 900000) {
+      let storedVSCUrl = Cookies.get("storedVSCUrl");
+      storedVSCUrl = storedVSCUrl.split("/auth")[0];
+      storedVSCUrl = storedVSCUrl + "/codeeditor/default";
+      setLoading(true);
+      setUrl(storedVSCUrl);
+    } else {
+      localStorage.removeItem("vscInstanceTimestamp");
+      setUrl(null);
     }
   }, []);
 
