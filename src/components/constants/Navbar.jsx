@@ -6,6 +6,7 @@ import logoImage from "/public/Navbar/logo-circle.png";
 import Image from "next/image";
 import { useAuth } from "@clerk/clerk-react";
 import { useTheme } from "next-themes";
+import Cookies from "js-cookie";
 
 const NavBar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -24,6 +25,13 @@ const NavBar = () => {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const deletecookies = () => {
+    Cookies.remove("storedVSCUrl");
+    Cookies.remove("storedJPNUrl");
+    localStorage.removeItem("vscInstanceTimestamp");
+    localStorage.removeItem("jpnInstanceTimestamp");
   };
 
   return (
@@ -63,7 +71,11 @@ const NavBar = () => {
             </button>
             <button
               className="w-full text-left hover:text-teal-500 hover:font-bold relative p-2 rounded transition duration-300 ease-in-out group"
-              onClick={signOut}
+              // onClick={signOut}
+              onClick={() => {
+                deletecookies();
+                signOut();
+              }}
             >
               Logout
               <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
