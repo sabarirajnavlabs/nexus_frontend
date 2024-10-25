@@ -89,11 +89,11 @@ const JupyterNotebook = () => {
     const timeDiff = currentTime - timestamp;
 
     if (timeDiff < 900000) {
-      let storedVSCUrl = Cookies.get("storedVSCUrl");
-      storedVSCUrl = storedVSCUrl.split("/auth")[0];
-      storedVSCUrl = storedVSCUrl + "/codeeditor/default";
+      let storedJPNUrl = Cookies.get("storedJPNUrl");
+      storedJPNUrl = storedJPNUrl.split("/auth")[0];
+      storedJPNUrl = storedJPNUrl + "/jupyterlab/default";
       setLoading(true);
-      setUrl(storedVSCUrl);
+      setUrl(storedJPNUrl);
     } else {
       localStorage.removeItem("jpnInstanceTimestamp");
       setUrl(null);
