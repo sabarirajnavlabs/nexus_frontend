@@ -12,7 +12,9 @@ const WhatsNew = () => {
   return (
     <div
       className={`w-[80vw] relative items-center justify-center ${
-        theme === "dark" ? "text-white border-white" : "text-black border-black"
+        theme === "dark"
+          ? "text-white border-gray-500"
+          : "text-black border-gray-500"
       }`}
     >
       <div className="flex flex-col gap-4 items-center justify-center">
@@ -62,8 +64,8 @@ const WhatsNew = () => {
       <div className="h-[720px] flex gap-2 relative justify-center items-center text-[20px]">
         <div className="group relative w-[180px] h-[90%] m-2 p-2">
           <div
-            className={`w-full h-full rounded-md flex justify-center items-center text-center border-[3px] group-hover:invisible hover:transform-none ${
-              theme === "dark" ? "border-white" : "border-black"
+            className={`w-full h-full rounded-md flex justify-center items-center text-center border-2 group-hover:invisible hover:transform-none ${
+              theme === "dark" ? "border-gray-500" : "border-gray-500"
             }`}
           >
             <div className="-rotate-90">
@@ -72,15 +74,15 @@ const WhatsNew = () => {
           </div>
           <div className="absolute top-0 left-0 w-full h-full rounded-md flex gap-2 p-2 justify-center items-center text-center  opacity-0 group-hover:opacity-100 transition-opacity hover:transform-none">
             <div
-              className={`relative flex border-[3px] rounded-md w-[45px] h-full items-center justify-center text-center ${
-                theme === "dark" ? "border-white" : "border-black"
+              className={`relative flex border-2 rounded-md w-[45px] h-full items-center justify-center text-center ${
+                theme === "dark" ? "border-gray-500" : "border-gray-500"
               }`}
             >
               <div className="flex -rotate-90 whitespace-nowrap ">IDE</div>
             </div>
             <div
-              className={`relative flex border-[3px] rounded-md w-[45px] h-full items-center justify-center text-center ${
-                theme === "dark" ? "border-white" : "border-black"
+              className={`relative flex border-2 rounded-md w-[45px] h-full items-center justify-center text-center ${
+                theme === "dark" ? "border-gray-500" : "border-gray-500"
               }`}
             >
               <div className="flex -rotate-90 whitespace-nowrap">
@@ -89,8 +91,8 @@ const WhatsNew = () => {
             </div>
 
             <div
-              className={`relative flex border-[3px] rounded-md w-[45px] h-full items-center justify-center text-center ${
-                theme === "dark" ? "border-white" : "border-black"
+              className={`relative flex border-2 rounded-md w-[45px] h-full items-center justify-center text-center ${
+                theme === "dark" ? "border-gray-500" : "border-gray-500"
               }`}
             >
               <div className="flex -rotate-90 whitespace-nowrap">
@@ -103,14 +105,14 @@ const WhatsNew = () => {
         <div className="flex flex-col gap-2 w-[720px] h-[90%] rounded-md m-2 p-2">
           <div className="h-[160px] relative group">
             <div
-              className={`h-[160px] border-[3px] rounded-md flex justify-center items-center group-hover:invisible ${
-                theme === "dark" ? "border-white" : "border-black"
+              className={`h-[160px] border-2 rounded-md flex justify-center items-center group-hover:invisible ${
+                theme === "dark" ? "border-gray-500" : "border-gray-500"
               }`}
             >
               Foundational Model Access
             </div>
 
-            <div className="absolute top-0 left-0 h-[160px] w-full border-[3px] border-[#36DBB3] bg-[#EFF7FF] rounded-md flex p-6 justify-between items-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="absolute top-0 left-0 h-[160px] w-full border-2 border-[#36DBB3] bg-[#EFF7FF] rounded-md flex p-6 justify-between items-center opacity-0 group-hover:opacity-100 transition-opacity">
               <div className="relative w-[110px] h-[35px]">
                 <Image
                   src="/whatsnew/1/openai.svg"
@@ -157,13 +159,13 @@ const WhatsNew = () => {
           <div className="h-[160px] relative group">
             <div
               className={`${
-                theme === "dark" ? "border-white" : "border-black"
-              } h-[160px] border-[3px] rounded-md flex justify-center items-center group-hover:invisible`}
+                theme === "dark" ? "border-gray-500" : "border-gray-500"
+              } h-[160px] border-2 rounded-md flex justify-center items-center group-hover:invisible`}
             >
               Standardized APIs
             </div>
 
-            <div className="absolute top-0 left-0 h-[160px] w-full border-[3px] border-[#36DBB3] bg-[#EFF7FF] rounded-md flex justify-between p-4 items-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="absolute top-0 left-0 h-[160px] w-full border-2 border-[#36DBB3] bg-[#EFF7FF] rounded-md flex justify-between p-4 items-center opacity-0 group-hover:opacity-100 transition-opacity">
               <div className="relative w-[120px] h-[65px]">
                 <Image
                   src="/whatsnew/2/apis.svg"
@@ -210,14 +212,14 @@ const WhatsNew = () => {
           <div className="h-[160px] flex gap-2 rounded-md p-1">
             <div className="w-[50%] h-full relative group">
               <div
-                className={`rounded-md w-full h-full border-[3px] flex justify-center items-center text-center group-hover:invisible ${
-                  theme === "dark" ? "border-white" : "border-black"
+                className={`rounded-md w-full h-full border-2 flex justify-center items-center text-center group-hover:invisible ${
+                  theme === "dark" ? "border-gray-500" : "border-gray-500"
                 }`}
               >
                 Optimized Model <br /> Training
               </div>
 
-              <div className="absolute top-0 left-0 w-full h-full border-[3px] border-[#36DBB3] bg-[#EFF7FF] rounded-md flex justify-between p-4 items-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute top-0 left-0 w-full h-full border-2 border-[#36DBB3] bg-[#EFF7FF] rounded-md flex justify-between p-4 items-center opacity-0 group-hover:opacity-100 transition-opacity">
                 <div className="relative w-[180px] h-[85px]">
                   <Image
                     src="/whatsnew/3/gpu.svg"
@@ -239,14 +241,14 @@ const WhatsNew = () => {
 
             <div className="w-[50%] h-full relative group">
               <div
-                className={`rounded-md w-full h-full border-[3px] flex justify-center items-center text-center group-hover:invisible ${
-                  theme === "dark" ? "border-white" : "border-black"
+                className={`rounded-md w-full h-full border-2 flex justify-center items-center text-center group-hover:invisible ${
+                  theme === "dark" ? "border-gray-500" : "border-gray-500"
                 }`}
               >
                 Hyperscale <br /> Interface
               </div>
 
-              <div className="absolute top-0 left-0 w-full h-full border-[3px] border-[#36DBB3] bg-[#EFF7FF] rounded-md flex justify-between p-4 items-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute top-0 left-0 w-full h-full border-2 border-[#36DBB3] bg-[#EFF7FF] rounded-md flex justify-between p-4 items-center opacity-0 group-hover:opacity-100 transition-opacity">
                 <div className="relative w-[100px] h-[25px]">
                   <Image
                     src="/whatsnew/4/realtime.svg"
@@ -277,14 +279,14 @@ const WhatsNew = () => {
 
           <div className="h-[160px] relative group">
             <div
-              className={`h-[160px] border-[3px] rounded-md flex justify-center items-center group-hover:invisible ${
-                theme === "dark" ? "border-white" : "border-black"
+              className={`h-[160px] border-2 rounded-md flex justify-center items-center group-hover:invisible ${
+                theme === "dark" ? "border-gray-500" : "border-gray-500"
               }`}
             >
               Compute & Storage
             </div>
 
-            <div className="absolute top-0 left-0 h-[160px] w-full border-[3px] border-[#36DBB3] bg-[#EFF7FF] rounded-md flex justify-between p-8 items-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="absolute top-0 left-0 h-[160px] w-full border-2 border-[#36DBB3] bg-[#EFF7FF] rounded-md flex justify-between p-8 items-center opacity-0 group-hover:opacity-100 transition-opacity">
               <div className="relative w-[60px] h-[70px]">
                 <Image
                   src="/whatsnew/5/gpu.svg"
@@ -315,8 +317,8 @@ const WhatsNew = () => {
 
         <div className="group relative w-[180px] h-[90%] m-2 p-2">
           <div
-            className={`w-full h-full rounded-md flex justify-center items-center text-center border-[3px] group-hover:invisible hover:transform-none ${
-              theme === "dark" ? "border-white" : "border-black"
+            className={`w-full h-full rounded-md flex justify-center items-center text-center border-2 group-hover:invisible hover:transform-none ${
+              theme === "dark" ? "border-gray-500" : "border-gray-500"
             }`}
           >
             <div className="rotate-90">Responsible AI</div>
@@ -325,15 +327,15 @@ const WhatsNew = () => {
           <div className="absolute top-0 left-0 w-full h-full rounded-md flex gap-2 p-2 justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity hover:transform-none">
             <div
               className={` ${
-                theme === "dark" ? "border-white" : "border-black"
-              } relative flex border-[3px] rounded-md w-[45px] h-full items-center justify-center text-center`}
+                theme === "dark" ? "border-gray-500" : "border-gray-500"
+              } relative flex border-2 rounded-md w-[45px] h-full items-center justify-center text-center`}
             >
               <div className="flex whitespace-nowrap rotate-90">Monitoring</div>
             </div>
             <div
               className={`${
-                theme === "dark" ? "border-white" : "border-black"
-              } relative flex border-[3px] rounded-md w-[45px] h-full items-center justify-center text-center`}
+                theme === "dark" ? "border-gray-500" : "border-gray-500"
+              } relative flex border-2 rounded-md w-[45px] h-full items-center justify-center text-center`}
             >
               <div className="flex whitespace-nowrap  rotate-90">
                 Ethical AI
@@ -341,8 +343,8 @@ const WhatsNew = () => {
             </div>
             <div
               className={`${
-                theme === "dark" ? "border-white" : "border-black"
-              } relative flex border-[3px] rounded-md w-[45px] h-full items-center justify-center text-center`}
+                theme === "dark" ? "border-gray-500" : "border-gray-500"
+              } relative flex border-2 rounded-md w-[45px] h-full items-center justify-center text-center`}
             >
               <div className="flex whitespace-nowrap  rotate-90">
                 Networking & Security
@@ -355,7 +357,9 @@ const WhatsNew = () => {
       <div className="h-[550px] flex flex-col gap-7 m-4 g-4 relative items-center justify-center">
         <div className="flex gap-2 h-[330px]">
           <div
-            className="w-[215px] rounded-sm border-4 border-black flex relative items-center justify-center hover:scale-110 hover:mr-2 transition-transform duration-300"
+            className={`w-[215px] rounded-sm border-2 ${
+              theme == "dark" ? "border-gray-500" : "border-gray-500"
+            } flex relative items-center justify-center hover:scale-110 hover:mr-2 transition-transform duration-300`}
             onMouseEnter={() =>
               setHoverText(
                 "State-of-art foundational model access including OpenAl, Anthropic Claude, Meta Llama3 and more. Custom APIs for secure model access"
@@ -374,7 +378,9 @@ const WhatsNew = () => {
           </div>
 
           <div
-            className="w-[215px] rounded-sm border-4 border-black flex relative items-center justify-center hover:scale-110 hover:mx-2 transition-transform duration-300"
+            className={`w-[215px] rounded-sm border-2 ${
+              theme == "light" ? "border-gray-500" : "border-gray-500"
+            } flex relative items-center justify-center hover:scale-110 hover:mx-2 transition-transform duration-300`}
             onMouseEnter={() =>
               setHoverText(
                 "Access to wide range of GPUs, CPUs with support for Single-GPU, Multi-GPU/node fine-tuning with PEFT LoRA and a selection of inference options"
@@ -393,7 +399,9 @@ const WhatsNew = () => {
           </div>
 
           <div
-            className="w-[215px] rounded-sm border-4 border-black flex relative items-center justify-center hover:scale-110 hover:mx-2 transition-transform duration-300"
+            className={`w-[215px] rounded-sm border-2 ${
+              theme == "light" ? "border-gray-500" : "border-gray-500"
+            } border-gray-500 flex relative items-center justify-center hover:scale-110 hover:mx-2 transition-transform duration-300`}
             onMouseEnter={() =>
               setHoverText(
                 "Fully integrated coding IDEs (VSCode) and JupyterLab environment with Al coding assistant support. Docker container with ML, DL and Al libraries"
@@ -411,7 +419,9 @@ const WhatsNew = () => {
             </div>
           </div>
           <div
-            className="w-[215px] rounded-sm border-4 border-black flex relative items-center justify-center hover:scale-110 hover:mx-2 transition-transform duration-300"
+            className={`w-[215px] rounded-sm border-2 ${
+              theme == "light" ? "border-gray-500" : "border-gray-500"
+            } flex relative items-center justify-center hover:scale-110 hover:mx-2 transition-transform duration-300`}
             onMouseEnter={() =>
               setHoverText(
                 "Cloud native platform with simple web browser access. High performance and cost optimized compute, storage, network and security"
@@ -429,7 +439,9 @@ const WhatsNew = () => {
             </div>
           </div>
           <div
-            className="w-[215px] rounded-sm border-4 border-black flex relative items-center justify-center hover:scale-110 hover:ml-2 transition-transform duration-300"
+            className={`w-[215px] rounded-sm border-2 ${
+              theme == "light" ? "border-gray-500" : "border-gray-500"
+            } flex relative items-center justify-center hover:scale-110 hover:ml-2 transition-transform duration-300`}
             onMouseEnter={() =>
               setHoverText(
                 "End-to-end monitoring for reliability, availability, and performance with metrics and alarms. Audit of API calls for every user of the platform"
@@ -447,7 +459,9 @@ const WhatsNew = () => {
             </div>
           </div>
         </div>
-        <div className="h-[160px] w-full flex items-center justify-center text-center border-4 border-black rounded-md text-[25px] p-4 px-14">
+        <div
+          className={`h-[160px] w-full flex items-center justify-center text-center border-2 rounded-md text-[25px] p-4 px-14`}
+        >
           <p className="h-full flex justify-center items-center text-center">
             {hoverText}
           </p>

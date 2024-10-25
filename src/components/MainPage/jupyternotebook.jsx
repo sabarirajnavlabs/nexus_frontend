@@ -10,6 +10,7 @@ const JupyterNotebook = () => {
   const { theme } = useTheme();
   const [orgName, setOrgName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [url, setUrl] = useState(null);
 
   const postData = async (orgName) => {
     try {
@@ -55,14 +56,19 @@ const JupyterNotebook = () => {
     const url = await postData(orgName);
 
     if (url) {
-      window.open(url, "_blank");
+      // const newTab = window.open("", "_blank");
+      // newTab.location.href = url;
+      setUrl(url);
+      const timestamp = Date.now();
+      localStorage.setItem("vscInstanceTimestamp", timestamp);
     } else {
       console.error("Failed to retrieve URL");
     }
 
     setTimeout(async () => {
       setLoading(false);
-    }, 20000);
+      // setUrl(null);
+    }, 900000);
   };
 
   useEffect(() => {
@@ -74,6 +80,23 @@ const JupyterNotebook = () => {
       setOrgName("testing");
     } else {
       setOrgName(subdomain);
+    }
+  }, []);
+
+  useEffect(() => {
+    const timestamp = localStorage.getItem("vscInstanceTimestamp");
+    const currentTime = Date.now();
+    const timeDiff = currentTime - timestamp;
+
+    if (timeDiff < 900000) {
+      let storedVSCUrl = Cookies.get("storedVSCUrl");
+      storedVSCUrl = storedVSCUrl.split("/auth")[0];
+      storedVSCUrl = storedVSCUrl + "/codeeditor/default";
+      setLoading(true);
+      setUrl(storedVSCUrl);
+    } else {
+      localStorage.removeItem("vscInstanceTimestamp");
+      setUrl(null);
     }
   }, []);
 
@@ -206,16 +229,32 @@ const JupyterNotebook = () => {
                 />
                 <p className="mt-2 ">Coding Assistant</p>
               </div>
-              <div className="text-center mt-10">
+              <div className="flex gap-2 relative flex-col text-center mt-4">
                 <button
-                  className={`bg-blue-500 text-white py-2 px-4 rounded ${
-                    loading ? "opacity-50 cursor-not-allowed" : ""
+                  className={`text-white py-2 px-4 rounded ${
+                    loading
+                      ? "opacity-50 cursor-not-allowed bg-blue-300"
+                      : "bg-blue-500"
                   }`}
                   onClick={handleLaunchJPN}
                   disabled={loading}
                 >
-                  {loading ? "Loading..." : "Launch"}
+                  {loading ? "Create Instance" : "Create Instance"}
                 </button>
+
+                <a
+                  className={`text-white py-2 px-4 rounded ${
+                    url ? "bg-blue-500" : "bg-blue-300 cursor-not-allowed"
+                  }`}
+                  href={url || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => {
+                    if (!url) e.preventDefault();
+                  }}
+                >
+                  Open Instance
+                </a>
               </div>
             </div>
           </div>

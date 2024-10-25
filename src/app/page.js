@@ -24,7 +24,7 @@ const Page = () => {
     >
       <NavBar />
       <div
-        className={`pt-24 flex p-8 ${
+        className={`pt-[84px] flex p-8 pl-0 ${
           theme === "dark" ? "bg-[#181818]" : "bg-gray-200"
         }`}
       >

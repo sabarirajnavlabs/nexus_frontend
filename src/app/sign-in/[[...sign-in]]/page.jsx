@@ -10,8 +10,8 @@ const AIPlatformComponent = () => {
   return (
     <div className="flex relative min-h-screen bg-[#e9f6fe] gap-6 justify-center items-start pt-8">
       {/* Left Side */}
-      {/* <div className="relative flex flex-col gap-4 w-2/4 h-screen items-center justify-center">
-        <div className="w-[400px] h-[140px] relative">
+      <div className="relative flex flex-col gap-4 w-2/4 h-screen items-center justify-center">
+        <div className="relative w-[400px] h-[120px]">
           <Image
             src="/logo.png"
             alt="Navigate Labs Logo"
@@ -19,12 +19,20 @@ const AIPlatformComponent = () => {
             style={{ objectFit: "contain" }}
           />
         </div>
+        <div className="w-[400px] h-[400px] relative">
+          <Image
+            src="/Variant.svg"
+            alt="Navigate Labs Logo"
+            fill
+            style={{ objectFit: "contain" }}
+          />
+        </div>
 
         <div className="relative mt-6 flex items-center justify-center">
-          <h1 className="text-5xl font-bold text-black text-center">
+          <h1 className="text-4xl font-bold text-black text-center">
             All-In-One AI Platform For <br />
             <span className={`ml-2 ${styles.gradientText}`}>
-              <ReactTyped
+              {/* <ReactTyped
                 strings={[
                   "SOFTWARE TEAMS",
                   "DEVELOPERS",
@@ -36,14 +44,15 @@ const AIPlatformComponent = () => {
                 backSpeed={10}
                 loop={true}
                 showCursor={false}
-              />
+              /> */}
+              SOFTWARE TEAMS
             </span>
           </h1>
         </div>
-      </div> */}
+      </div>
 
       {/* Right Side */}
-      <div className="flex flex-col w-2/4 items-center justify-center mt-4">
+      <div className="flex flex-col w-2/4 items-center justify-center mt-16">
         <div className="w-[350px] h-[200px] relative">
           <Image
             src="/kpriet.png"
@@ -73,14 +82,6 @@ const AIPlatformComponent = () => {
             },
           }}
         />
-        <div className="relative w-[240px] h-[160px]">
-          <Image
-            src="/logo.png"
-            alt="Navigate Labs Logo"
-            fill
-            style={{ objectFit: "contain" }}
-          />
-        </div>
       </div>
     </div>
   );
