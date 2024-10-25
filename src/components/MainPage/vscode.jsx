@@ -70,6 +70,7 @@ const Vscode = () => {
     setTimeout(async () => {
       setLoading(false);
       // setUrl(null);
+      
     }, 900000);
   };
 

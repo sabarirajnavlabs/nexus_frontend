@@ -60,7 +60,7 @@ const JupyterNotebook = () => {
       // newTab.location.href = url;
       setUrl(url);
       const timestamp = Date.now();
-      localStorage.setItem("vscInstanceTimestamp", timestamp);
+      localStorage.setItem("jpnInstanceTimestamp", timestamp);
     } else {
       console.error("Failed to retrieve URL");
     }
@@ -84,7 +84,7 @@ const JupyterNotebook = () => {
   }, []);
 
   useEffect(() => {
-    const timestamp = localStorage.getItem("vscInstanceTimestamp");
+    const timestamp = localStorage.getItem("jpnInstanceTimestamp");
     const currentTime = Date.now();
     const timeDiff = currentTime - timestamp;
 
@@ -95,7 +95,7 @@ const JupyterNotebook = () => {
       setLoading(true);
       setUrl(storedVSCUrl);
     } else {
-      localStorage.removeItem("vscInstanceTimestamp");
+      localStorage.removeItem("jpnInstanceTimestamp");
       setUrl(null);
     }
   }, []);
