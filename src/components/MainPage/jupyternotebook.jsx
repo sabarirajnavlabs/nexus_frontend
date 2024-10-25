@@ -60,7 +60,7 @@ const JupyterNotebook = () => {
       // newTab.location.href = url;
       setUrl(url);
       const timestamp = Date.now();
-      localStorage.setItem("vscInstanceTimestamp", timestamp);
+      localStorage.setItem("jpnInstanceTimestamp", timestamp);
     } else {
       console.error("Failed to retrieve URL");
     }
@@ -84,18 +84,18 @@ const JupyterNotebook = () => {
   }, []);
 
   useEffect(() => {
-    const timestamp = localStorage.getItem("vscInstanceTimestamp");
+    const timestamp = localStorage.getItem("jpnInstanceTimestamp");
     const currentTime = Date.now();
     const timeDiff = currentTime - timestamp;
 
     if (timeDiff < 900000) {
-      let storedVSCUrl = Cookies.get("storedVSCUrl");
-      storedVSCUrl = storedVSCUrl.split("/auth")[0];
-      storedVSCUrl = storedVSCUrl + "/codeeditor/default";
+      let storedJPNUrl = Cookies.get("storedJPNUrl");
+      storedJPNUrl = storedJPNUrl.split("/auth")[0];
+      storedJPNUrl = storedJPNUrl + "/jupyterlab/default";
       setLoading(true);
-      setUrl(storedVSCUrl);
+      setUrl(storedJPNUrl);
     } else {
-      localStorage.removeItem("vscInstanceTimestamp");
+      localStorage.removeItem("jpnInstanceTimestamp");
       setUrl(null);
     }
   }, []);
