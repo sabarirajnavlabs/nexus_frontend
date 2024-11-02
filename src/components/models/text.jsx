@@ -76,7 +76,7 @@ const TextModel = () => {
 
   return (
     <>
-      {showIframe && (
+      {/* {showIframe && (
         <div className="absolute top-0 left-0 w-full h-full z-50">
           <iframe
             src={iframeUrl}
@@ -90,7 +90,31 @@ const TextModel = () => {
             &times;
           </button>
         </div>
+      )} */}
+      {showIframe && (
+        <div className="fixed top-0 left-0 w-full h-full z-50 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="relative gap-10 w-[70%] h-[90%] bg-black rounded-md flex flex-col items-center justify-center p-5">
+            {/* Top Bar */}
+            <div className="w-[90%] h-[10%] bg-white opacity-50 rounded-t-md"></div>
+
+            {/* Main Content Area */}
+            <div className="w-[90%] h-[80%] flex gap-6 overflow-hidden">
+              {/* Left and Right Sections */}
+              <div className="w-[40%] h-full bg-white bg-opacity-10 border-[1px] flex-shrink-0 rounded-md"></div>
+              <div className="w-[57%] h-full bg-white bg-opacity-10 border-[1px] flex-shrink-0 rounded-md"></div>
+            </div>
+          </div>
+
+          {/* Close Button */}
+          <button
+            className="absolute top-5 right-5 w-9 h-9 z-50 p-2 text-xl bg-white rounded-full flex items-center justify-center"
+            onClick={handleCloseIframe}
+          >
+            &times;
+          </button>
+        </div>
       )}
+
       <div
         className={
           theme === "dark" ? "text-white" : "text-black mt-[-20px] p-2"

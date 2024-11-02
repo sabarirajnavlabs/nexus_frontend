@@ -460,7 +460,7 @@ const WhatsNew = () => {
           </div>
         </div>
         <div
-          className={`h-[160px] w-full flex items-center justify-center text-center border-2 rounded-md text-[25px] p-4 px-14`}
+          className={`h-[160px] w-full flex items-center justify-center text-center rounded-md text-[25px] p-4 px-14`}
         >
           <p className="h-full flex justify-center items-center text-center">
             {hoverText}
