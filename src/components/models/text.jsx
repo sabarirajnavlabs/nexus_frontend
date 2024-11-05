@@ -107,9 +107,14 @@ const TextModel = () => {
                   </h1>
                   <h1 className="text-md p-1 px-4 rounded-2xl">JSON</h1>
                 </div>
-                <div className="w-full h-[60%] bg-white bg-opacity-10 flex items-center justify-center rounded-md border-[#7e7e7e] border-[1px]"></div>
-                <div className="w-full h-[30%] bg-white bg-opacity-10 rounded-md border-[#7e7e7e] border-[1px] flex items-center justify-center "></div>
+                <div className="w-full h-[60%] bg-white bg-opacity-10 flex items-start justify-start rounded-md border-[#7e7e7e] border-[1px]"></div>
+                <input
+                  className="w-full h-[30%] bg-white bg-opacity-10 rounded-md border-[#7e7e7e] border-[1px] p-2 text-start"
+                  placeholder="Type Text Here..."
+                  style={{ display: "block", height: "auto" }} // Ensures the input isn't centered
+                />
               </div>
+
               <div className="w-[57%] h-full pl-4 border-[#7e7e7e] border-l-[1px] flex-shrink-0 flex flex-col gap-6 rounded-md">
                 <div className="w-full p-1 gap-2 h-[10%] flex items-end justify-start text-white border-[#7e7e7e] border-b-[1px]">
                   <h1 className="text-md rounded-2xl bg-white bg-opacity-10 p-1 px-4">
