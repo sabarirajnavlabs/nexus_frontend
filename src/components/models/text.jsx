@@ -100,8 +100,26 @@ const TextModel = () => {
             {/* Main Content Area */}
             <div className="w-[90%] h-[80%] flex gap-6 overflow-hidden">
               {/* Left and Right Sections */}
-              <div className="w-[40%] h-full bg-white bg-opacity-10 border-[1px] flex-shrink-0 rounded-md"></div>
-              <div className="w-[57%] h-full bg-white bg-opacity-10 border-[1px] flex-shrink-0 rounded-md"></div>
+              <div className="w-[40%] h-full flex-shrink-0 flex flex-col gap-4 rounded-md">
+                <div className="relative gap-2 p-1 w-full h-[10%] flex items-end justify-start border-[#7e7e7e] border-b-[1px] text-white">
+                  <h1 className="text-md rounded-2xl bg-white bg-opacity-10 p-1 px-4">
+                    Preview
+                  </h1>
+                  <h1 className="text-md p-1 px-4 rounded-2xl">JSON</h1>
+                </div>
+                <div className="w-full h-[60%] bg-white bg-opacity-10 flex items-center justify-center rounded-md border-[#7e7e7e] border-[1px]"></div>
+                <div className="w-full h-[30%] bg-white bg-opacity-10 rounded-md border-[#7e7e7e] border-[1px] flex items-center justify-center "></div>
+              </div>
+              <div className="w-[57%] h-full pl-4 border-[#7e7e7e] border-l-[1px] flex-shrink-0 flex flex-col gap-6 rounded-md">
+                <div className="w-full p-1 gap-2 h-[10%] flex items-end justify-start text-white border-[#7e7e7e] border-b-[1px]">
+                  <h1 className="text-md rounded-2xl bg-white bg-opacity-10 p-1 px-4">
+                    Python
+                  </h1>
+                  <h1 className="text-md rounded-2xl p-1 px-4">Langchain</h1>
+                  <h1 className="text-md rounded-2xl p-1 px-4">Node</h1>
+                </div>
+                <div className="w-full h-[90%] bg-white bg-opacity-10 rounded-md border-[#7e7e7e] border-[1px] flex items-center justify-center"></div>
+              </div>
             </div>
           </div>
 
