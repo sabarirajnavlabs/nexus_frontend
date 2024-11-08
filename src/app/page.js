@@ -11,6 +11,7 @@ import ImagesModel from "@/components/models/images";
 import MultiModel from "@/components/models/multimodel";
 import AudioModel from "@/components/models/audio";
 import WhatsNew from "@/components/whatsnew/main";
+import UsageReport from "@/components/Dashboard/usage";
 
 const Page = () => {
   const { theme } = useTheme();
@@ -45,6 +46,8 @@ const Page = () => {
           // <AudioModel />
           showSection === "whatsnew" ? (
             <WhatsNew />
+          ) : showSection === "usage" ? (
+            <UsageReport />
           ) : null}
         </div>
       </div>

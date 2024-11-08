@@ -177,14 +177,14 @@ export default function ProductSideNavbar({ section, setsection }) {
             <li className="relative flex items-center">
               <span
                 className="hover:text-teal-500 relative p-0 rounded transition duration-300 ease-in-out group text-[14px]"
-                // onClick={() => setsection("multimodel")}
+                onClick={() => setsection("usage")}
               >
                 Usage Report
                 <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
               </span>
-              <span className="ml-2  text-xs p-1 ">
+              {/* <span className="ml-2  text-xs p-1 ">
                 Coming Soon
-              </span>
+              </span> */}
             </li>
           </ul>
         )}
