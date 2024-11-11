@@ -8,6 +8,7 @@ const TextModel = () => {
   const { theme } = useTheme();
   const [description, setDescription] = useState("Text Model");
   const [iframeUrl, setIframeUrl] = useState("");
+  const [model, setModel] = useState("");
   const [showIframe, setShowIframe] = useState(false);
 
   const data = [
@@ -95,7 +96,12 @@ const TextModel = () => {
         <div className="fixed top-0 left-0 w-full h-full z-50 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="relative gap-10 w-screen h-screen bg-black rounded-md flex flex-col items-center justify-center p-5">
             {/* Top Bar */}
-            <div className="w-[90%] h-[10%] bg-white opacity-50 rounded-t-md"></div>
+            <div className="w-[90%] h-[10%] bg-white bg-opacity-50 rounded-t-md flex justify-center items-center">
+              {/* Model Name */}
+              <h1 className="text-2xl font-bold text-[#ffffff] p-1 px-4">
+                {model}
+              </h1>
+            </div>
 
             {/* Main Content Area */}
             <div className="w-[90%] h-[80%] flex gap-6 overflow-hidden">
@@ -108,11 +114,23 @@ const TextModel = () => {
                   <h1 className="text-md p-1 px-4 rounded-2xl">JSON</h1>
                 </div>
                 <div className="w-full h-[60%] bg-white bg-opacity-10 flex items-start justify-start rounded-md border-[#7e7e7e] border-[1px]"></div>
-                <input
-                  className="w-full h-[30%] bg-white bg-opacity-10 rounded-md border-[#7e7e7e] border-[1px] p-2 text-start"
-                  placeholder="Type Text Here..."
-                  style={{ display: "block", height: "auto" }} // Ensures the input isn't centered
-                />
+                <div className="w-full flex items-center bg-white bg-opacity-10 border-[#7e7e7e] border-[1px] rounded-md p-2">
+                  <input
+                    className="w-full bg-transparent text-start focus:outline-none"
+                    placeholder="Type Text Here..."
+                    style={{ display: "block", height: "auto" }} // Ensures the input isn't centered
+                  />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    fill="white"
+                    className="bi bi-arrow-up-circle-fill cursor-pointer ml-2"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z" />
+                  </svg>
+                </div>
               </div>
 
               <div className="w-[57%] h-full pl-4 border-[#7e7e7e] border-l-[1px] flex-shrink-0 flex flex-col gap-6 rounded-md">
@@ -216,7 +234,9 @@ const TextModel = () => {
                           ? "bg-white text-black"
                           : "bg-[#0C0C0C] text-white"
                       } text- px-2 py-1 rounded-2xl font-bold`}
-                      onClick={() => handleOpenIframe(tag.url)}
+                      onClick={() => {
+                        handleOpenIframe(tag.url), setModel(tag.name);
+                      }}
                     >
                       {tag.name}
                     </button>
