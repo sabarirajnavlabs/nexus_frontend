@@ -93,7 +93,7 @@ const TextModel = () => {
       )} */}
       {showIframe && (
         <div className="fixed top-0 left-0 w-full h-full z-50 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="relative gap-10 w-[70%] h-[90%] bg-black rounded-md flex flex-col items-center justify-center p-5">
+          <div className="relative gap-10 w-screen h-screen bg-black rounded-md flex flex-col items-center justify-center p-5">
             {/* Top Bar */}
             <div className="w-[90%] h-[10%] bg-white opacity-50 rounded-t-md"></div>
 
