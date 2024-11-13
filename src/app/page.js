@@ -12,6 +12,7 @@ import MultiModel from "@/components/models/multimodel";
 import AudioModel from "@/components/models/audio";
 import WhatsNew from "@/components/whatsnew/main";
 import UsageReport from "@/components/Dashboard/usage";
+import ChatPage from "@/components/Dashboard/ChatPage";
 
 const Page = () => {
   const { theme } = useTheme();
@@ -48,6 +49,8 @@ const Page = () => {
             <WhatsNew />
           ) : showSection === "usage" ? (
             <UsageReport />
+          ) : showSection === "chatpage" ? (
+            <ChatPage />
           ) : null}
         </div>
       </div>
