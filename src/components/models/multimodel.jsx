@@ -6,18 +6,6 @@ import { useTheme } from "next-themes";
 
 const TextModel = () => {
   const { theme } = useTheme();
-  const [showIframe, setShowIframe] = useState(true);
-  const [iframeUrl, setIframeUrl] = useState("");
-
-  const handleOpenIframe = (url) => {
-    setIframeUrl(url);
-    setShowIframe(true);
-  };
-
-  const handleCloseIframe = () => {
-    setShowIframe(false);
-    setIframeUrl("");
-  };
 
   const data = [
     {
@@ -51,34 +39,6 @@ const TextModel = () => {
 
   return (
     <>
-      {showIframe && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="relative w-full h-full bg-black rounded-md flex p-5">
-            {/* Left Sidebar */}
-            <div className="w-[250px] h-full bg-black p-4 rounded-md">
-              <h1 className="text-2xl font-bold text-white">Sidebar Content</h1>
-              <ul className="mt-4 text-white">
-                <li>Option 1</li>
-                <li>Option 2</li>
-                <li>Option 3</li>
-              </ul>
-            </div>
-
-            {/* Right Gray Area */}
-            <div className="flex-1 h-full bg-white opacity-10 p-4 rounded-md">
-              {/* You can add content here if needed */}
-            </div>
-          </div>
-
-          {/* Close Button */}
-          <button
-            className="absolute top-5 right-5 w-9 h-9 z-50 p-2 text-xl bg-white rounded-full flex items-center justify-center"
-            onClick={handleCloseIframe}
-          >
-            &times;
-          </button>
-        </div>
-      )}
       <div
         className={
           theme === "dark" ? " text-white" : " text-black mt-[-20px] p-2"
@@ -108,15 +68,6 @@ const TextModel = () => {
               that push the boundaries of what&apos;s possible in text
               automation. Let Nexus power your next big idea!
             </p>
-          </div>
-          <div className="md:w-1/2 relative w-[200px] h-[200px]">
-            <Image
-              src={"/vscode.png"}
-              fill
-              objectFit="contain"
-              alt="AI Classroom"
-              className="rounded-lg max-h-[320px]"
-            />
           </div>
         </div>
         <section
@@ -157,9 +108,6 @@ const TextModel = () => {
                           ? "bg-white text-black"
                           : "bg-[#0C0C0C] text-white"
                       } text- px-2 py-1 rounded-2xl font-bold`}
-                      onClick={() => {
-                        handleOpenIframe("https://www.google.com");
-                      }}
                     >
                       {tag}
                     </button>

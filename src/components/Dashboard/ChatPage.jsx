@@ -1,13 +1,20 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
 
-const ChatPage = () => {
+const ChatPage = ({ model }) => {
   const { theme } = useTheme();
-  const [selectedModel, setSelectedModel] = useState("Model 1");
+  const [selectedModel, setSelectedModel] = useState(model || "GPT 3.5 Turbo");
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+
+  const models = [
+    "GPT 3.5 Turbo",
+    "Anthropic Claude v2",
+    "Llama 3 8B",
+    "Titan Text Lite",
+  ];
 
   const handleSendMessage = () => {
     if (input.trim()) {
@@ -15,6 +22,10 @@ const ChatPage = () => {
       setInput("");
     }
   };
+
+  useEffect(() => {
+    setSelectedModel(model || "GPT 3.5 Turbo");
+  }, [model]);
 
   return (
     <div
@@ -29,9 +40,11 @@ const ChatPage = () => {
           onChange={(e) => setSelectedModel(e.target.value)}
           className="p-2 px-4 rounded-lg bg-gray-200 text-black"
         >
-          <option>Model 1</option>
-          <option>Model 2</option>
-          <option>Model 3</option>
+          {models.map((model, index) => (
+            <option key={index} value={model}>
+              {model}
+            </option>
+          ))}
         </select>
         <h1 className="text-3xl font-bold">Chat with AI</h1>
         <div className="w-8 h-8 relative">

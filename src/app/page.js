@@ -17,6 +17,7 @@ import ChatPage from "@/components/Dashboard/ChatPage";
 const Page = () => {
   const { theme } = useTheme();
   const [showSection, setShowSection] = useState("whatsnew");
+  const [model, setModel] = useState(null);
 
   return (
     <div
@@ -38,7 +39,12 @@ const Page = () => {
           ) : showSection === "jupyter" ? (
             <JupyterNotebook />
           ) : showSection === "textmodel" ? (
-            <TextModel />
+            <TextModel
+              section={showSection}
+              setSection={setShowSection}
+              model={model}
+              setModel={setModel}
+            />
           ) : showSection === "imagemodel" ? (
             <ImagesModel />
           ) : showSection === "multimodel" ? (
@@ -50,7 +56,7 @@ const Page = () => {
           ) : showSection === "usage" ? (
             <UsageReport />
           ) : showSection === "chatpage" ? (
-            <ChatPage />
+            <ChatPage model={model} />
           ) : null}
         </div>
       </div>

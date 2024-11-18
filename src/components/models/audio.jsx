@@ -40,15 +40,6 @@ const AudioModel = () => {
               you to create like never before!
             </p>
           </div>
-          <div className="md:w-1/2 relative w-[200px] h-[200px]">
-            <Image
-              src={"/vscode.png"}
-              fill
-              objectFit="contain"
-              alt="AI Classroom"
-              className="rounded-lg max-h-[320px]"
-            />
-          </div>
         </div>
         <section
           id="ai-products"
