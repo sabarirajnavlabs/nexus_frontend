@@ -12,10 +12,12 @@ import MultiModel from "@/components/models/multimodel";
 import AudioModel from "@/components/models/audio";
 import WhatsNew from "@/components/whatsnew/main";
 import UsageReport from "@/components/Dashboard/usage";
+import ChatPage from "@/components/Dashboard/ChatPage";
 
 const Page = () => {
   const { theme } = useTheme();
   const [showSection, setShowSection] = useState("whatsnew");
+  const [model, setModel] = useState(null);
 
   return (
     <div
@@ -37,7 +39,12 @@ const Page = () => {
           ) : showSection === "jupyter" ? (
             <JupyterNotebook />
           ) : showSection === "textmodel" ? (
-            <TextModel />
+            <TextModel
+              section={showSection}
+              setSection={setShowSection}
+              model={model}
+              setModel={setModel}
+            />
           ) : showSection === "imagemodel" ? (
             <ImagesModel />
           ) : showSection === "multimodel" ? (
@@ -48,6 +55,8 @@ const Page = () => {
             <WhatsNew />
           ) : showSection === "usage" ? (
             <UsageReport />
+          ) : showSection === "chatpage" ? (
+            <ChatPage model={model} />
           ) : null}
         </div>
       </div>

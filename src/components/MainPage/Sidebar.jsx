@@ -108,9 +108,7 @@ export default function ProductSideNavbar({ section, setsection }) {
                 Multi Modal
                 <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
               </span>
-              <span className="ml-2  text-xs p-1 ">
-                Coming Soon
-              </span>
+              <span className="ml-2  text-xs p-1 ">Coming Soon</span>
             </li>
             <li>
               <span
@@ -120,9 +118,7 @@ export default function ProductSideNavbar({ section, setsection }) {
                 Text
                 <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
               </span>
-              <span className="ml-2  text-xs p-1 ">
-                Coming Soon
-              </span>
+              <span className="ml-2  text-xs p-1 ">Coming Soon</span>
             </li>
 
             {/* Additional items for Models */}
@@ -134,25 +130,21 @@ export default function ProductSideNavbar({ section, setsection }) {
                 Images
                 <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
               </span>
-              <span className="ml-2 text-xs p-1">
-                Coming Soon
-              </span>
+              <span className="ml-2 text-xs p-1">Coming Soon</span>
             </li>
-
-            {/* <li className="relative flex items-center">
-              <span
-                className="hover:text-teal-500 relative p-0 rounded transition duration-300 ease-in-out group"
-                onClick={() => setsection("audiomodel")}
-              >
-                Audio
-                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
-              </span>
-              <span className="ml-2  text-xs p-1 ">
-                Coming Soon
-              </span>
-            </li> */}
           </ul>
         )}
+      </div>
+
+      <div className="mb-8">
+        <button
+          onClick={() => setsection("chatpage")}
+          className={`flex items-center justify-between w-full relative p-0 rounded transition duration-300 ease-in-out group ${
+            showModels ? "font-bold" : "hover:text-teal-500"
+          }`}
+        >
+          Chat Page
+        </button>
       </div>
 
       {/* Dashboard */}
@@ -182,9 +174,6 @@ export default function ProductSideNavbar({ section, setsection }) {
                 Usage Report
                 <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
               </span>
-              {/* <span className="ml-2  text-xs p-1 ">
-                Coming Soon
-              </span> */}
             </li>
           </ul>
         )}

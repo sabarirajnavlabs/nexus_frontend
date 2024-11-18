@@ -41,9 +41,7 @@ const TextModel = () => {
     <>
       <div
         className={
-          theme === "dark"
-            ? " text-white"
-            : " text-black mt-[-20px] p-2"
+          theme === "dark" ? " text-white" : " text-black mt-[-20px] p-2"
         }
       >
         <div
@@ -70,15 +68,6 @@ const TextModel = () => {
               that push the boundaries of what&apos;s possible in text
               automation. Let Nexus power your next big idea!
             </p>
-          </div>
-          <div className="md:w-1/2 relative w-[200px] h-[200px]">
-            <Image
-              src={"/vscode.png"}
-              fill
-              objectFit="contain"
-              alt="AI Classroom"
-              className="rounded-lg max-h-[320px]"
-            />
           </div>
         </div>
         <section
