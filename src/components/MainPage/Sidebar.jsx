@@ -108,7 +108,7 @@ export default function ProductSideNavbar({ section, setsection }) {
                 Multi Modal
                 <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
               </span>
-              <span className="ml-2  text-xs p-1 ">Coming Soon</span>
+              {/* <span className="ml-2  text-xs p-1 ">Coming Soon</span> */}
             </li>
             <li>
               <span
@@ -118,7 +118,7 @@ export default function ProductSideNavbar({ section, setsection }) {
                 Text
                 <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
               </span>
-              <span className="ml-2  text-xs p-1 ">Coming Soon</span>
+              {/* <span className="ml-2  text-xs p-1 ">Coming Soon</span> */}
             </li>
 
             {/* Additional items for Models */}
@@ -130,7 +130,7 @@ export default function ProductSideNavbar({ section, setsection }) {
                 Images
                 <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
               </span>
-              <span className="ml-2 text-xs p-1">Coming Soon</span>
+              {/* <span className="ml-2 text-xs p-1">Coming Soon</span> */}
             </li>
           </ul>
         )}
@@ -143,7 +143,7 @@ export default function ProductSideNavbar({ section, setsection }) {
             showModels ? "font-bold" : "hover:text-teal-500"
           }`}
         >
-          Chat Page
+          Playground
         </button>
       </div>
 
