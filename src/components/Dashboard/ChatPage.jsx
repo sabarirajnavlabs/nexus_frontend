@@ -2,36 +2,137 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
+import Cookies from "js-cookie";
 
 const ChatPage = ({ model }) => {
   const { theme } = useTheme();
-  const [selectedModel, setSelectedModel] = useState(model || "GPT 3.5 Turbo");
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [models, setModels] = useState([]);
+  const [selectedModel, setSelectedModel] = useState(model);
 
-  const models = [
-    "GPT 3.5 Turbo",
-    "Anthropic Claude v2",
-    "Llama 3 8B",
-    "Titan Text Lite",
-  ];
-
-  const handleSendMessage = () => {
-    if (input.trim()) {
-      setMessages([...messages, { text: input, sender: "user" }]);
-      setInput("");
-    }
-  };
-
-  useEffect(() => {
-    setSelectedModel(model || "GPT 3.5 Turbo");
-  }, [model]);
+  // const handleSendMessage = () => {
+  //   if (input.trim()) {
+  //     setMessages([...messages, { text: input, sender: "user" }]);
+  //     setInput("");
+  //   }
+  // };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setSelectedFile(file);
+    }
+  };
+
+  useEffect(() => {
+    const fetchModels = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL_2}/nexus/v1/models`,
+          {
+            method: "GET",
+            headers: {
+              // "Content-Type": "application/json",
+              Token: Cookies.get("__session") || "",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        const models = data.data.map((model) => model.id);
+        setModels(models);
+      } catch (error) {
+        console.error("Failed to fetch models:", error);
+      }
+    };
+
+    fetchModels();
+    setSelectedModel(model);
+  }, [model]);
+
+  const handleSendMessage = async () => {
+    if (input.trim()) {
+      setMessages((prev) => [...prev, { text: input, sender: "user" }]);
+      setInput("");
+    }
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL_2}/nexus/v1/chat/completions`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Token: Cookies.get("__session") || "",
+          },
+          body: JSON.stringify({
+            model: selectedModel,
+            messages: [
+              {
+                role: "user",
+                content: input,
+              },
+            ],
+            stream: true,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let partialMessage = "";
+      let fullMessage = "";
+
+      let assistantMessageIndex;
+      setMessages((prev) => {
+        assistantMessageIndex = prev.length;
+        return [...prev, { text: "", sender: "assistant" }];
+      });
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        partialMessage += chunk;
+
+        const lines = partialMessage.split("\n");
+        partialMessage = lines.pop();
+
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          try {
+            const json = JSON.parse(line.replace(/^data:\s*/, ""));
+            const content = json.choices[0]?.delta?.content;
+            if (content) {
+              fullMessage += content;
+
+              setMessages((prev) => {
+                const updatedMessages = [...prev];
+                updatedMessages[assistantMessageIndex] = {
+                  ...updatedMessages[assistantMessageIndex],
+                  text: fullMessage,
+                };
+                return updatedMessages;
+              });
+            }
+          } catch (err) {
+            console.error("Error parsing JSON chunk:", err);
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Failed to send message:", error);
     }
   };
 
@@ -83,13 +184,19 @@ const ChatPage = ({ model }) => {
         {messages.map((message, index) => (
           <div
             key={index}
-            className={`my-2 p-3 rounded-lg max-w-lg ${
-              message.sender === "user"
-                ? "bg-blue-500 text-white self-end"
-                : "bg-gray-300 text-black self-start"
+            className={`flex my-2 ${
+              message.sender === "user" ? "justify-end" : "justify-start"
             }`}
           >
-            {message.text}
+            <div
+              className={`p-3 rounded-lg max-w-lg ${
+                message.sender === "user"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-300 text-black"
+              }`}
+            >
+              {message.text}
+            </div>
           </div>
         ))}
       </div>
