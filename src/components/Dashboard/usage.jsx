@@ -44,7 +44,16 @@ const UsageReport = () => {
     }
   }, []);
 
-  console.log(data);
+  function calculateActiveTime(start, end) {
+    const diffInMs = end - start;
+    if (diffInMs <= 0) return "0 mins";
+
+    const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+    const hours = Math.floor(diffInMinutes / 60);
+    const minutes = diffInMinutes % 60;
+
+    return `${hours > 0 ? `${hours} hrs ` : ""}${minutes} mins`;
+  }
 
   return (
     <div
@@ -70,6 +79,7 @@ const UsageReport = () => {
               <th className="py-3 px-6">App Type</th>
               <th className="py-3 px-6">Start Time</th>
               <th className="py-3 px-6">End Time</th>
+              <th className="py-3 px-6">Duration</th>
             </tr>
           </thead>
           <tbody>
@@ -82,8 +92,30 @@ const UsageReport = () => {
               >
                 <td className="py-4 px-6">{item.session_id}</td>
                 <td className="py-4 px-6">{item.app_type}</td>
-                <td className="py-4 px-6">{item.start_time}</td>
-                <td className="py-4 px-6">{item.end_time}</td>
+                <td className="py-4 px-6">
+                  {item.start_time
+                    ? new Date(item.start_time)
+                        .toISOString()
+                        .slice(0, 16)
+                        .replace("T", " ")
+                    : "Invalid Date"}
+                </td>
+                <td className="py-4 px-6">
+                  {item.end_time
+                    ? new Date(item.end_time)
+                        .toISOString()
+                        .slice(0, 16)
+                        .replace("T", " ")
+                    : "Invalid Date"}
+                </td>
+                <td className="py-4 px-6">
+                  {item.start_time && item.end_time
+                    ? calculateActiveTime(
+                        new Date(item.start_time),
+                        new Date(item.end_time)
+                      )
+                    : "Invalid Duration"}
+                </td>
               </tr>
             ))}
           </tbody>
