@@ -12,13 +12,6 @@ const ChatPage = ({ model }) => {
   const [models, setModels] = useState([]);
   const [selectedModel, setSelectedModel] = useState(model);
 
-  // const handleSendMessage = () => {
-  //   if (input.trim()) {
-  //     setMessages([...messages, { text: input, sender: "user" }]);
-  //     setInput("");
-  //   }
-  // };
-
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
