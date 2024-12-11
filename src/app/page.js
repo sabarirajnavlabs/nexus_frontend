@@ -13,6 +13,7 @@ import AudioModel from "@/components/models/audio";
 import WhatsNew from "@/components/whatsnew/main";
 import UsageReport from "@/components/Dashboard/usage";
 import ChatPage from "@/components/Dashboard/ChatPage";
+import Profile from "@/components/profile/profile";
 
 const Page = () => {
   const { theme } = useTheme();
@@ -25,7 +26,7 @@ const Page = () => {
         theme === "dark" ? "bg-black text-white" : "bg-white text-black"
       }
     >
-      <NavBar />
+      <NavBar setsection={setShowSection} />
       <div
         className={`pt-[84px] flex p-8 pl-0 ${
           theme === "dark" ? "bg-[#181818]" : "bg-gray-200"
@@ -57,6 +58,8 @@ const Page = () => {
             <UsageReport />
           ) : showSection === "chatpage" ? (
             <ChatPage model={model} />
+          ) : showSection === "profile" ? (
+            <Profile />
           ) : null}
         </div>
       </div>
