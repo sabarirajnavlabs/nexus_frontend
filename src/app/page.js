@@ -14,6 +14,7 @@ import WhatsNew from "@/components/whatsnew/main";
 import UsageReport from "@/components/Dashboard/usage";
 import ChatPage from "@/components/Dashboard/ChatPage";
 import Profile from "@/components/profile/profile";
+import UsageChart from "@/components/Dashboard/Analytics";
 
 const Page = () => {
   const { theme } = useTheme();
@@ -60,6 +61,8 @@ const Page = () => {
             <ChatPage model={model} />
           ) : showSection === "profile" ? (
             <Profile />
+          ) : showSection === "analytics" ? (
+            <UsageChart />
           ) : null}
         </div>
       </div>
