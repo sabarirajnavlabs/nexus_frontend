@@ -206,7 +206,6 @@
 
 // export default UsageReport;
 
-
 "use client";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
@@ -328,9 +327,11 @@ const UsageReport = () => {
           data: Object.keys(aggregatedData).map(
             (key) => aggregatedData[key][appType] || 0
           ),
-          backgroundColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
+          backgroundColor: `rgba(${Math.floor(
             Math.random() * 255
-          )}, ${Math.floor(Math.random() * 255)}, 0.5)`,
+          )}, ${Math.floor(Math.random() * 255)}, ${Math.floor(
+            Math.random() * 255
+          )}, 0.5)`,
         })),
       };
     }
@@ -365,39 +366,43 @@ const UsageReport = () => {
         <div>Loading...</div>
       ) : (
         <>
-          <div style={{ width: "94.7%", height: "300px" }}>
-            <Bar
-              data={createChartData(
-                dailyData,
-                "Daily Utilization Time (minutes)"
-              )}
-              options={options}
-            />
+          <div className="flex flex-row w-full gap-16">
+            <div style={{ width: "45%", height: "300px" }}>
+              <Bar
+                data={createChartData(
+                  dailyData,
+                  "Daily Utilization Time (minutes)"
+                )}
+                options={options}
+              />
+            </div>
+            <div style={{ width: "45%", height: "300px" }}>
+              <Bar
+                data={createChartData(
+                  weeklyData,
+                  "Weekly Utilization Time by Application",
+                  true
+                )}
+                options={{
+                  ...options,
+                  title: {
+                    ...options.title,
+                    text: "Weekly Utilization Time by Application",
+                  },
+                }}
+              />
+            </div>
           </div>
-          <div style={{ width: "94.7%", height: "300px" }}>
-            <Bar
-              data={createChartData(
-                weeklyData,
-                "Weekly Utilization Time by Application",
-                true
-              )}
-              options={{
-                ...options,
-                title: {
-                  ...options.title,
-                  text: "Weekly Utilization Time by Application",
-                },
-              }}
-            />
-          </div>
-          <div style={{ width: "94.7%", height: "300px" }}>
-            <Bar
-              data={createChartData(
-                monthlyData,
-                "Monthly Utilization Time (minutes)"
-              )}
-              options={options}
-            />
+          <div className="flex flex-row w-full gap-16">
+            <div style={{ width: "45%", height: "300px" }}>
+              <Bar
+                data={createChartData(
+                  monthlyData,
+                  "Monthly Utilization Time (minutes)"
+                )}
+                options={options}
+              />
+            </div>
           </div>
         </>
       )}
