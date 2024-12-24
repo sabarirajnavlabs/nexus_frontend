@@ -8,7 +8,7 @@ import { useAuth } from "@clerk/clerk-react";
 import { useTheme } from "next-themes";
 import Cookies from "js-cookie";
 
-const NavBar = () => {
+const NavBar = ({ setsection }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { signOut } = useAuth();
@@ -67,6 +67,13 @@ const NavBar = () => {
           >
             <button className="w-full text-left hover:text-teal-500 hover:font-bold relative p-2 rounded transition duration-300 ease-in-out group">
               Settings
+              <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
+            </button>
+            <button
+              className="w-full text-left hover:text-teal-500 hover:font-bold relative p-2 rounded transition duration-300 ease-in-out group"
+              onClick={() => setsection("profile")}
+            >
+              Profile
               <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
             </button>
             <button
