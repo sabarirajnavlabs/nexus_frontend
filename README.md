@@ -1,36 +1,137 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Product Requirements Document (PRD): Nexus AI Platform Revamp
 
-## Getting Started
+### Overview
+Nexus AI is a web-based platform designed to manage AI development tools, offering streamlined access to AWS SageMaker instances, AI model integration through LiteLLM, and detailed analytics for performance monitoring. This revamp aims to enhance UI/UX, streamline user interactions, and provide robust analytics.
 
-First, run the development server:
+---
+
+### App Goals
+- Improve user experience with intuitive, fluid UI design
+- Simplify model access through LiteLLM API key management
+- Enhance analytics visibility for model usage, latency, and cost
+- Streamline chat interactions using LiteLLM proxy
+- Provide comprehensive dashboard with clear, insightful data
+
+---
+
+### Technology Stack
+- **Frontend:** Next.js, Tailwind CSS
+- **Backend:** AWS Lambda (serverless architecture)
+- **Authentication:** Clerk (user management with webhooks)
+- **Deployment:** AWS Amplify
+- **Proxy Server:** LiteLLM deployed via AWS ECS
+
+---
+
+### User Flow
+1. User logs into Nexus AI via Clerk authentication.
+2. Upon successful login, users land on the Dashboard, presenting metrics and performance summaries.
+3. Users navigate to the Model Hub to manage API keys and access various AI models.
+4. In the Chat Playground, users interact directly with LiteLLM integrated models.
+5. Users can view comprehensive analytics data (cost, latency, usage metrics) via the Analytics tab.
+6. Admin users can switch to the admin view for extended administrative capabilities.
+
+---
+
+### Main Features
+
+#### Dashboard
+- Display key metrics using mock data (app usage, AI library usage, active project progress, top models, training statistics)
+- Time-filtered insights (start and end dates)
+
+#### Model Hub
+- LiteLLM API key generation and management
+- Model browsing and detailed access (OpenAI, Anthropic, Google Gemini, HuggingFace, Meta Llama, DeepSeek)
+- Search and filtering capabilities
+
+#### Chat Playground
+- Integrated LiteLLM chat interface
+- Document upload and deep research features
+- Model switching capabilities within chat
+
+#### Analytics
+- Detailed trace logs (model requests and completions)
+- Cost breakdown per model and total
+- Latency metrics (average response time)
+- Uptime and error rate monitoring
+- Requests per second data
+- Hardware utilization analytics (A100, A6000, RTX4090, CPU usage)
+
+#### User & Organization Management
+- Clerk-based authentication
+- Automated user creation through webhook integration
+- User synchronization across internal user database and LiteLLM proxy
+
+---
+
+### Deliverables
+- Revamped UI/UX design implemented in Next.js and Tailwind CSS
+- Integrated LiteLLM functionality across all primary app sections
+- Improved analytics visibility and reporting
+- Deployment-ready, tested application via AWS Amplify
+
+---
+
+### Acceptance Criteria
+- Fluid and responsive UI experience across all devices
+- Successful user authentication and data consistency across Clerk, internal database, and LiteLLM
+- Accurate and timely analytics reporting
+- Fully functional LiteLLM chat and model access
+- Stable deployment through AWS Amplify
+
+## Multiple Deployment Configurations
+
+This project supports deployment to multiple environments with different branding and configurations.
+
+### Available Deployments
+
+1. **KPR College** (Main/Dev Branches)
+   - Custom branding for KPR College
+   - Deployed to primary AWS account
+
+2. **Nexus AI Platform** (Nexus Branch)
+   - Generic branding for Nexus AI Platform
+   - Deployed to secondary AWS account
+
+### Switching Between Environments Locally
+
+Use the built-in switch-env script to toggle between environments:
 
 ```bash
+# Switch to KPR environment
+npm run use:kpr
+
+# Switch to Nexus environment
+npm run use:nexus
+
+# Then start the development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Managing Code Across Environments
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+The project uses a single codebase with environment-specific configuration. When adding new features:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+1. Make changes in one branch first (e.g., `main` or `dev`)
+2. Test thoroughly
+3. Merge or cherry-pick changes to the `nexus` branch
+4. Test to ensure the Nexus-branded version works correctly
 
-## Learn More
+### Deployment Process
 
-To learn more about Next.js, take a look at the following resources:
+#### KPR College Deployment
+- Push to `main` branch for production, `dev` branch for testing
+- AWS Amplify automatically deploys from the configured branch
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+#### Nexus AI Platform Deployment
+- Push to `nexus` branch
+- AWS Amplify in the secondary account deploys automatically
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Adding New Environment-Specific Configuration
 
-## Deploy on Vercel
+To add new configuration that varies between deployments:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Add the variable to both `.env.kpr` and `.env.nexus` files
+2. Update the `config-provider.jsx` file to include the new variable
+3. Use the variable in your components with the `useConfig` hook
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

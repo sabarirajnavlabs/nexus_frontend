@@ -1,121 +1,75 @@
-"use client";
+import React from 'react';
+import { useTheme } from 'next-themes';
 
-import React, { useState, useEffect } from "react";
-import { FaBars, FaTimes } from "react-icons/fa";
-import logoImage from "/public/Navbar/logo-circle.png";
-import Image from "next/image";
-import { useAuth } from "@clerk/clerk-react";
-import { useTheme } from "next-themes";
-import Cookies from "js-cookie";
+interface NavbarProps {
+  startDate: string;
+  endDate: string;
+  onStartDateChange: (date: string) => void;
+  onEndDateChange: (date: string) => void;
+}
 
-const NavBar = ({ setsection }) => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { signOut } = useAuth();
+const Navbar = ({ startDate, endDate, onStartDateChange, onEndDateChange }: NavbarProps) => {
   const { theme, setTheme } = useTheme();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  const deletecookies = () => {
-    Cookies.remove("storedVSCUrl");
-    Cookies.remove("storedJPNUrl");
-    localStorage.removeItem("vscInstanceTimestamp");
-    localStorage.removeItem("jpnInstanceTimestamp");
-  };
-
   return (
-    <nav
-      className={`p-4 z-50 fixed top-0 left-0 right-0 flex items-center justify-between transition-all duration-300 ${
-        theme === "dark"
-          ? "bg-black text-white shadow-gray-600 shadow-md"
-          : "bg-white text-black shadow-lg"
-      } ${
-        isScrolled ? "bg-opacity-70 backdrop-blur-md" : "bg-opacity-100"
-      } space-x-4`}
-    >
-      <div className="flex gap-4 basis-1/2 md:basis-1/4 items-center ml-5">
-        <Image src={logoImage} alt="logo" className="w-12 h-12" />
-        <span className="text-md lg:text-lg font-semibold">NAVIGATE LABS</span>
-      </div>
-
-      <div className="flex">
-        <div className="basis-1/2 md:basis-1/4 flex flex-row-reverse">
-          {isMenuOpen ? (
-            <FaTimes className="cursor-pointer" onClick={toggleMenu} />
-          ) : (
-            <FaBars className="cursor-pointer" onClick={toggleMenu} />
-          )}
-        </div>
-
-        {/* Popup Menu */}
-        {isMenuOpen && (
-          <div
-            className={`absolute top-[80px] right-4 rounded-lg shadow-lg p-4 space-y-2 w-48 transition-all duration-300 ${
-              isScrolled ? "bg-opacity-70 backdrop-blur-md" : "bg-opacity-100"
-            } ${theme === "dark" ? "bg-gray-800" : "bg-gray-200"}`}
-          >
-            <button className="w-full text-left hover:text-teal-500 hover:font-bold relative p-2 rounded transition duration-300 ease-in-out group">
-              Settings
-              <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
-            </button>
-            <button
-              className="w-full text-left hover:text-teal-500 hover:font-bold relative p-2 rounded transition duration-300 ease-in-out group"
-              onClick={() => setsection("profile")}
-            >
-              Profile
-              <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
-            </button>
-            <button
-              className="w-full text-left hover:text-teal-500 hover:font-bold relative p-2 rounded transition duration-300 ease-in-out group"
-              // onClick={signOut}
-              onClick={() => {
-                deletecookies();
-                signOut();
-              }}
-            >
-              Logout
-              <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
-            </button>
-          </div>
-        )}
-
-        <div className="flex items-center ml-4">
-          <label className="flex items-center cursor-pointer">
-            <span className="mr-2 text-sm">
-              {theme === "dark" ? "🌙" : "☀️"}
-            </span>
+    <div className="h-16 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+      <div className="h-full px-6 flex items-center justify-between">
+        {/* Date Range Filters */}
+        <div className="flex items-center space-x-4">
+          <div>
+            <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Start Date
+            </label>
             <input
-              type="checkbox"
-              checked={theme === "dark"}
-              onChange={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="toggle-checkbox hidden"
-              id="toggle"
+              type="date"
+              id="startDate"
+              value={startDate}
+              onChange={(e) => onStartDateChange(e.target.value)}
+              className="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
             />
-            <div className="toggle-label bg-gray-200 rounded-full w-12 h-6 flex items-center p-1 transition-all duration-300">
-              <div
-                className={`toggle-dot w-4 h-4 rounded-full transition-transform duration-300 ${
-                  theme === "dark"
-                    ? "transform translate-x-6 bg-black"
-                    : "bg-white"
-                }`}
-              ></div>
+          </div>
+          <div>
+            <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              End Date
+            </label>
+            <input
+              type="date"
+              id="endDate"
+              value={endDate}
+              onChange={(e) => onEndDateChange(e.target.value)}
+              className="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
+            />
+          </div>
+        </div>
+
+        {/* Right Side Actions */}
+        <div className="flex items-center space-x-4">
+          {/* Theme Toggle */}
+          <button
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            {theme === 'dark' ? '🌞' : '🌙'}
+          </button>
+
+          {/* User Profile */}
+          <div className="flex items-center space-x-3">
+            <div className="text-right">
+              <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                Priyadharshan JH
+              </div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                AI Research Student
+              </div>
             </div>
-          </label>
+            <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+              👤
+            </div>
+          </div>
         </div>
       </div>
-    </nav>
+    </div>
   );
 };
 
-export default NavBar;
+export default Navbar; 

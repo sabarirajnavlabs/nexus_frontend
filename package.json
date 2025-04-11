@@ -6,17 +6,18 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "use:nexus": "node switch-env.js nexus",
+    "use:kpr": "node switch-env.js kpr"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.9.1",
     "@clerk/nextjs": "^5.6.0",
-    "@heroicons/react": "^1.0.6",
+    "@heroicons/react": "^2.1.1",
     "chart.js": "^4.4.7",
     "clerk": "^0.8.3",
     "date-fns": "^4.1.0",
     "framer-motion": "^11.5.6",
-    "heroicons": "^2.1.5",
     "js-cookie": "^3.0.5",
     "next": "14.2.13",
     "next-themes": "^0.3.0",

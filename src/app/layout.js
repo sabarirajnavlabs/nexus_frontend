@@ -1,48 +1,35 @@
-import localFont from "next/font/local";
-import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
-import { ThemeProvider } from "@/components/theme-provider";
-import LogoutOnTabClose from "@/components/Logoutontabclose";
-import { ErrorBoundary } from "@/components/ErrorBoundary";
+import './globals.css';
+import { Inter } from 'next/font/google';
+import { ThemeProvider } from '@/components/theme-provider';
+import { ClerkProvider } from '@clerk/nextjs';
+import { ConfigProvider } from '@/components/config-provider';
+import { useConfig } from '@/components/config-provider';
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+const inter = Inter({ subsets: ['latin'] });
 
-const clerkPublishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-
+// Dynamic metadata - will be set in page level now
 export const metadata = {
-  title: "Navigate Labs",
-  description: "Navigate Labs AI",
+  title: 'Nexus AI Platform',
+  description: 'AI development and model management platform',
 };
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider publishableKey={clerkPublishableKey}>
-      <LogoutOnTabClose />
-      <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ClerkProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="light"
+            defaultTheme="system"
             enableSystem
             disableTransitionOnChange
           >
-            <ErrorBoundary>
+            <ConfigProvider>
               {children}
-            </ErrorBoundary>
+            </ConfigProvider>
           </ThemeProvider>
+        </ClerkProvider>
         </body>
       </html>
-    </ClerkProvider>
   );
 }

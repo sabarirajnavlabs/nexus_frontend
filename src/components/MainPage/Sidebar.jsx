@@ -1,192 +1,152 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { useTheme } from "next-themes";
-import Image from "next/image";
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useTheme } from 'next-themes';
+import { UserButton, useClerk } from '@clerk/nextjs';
 
-export default function ProductSideNavbar({ section, setsection }) {
+export default function Sidebar() {
+  const pathname = usePathname();
   const { theme } = useTheme();
-  const [showDIY, setShowDIY] = useState(true);
-  const [showModels, setShowModels] = useState(true);
-  const [showWhatsNew, setShowWhatsNew] = useState(true);
-  const [showDashboard, setShowDashboard] = useState(true);
+  const { signOut } = useClerk();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const toggleDIY = () => setShowDIY(!showDIY);
-  const toggleModels = () => setShowModels(!showModels);
-  const toggleWhatsNew = () => setShowWhatsNew(!showWhatsNew);
-  const toggleDashboard = () => setShowDashboard(!showDashboard);
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
+
+  // Prevent scrolling when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
+  
+  const navItems = [
+    { name: 'Dashboard', path: '/dashboard', icon: '📊' },
+    { name: 'Model Hub', path: '/model-hub', icon: '🤖' },
+    { name: 'Hardware Suite', path: '/hardware-suite', icon: '💻' },
+    { name: 'Chat', path: '/chat', icon: '💬' },
+    { name: 'Datasets', path: '/datasets', icon: '📁' },
+    { name: 'Analytics', path: '/analytics', icon: '📈' },
+    { name: 'Team', path: '/team', icon: '👥' },
+    { name: 'Settings', path: '/settings', icon: '⚙️' }
+  ];
 
   return (
-    <div
-      className={`relative p-4 w-64 text-left ${
-        theme === "dark" ? "bg-black text-white" : "bg-white text-black"
-      }`}
-    >
-      {/* Home Page Link */}
-      <div className="top-[100px] mb-8">
-        <a href="#home" className="text-lg font-semibold hover:underline">
-          Nexus AI
-        </a>
-        <div className="h-1 w-full bg-teal-500 mt-1"></div>
-      </div>
-
-      <div className="mb-8">
-        <button
-          onClick={() => setsection("whatsnew")}
-          className="hover:text-teal-500 hover:font-bold relative p-0 rounded transition duration-300 ease-in-out group"
-        >
-          Whats New
-          <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
-        </button>
-      </div>
-
-      {/* DIY Dropdown */}
-      <div className="mb-8">
-        <button
-          onClick={toggleDIY}
-          className={`flex items-center justify-between w-full relative p-0 rounded transition duration-300 ease-in-out group ${
-            showDIY ? "font-bold" : "hover:text-teal-500"
-          }`}
-        >
-          IDE Hub
-          <span
-            className={`transform transition-transform ${
-              showDIY ? "rotate-90" : ""
-            }`}
+    <>
+      {/* Mobile Header with Hamburger */}
+      <div className="lg:hidden fixed top-0 right-0 left-0 h-16 z-[100] bg-[#0A1628]">
+        <div className="h-full px-4 flex justify-between items-center">
+          <Link href="/" className="flex items-center space-x-2">
+            <span className="text-2xl">🧠</span>
+            <span className="text-xl font-semibold text-white">Nexus AI</span>
+          </Link>
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-2 rounded-lg bg-gray-800 text-white hover:bg-gray-700"
+            aria-label="Toggle menu"
           >
-            ▶
-          </span>
-        </button>
-        {showDIY && (
-          <ul className="mt-4 space-y-2 pl-0">
-            <li>
-              <a
-                onClick={() => setsection("vscode")}
-                className="hover:text-teal-500 hover:font-bold relative p-0 rounded transition duration-300 ease-in-out group"
-              >
-                VS Code Editor
-                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
-              </a>
-            </li>
-            <li>
-              <a
-                onClick={() => setsection("jupyter")}
-                className="hover:text-teal-500 hover:font-bold relative p-0 rounded transition duration-300 ease-in-out group"
-              >
-                Jupyter Lab
-                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
-              </a>
-            </li>
-          </ul>
-        )}
+            <svg 
+              className="w-8 h-8" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d={isMobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} 
+              />
+            </svg>
+          </button>
+        </div>
       </div>
 
-      {/* Models Dropdown */}
-      <div className="mb-8">
-        <button
-          onClick={toggleModels}
-          className={`flex items-center justify-between w-full relative p-0 rounded transition duration-300 ease-in-out group ${
-            showModels ? "font-bold" : "hover:text-teal-500"
-          }`}
-        >
-          Models
-          <span
-            className={`transform transition-transform ${
-              showModels ? "rotate-90" : ""
-            }`}
+      {/* Mobile Menu Overlay */}
+      <div 
+        className={`
+          fixed inset-0 bg-black/50 z-[90] transition-opacity duration-300 lg:hidden
+          ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}
+        `}
+        onClick={() => setIsMobileMenuOpen(false)}
+      />
+
+      {/* Sidebar */}
+      <div 
+        className={`
+          fixed top-0 left-0 h-full w-64 bg-[#0A1628] text-white z-[95]
+          transform transition-transform duration-300 ease-in-out
+          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+          flex flex-col
+        `}
+      >
+        {/* Logo Section */}
+        <div className="p-6 border-b border-gray-700 hidden lg:block">
+          <Link href="/" className="flex items-center space-x-2">
+            <span className="text-2xl">🧠</span>
+            <span className="text-xl font-semibold">Nexus AI</span>
+          </Link>
+        </div>
+
+        {/* Navigation Items */}
+        <nav className="flex-1 p-4 mt-16 lg:mt-0">
+          <ul className="space-y-2">
+            {navItems.map((item) => {
+              const isActive = pathname === item.path;
+              return (
+                <li key={item.path}>
+                  <Link
+                    href={item.path}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                      isActive
+                        ? 'bg-blue-600 text-white'
+                        : 'text-gray-300 hover:bg-gray-700'
+                    }`}
+                  >
+                    <span className="text-xl">{item.icon}</span>
+                    <span>{item.name}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+
+        {/* Admin Switch */}
+        <div className="p-4 border-t border-gray-700">
+          <button
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 transition-colors"
           >
-            ▶
-          </span>
-        </button>
-        {showModels && (
-          <ul className="mt-4 space-y-2 pl-0">
-            <li className="relative flex items-center">
-              <span
-                className="hover:text-teal-500 relative p-0 rounded transition duration-300 ease-in-out group"
-                onClick={() => setsection("multimodel")}
-              >
-                Multi Modal
-                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
-              </span>
-              {/* <span className="ml-2  text-xs p-1 ">Coming Soon</span> */}
-            </li>
-            <li>
-              <span
-                className="hover:text-teal-500 hover:font-bold relative p-0 rounded transition duration-300 ease-in-out group"
-                onClick={() => setsection("textmodel")}
-              >
-                Text
-                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
-              </span>
-              {/* <span className="ml-2  text-xs p-1 ">Coming Soon</span> */}
-            </li>
+            <span className="text-xl">👑</span>
+            <span>Switch to Admin</span>
+          </button>
+        </div>
 
-            {/* Additional items for Models */}
-            <li className="relative flex items-center">
-              <span
-                className="hover:text-teal-500 relative p-0 rounded transition duration-300 ease-in-out group"
-                onClick={() => setsection("imagemodel")}
-              >
-                Images
-                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
-              </span>
-              {/* <span className="ml-2 text-xs p-1">Coming Soon</span> */}
-            </li>
-          </ul>
-        )}
-      </div>
-
-      <div className="mb-8">
-        <button
-          onClick={() => setsection("chatpage")}
-          className={`flex items-center justify-between w-full relative p-0 rounded transition duration-300 ease-in-out group ${
-            showModels ? "font-bold" : "hover:text-teal-500"
-          }`}
-        >
-          Playground
-        </button>
-      </div>
-
-      {/* Dashboard */}
-      <div className="mb-8">
-        <button
-          onClick={toggleDashboard}
-          className={`flex items-center justify-between w-full relative p-0 rounded transition duration-300 ease-in-out group ${
-            showModels ? "font-bold" : "hover:text-teal-500"
-          }`}
-        >
-          Dashboard
-          <span
-            className={`transform transition-transform ${
-              showModels ? "rotate-90" : ""
-            }`}
+        {/* Logout */}
+        <div className="p-4">
+          <button
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              signOut();
+            }}
+            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors"
           >
-            ▶
-          </span>
-        </button>
-        {showDashboard && (
-          <ul className="mt-4 space-y-2 pl-0">
-            <li className="relative flex items-center">
-              <span
-                className="hover:text-teal-500 relative p-0 rounded transition duration-300 ease-in-out group"
-                onClick={() => setsection("usage")}
-              >
-                Usage Report
-                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
-              </span>
-            </li>
-            <li>
-              <span
-                className="hover:text-teal-500 hover:font-bold relative p-0 rounded transition duration-300 ease-in-out group"
-                onClick={() => setsection("analytics")}
-              >
-                Analytics
-                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-teal-500 scale-x-0 transition-transform duration-300 ease-in-out group-hover:scale-x-100"></span>
-              </span>
-            </li>
-          </ul>
-        )}
+            <span className="text-xl">🚪</span>
+            <span>Logout</span>
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
-}
+} 
