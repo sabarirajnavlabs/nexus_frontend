@@ -149,8 +149,11 @@ const ChatPage = ({ model }) => {
 
   return (
     <div
-      className="w-full h-full flex flex-col rounded-md"
-      style={{ backgroundColor }}
+      className={`w-full h-full flex flex-col rounded-md ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}
+      style={{ 
+        backgroundColor,
+        color: theme === 'dark' ? 'white' : 'inherit'
+      }}
     >
       {/* Dropdown and Header */}
       <div className={`flex items-center justify-between p-4 border-b shadow-lg ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
@@ -255,7 +258,12 @@ const ChatPage = ({ model }) => {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
             placeholder="Type a message..."
-            className={`w-full p-3 pl-12 pr-12 border rounded-lg outline-none ${theme === 'dark' ? 'bg-gray-700 text-white border-gray-600' : 'bg-white text-gray-900 border-gray-300'}`}
+            className={`w-full p-3 pl-12 pr-12 border rounded-lg outline-none ${
+              theme === 'dark' 
+                ? 'bg-gray-700 text-white border-gray-600' 
+                : 'bg-white text-gray-900 border-gray-300'
+            }`}
+            style={theme === 'dark' ? { color: 'white' } : {}}
           />
 
           {/* Upload button */}

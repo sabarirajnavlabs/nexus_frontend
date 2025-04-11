@@ -32,14 +32,14 @@ const CustomIcon = {
 export default function DashboardPage() {
   const { theme } = useTheme();
   const { user } = useUser();
-  const { backgroundColor } = useConfig();
+  const { backgroundColor, textColor: configTextColor } = useConfig();
   const [startDate, setStartDate] = useState('2024-04-03');
   const [endDate, setEndDate] = useState('2024-04-10');
 
   // Theme-based styles
   const cardBg = theme === 'dark' ? 'bg-gray-800' : 'bg-white';
   const borderColor = theme === 'dark' ? 'border-gray-700' : 'border-gray-200';
-  const textColor = theme === 'dark' ? 'text-white' : 'text-gray-900';
+  const textColorClass = theme === 'dark' ? 'text-white' : 'text-gray-900';
 
   // Mock data for app usage
   const appUsage = [
@@ -95,7 +95,7 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="p-6" style={{ backgroundColor: backgroundColor }}>
+    <div className={`p-6 ${textColorClass}`} style={{ backgroundColor, color: theme === 'dark' ? 'white' : 'inherit' }}>
       {/* Header with Date Range and User Profile */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
         <div className="mb-6 lg:mb-0">
@@ -105,28 +105,30 @@ export default function DashboardPage() {
             </h1>
             <UserButton afterSignOutUrl="/sign-in" />
           </div>
-          <p className="text-gray-500 mt-2">
+          <p className={`text-gray-500 dark:text-gray-300 mt-2`}>
             Monitor your AI development metrics and performance
           </p>
         </div>
         
         <div className="flex flex-col sm:flex-row gap-4">
           <div>
-            <div className="text-sm text-gray-500 mb-1.5">Start Date</div>
+            <div className="text-sm text-gray-500 dark:text-gray-300 mb-1.5">Start Date</div>
             <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className={`w-full sm:w-44 px-3 py-2 rounded-lg border ${borderColor} ${cardBg} ${textColor} focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+              className={`w-full sm:w-44 px-3 py-2 rounded-lg border ${borderColor} ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+              style={theme === 'dark' ? { color: 'white' } : {}}
             />
           </div>
           <div>
-            <div className="text-sm text-gray-500 mb-1.5">End Date</div>
+            <div className="text-sm text-gray-500 dark:text-gray-300 mb-1.5">End Date</div>
             <input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className={`w-full sm:w-44 px-3 py-2 rounded-lg border ${borderColor} ${cardBg} ${textColor} focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+              className={`w-full sm:w-44 px-3 py-2 rounded-lg border ${borderColor} ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+              style={theme === 'dark' ? { color: 'white' } : {}}
             />
           </div>
         </div>
@@ -143,14 +145,14 @@ export default function DashboardPage() {
           {/* App Usage Time */}
           <div className={`${cardBg} rounded-2xl border ${borderColor} p-6`}>
             <h3 className="text-base font-medium mb-6 flex items-center gap-2">
-              <CustomIcon.Clock className="h-5 w-5 text-gray-500" />
+              <CustomIcon.Clock className="h-5 w-5 text-gray-500 dark:text-gray-300" />
               App Usage Time
             </h3>
             <div className="space-y-4">
               {appUsage.map((app, index) => (
                 <div key={index} className="flex justify-between items-center">
                   <span className="text-base">{app.name}</span>
-                  <span className="text-base text-gray-500">{app.hours}h</span>
+                  <span className="text-base text-gray-500 dark:text-gray-300">{app.hours}h</span>
                 </div>
               ))}
             </div>
@@ -159,7 +161,7 @@ export default function DashboardPage() {
           {/* AI Libraries Usage */}
           <div className={`${cardBg} rounded-2xl border ${borderColor} p-6`}>
             <h3 className="text-base font-medium mb-6 flex items-center gap-2">
-              <CustomIcon.Beaker className="h-5 w-5 text-gray-500" />
+              <CustomIcon.Beaker className="h-5 w-5 text-gray-500 dark:text-gray-300" />
               AI Libraries Usage
             </h3>
             <div className="space-y-6">
@@ -167,9 +169,9 @@ export default function DashboardPage() {
                 <div key={index} className="space-y-2">
                   <div className="flex justify-between text-base">
                     <span>{lib.name}</span>
-                    <span className="text-gray-500">{lib.usage}%</span>
+                    <span className="text-gray-500 dark:text-gray-300">{lib.usage}%</span>
                   </div>
-                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-blue-500 rounded-full"
                       style={{ width: `${lib.usage}%` }}
@@ -183,7 +185,7 @@ export default function DashboardPage() {
           {/* Active Projects */}
           <div className={`${cardBg} rounded-2xl border ${borderColor} p-6`}>
             <h3 className="text-base font-medium mb-6 flex items-center gap-2">
-              <Lightning className="h-5 w-5 text-gray-500" />
+              <Lightning className="h-5 w-5 text-gray-500 dark:text-gray-300" />
               Active Projects
             </h3>
             <div className="space-y-6">
@@ -192,11 +194,11 @@ export default function DashboardPage() {
                   <div className="flex justify-between text-base">
                     <div>
                       <p>{project.name}</p>
-                      <p className="text-sm text-gray-500">{project.category}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-300">{project.category}</p>
                     </div>
-                    <span className="text-gray-500">{project.progress}%</span>
+                    <span className="text-gray-500 dark:text-gray-300">{project.progress}%</span>
                   </div>
-                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-green-500 rounded-full"
                       style={{ width: `${project.progress}%` }}
@@ -219,7 +221,7 @@ export default function DashboardPage() {
           {/* Top Models */}
           <div className={`${cardBg} rounded-2xl border ${borderColor} p-6`}>
             <h3 className="text-base font-medium mb-6 flex items-center gap-2">
-              <CustomIcon.Clock className="h-5 w-5 text-gray-500" />
+              <CustomIcon.Clock className="h-5 w-5 text-gray-500 dark:text-gray-300" />
               Top Models
             </h3>
             <div className="space-y-6">
@@ -228,11 +230,11 @@ export default function DashboardPage() {
                   <div className="flex justify-between text-base">
                     <div>
                       <p>{model.name}</p>
-                      <p className="text-sm text-gray-500">{model.uses} uses this month</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-300">{model.uses} uses this month</p>
                     </div>
-                    <span className="text-gray-500">{model.accuracy}% acc.</span>
+                    <span className="text-gray-500 dark:text-gray-300">{model.accuracy}% acc.</span>
                   </div>
-                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-purple-500 rounded-full"
                       style={{ width: `${model.accuracy}%` }}
@@ -251,19 +253,19 @@ export default function DashboardPage() {
                 <div className="text-3xl font-semibold text-blue-600 dark:text-blue-400">
                   {trainingStats.hours}
                 </div>
-                <div className="text-sm text-gray-500 mt-1">Training Hours</div>
+                <div className="text-sm text-gray-500 dark:text-gray-300 mt-1">Training Hours</div>
               </div>
               <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
                 <div className="text-3xl font-semibold text-green-600 dark:text-green-400">
                   {trainingStats.successRate}%
                 </div>
-                <div className="text-sm text-gray-500 mt-1">Success Rate</div>
+                <div className="text-sm text-gray-500 dark:text-gray-300 mt-1">Success Rate</div>
               </div>
               <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
                 <div className="text-3xl font-semibold text-purple-600 dark:text-purple-400">
                   {trainingStats.modelsDeployed}
                 </div>
-                <div className="text-sm text-gray-500 mt-1">Models Deployed</div>
+                <div className="text-sm text-gray-500 dark:text-gray-300 mt-1">Models Deployed</div>
               </div>
             </div>
           </div>
@@ -271,4 +273,4 @@ export default function DashboardPage() {
       </div>
     </div>
   );
-} 
+}

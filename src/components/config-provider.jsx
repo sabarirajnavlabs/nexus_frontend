@@ -38,6 +38,13 @@ export function ConfigProvider({ children }) {
     backgroundColor: process.env.NEXT_PUBLIC_BACKGROUND_COLOR || defaultConfig.backgroundColor,
   };
   
+  // Log current config for debugging
+  console.log('Config loaded:', {
+    textColor: config.textColor,
+    backgroundColor: config.backgroundColor,
+    primaryColor: config.primaryColor
+  });
+  
   return (
     <ConfigContext.Provider value={config}>
       {children}

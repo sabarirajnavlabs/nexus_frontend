@@ -3,9 +3,11 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useTheme } from 'next-themes';
 import Cookies from 'js-cookie';
+import { useConfig } from '@/components/config-provider';
 
 export default function ChatPlayground() {
   const { theme } = useTheme();
+  const { backgroundColor, textColor: configTextColor } = useConfig();
   const [message, setMessage] = useState('');
   const [chatHistory, setChatHistory] = useState([]);
   const [availableModels, setAvailableModels] = useState([]);
@@ -15,11 +17,9 @@ export default function ChatPlayground() {
   const chatContainerRef = useRef(null);
   const dropdownRef = useRef(null);
   
-  const bgColor = theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50';
   const cardBg = theme === 'dark' ? 'bg-gray-800' : 'bg-white';
-  const textColor = theme === 'dark' ? 'text-white' : 'text-gray-900';
+  const textColorClass = theme === 'dark' ? 'text-white' : 'text-gray-900';
   const borderColor = theme === 'dark' ? 'border-gray-700' : 'border-gray-200';
-  const inputBg = theme === 'dark' ? 'bg-gray-700' : 'bg-white';
   
   // Helper function to determine provider from model ID
   const getProviderFromModel = (modelId) => {
@@ -262,7 +262,7 @@ export default function ChatPlayground() {
   ];
   
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)]">
+    <div className={`flex flex-col h-[calc(100vh-4rem)] ${textColorClass}`} style={{ backgroundColor }}>
       {/* Header */}
       <div className="border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
         <div className="p-4">
@@ -276,10 +276,11 @@ export default function ChatPlayground() {
             <select
               value={selectedModel}
               onChange={(e) => setSelectedModel(e.target.value)}
-              className={`w-full sm:w-auto p-2 rounded-lg border ${borderColor} ${cardBg} ${textColor}`}
+              className={`w-full sm:w-auto p-2 rounded-lg border ${borderColor} ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}
+              style={theme === 'dark' ? { color: 'white' } : {}}
             >
               {models.map((model) => (
-                <option key={model.name} value={model.name}>
+                <option key={model.name} value={model.name} style={theme === 'dark' ? { backgroundColor: '#1f2937', color: 'white' } : {}}>
                   {model.name} ({model.provider})
                 </option>
               ))}
@@ -313,7 +314,7 @@ export default function ChatPlayground() {
                         ? 'bg-blue-500 text-white' 
                         : `${cardBg} border ${borderColor} ${chat.isError ? 'border-red-500' : ''}`
                     }`}>
-                      <div className="text-sm">
+                      <div className={chat.role === 'user' ? 'text-white' : textColorClass}>
                         {chat.content}
                         {chat.isStreaming && (
                           <span className="inline-block ml-1 w-2 h-4 bg-gray-400 dark:bg-gray-600 animate-pulse"></span>
@@ -338,7 +339,8 @@ export default function ChatPlayground() {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className={`flex-1 p-2 rounded-lg border ${borderColor} ${cardBg} ${textColor}`}
+                className={`flex-1 p-2 rounded-lg border ${borderColor} ${theme === 'dark' ? 'bg-gray-700 text-white' : 'bg-white text-gray-900'}`}
+                style={theme === 'dark' ? { color: 'white' } : {}}
               />
               <button
                 onClick={sendMessage}

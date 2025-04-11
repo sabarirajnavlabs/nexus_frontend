@@ -35,6 +35,84 @@ body {
 .dark input, .dark select, .dark textarea {
   color-scheme: dark;
   background-color: #1f2937; /* bg-gray-800 */
-  color: white;
+  color: white !important;
   border-color: #374151; /* border-gray-700 */
+}
+
+/* Force text colors in dark mode */
+.dark {
+  color: white;
+}
+
+.dark p, .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6, 
+.dark span, .dark div:not([class*="bg-"]):not([class*="text-"]) {
+  color: white;
+}
+
+.dark .text-gray-900 {
+  color: white !important;
+}
+
+/* Chat specific fixes */
+.dark [class*="cardBg"], 
+.dark [class*="bg-gray-800"],
+.dark [class*="bg-gray-700"] {
+  color: white !important;
+}
+
+/* Ensure option text is visible */
+.dark option {
+  background-color: #1f2937;
+  color: white;
+}
+
+/* More targeted chat component text overrides */
+.dark #chat-container,
+.dark #chat-input,
+.dark .chat-message,
+.dark .message-text,
+.dark .chat-option,
+.dark .chat-model-selector,
+.dark .chat-placeholder,
+.dark [class*="ChatPage"],
+.dark [class*="ChatPlayground"],
+.dark select[class*="appearance-none"],
+.dark input[type="text"] {
+  color: white !important;
+}
+
+/* Ensure dropdown options are properly styled */
+.dark option {
+  background-color: #1f2937 !important;
+  color: white !important;
+}
+
+/* Force text inheritance in dark mode containers */
+.dark [class*="bg-gray-"] *:not([class*="text-"]):not(button):not(svg),
+.dark [class*="bg-gray-"] *:not([class*="text-white"]):not(button):not(svg) {
+  color: white !important;
+}
+
+/* Dashboard specific fixes */
+.dark [class*="DashboardPage"] *,
+.dark .statistics-container,
+.dark .chart-container,
+.dark input[type="date"] {
+  color-scheme: dark;
+  color: white !important;
+}
+
+/* Fix progress bars in dark mode */
+.dark .bg-gray-200 {
+  background-color: rgba(55, 65, 81, 0.5); /* gray-700 with opacity */
+}
+
+/* Fix stat cards in dark mode */
+.dark .text-gray-500 {
+  color: rgba(209, 213, 219, 0.8) !important; /* gray-300 with opacity */
+}
+
+/* Ensure date inputs display properly */
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
 } 
