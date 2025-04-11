@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTheme } from 'next-themes';
 import Cookies from 'js-cookie';
 
@@ -21,110 +21,13 @@ export default function ModelHub() {
   const borderColor = theme === 'dark' ? 'border-gray-700' : 'border-gray-200';
   const inputBg = theme === 'dark' ? 'bg-gray-700' : 'bg-white';
   
-  useEffect(() => {
-    fetchAPIKey();
-    fetchModels();
-  }, []);
-  
-  // Clear status messages after 5 seconds
-  useEffect(() => {
-    if (successMessage || errorMessage) {
-      const timer = setTimeout(() => {
-        setSuccessMessage('');
-        setErrorMessage('');
-      }, 5000);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [successMessage, errorMessage]);
-  
-  // Fetch API key from LiteLLM server
-  const fetchAPIKey = async () => {
-    setIsLoadingKey(true);
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL_2}/nexus/v1/key`,
-        {
-          method: 'GET',
-          headers: {
-            Token: Cookies.get('__session') || '',
-          },
-        }
-      );
-      
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
-      }
-      
-      const data = await response.json();
-      setApiKey(data.api_key || '••••••••••••••••••••••••••••••••••');
-    } catch (error) {
-      console.error('Failed to fetch API key:', error);
-      setErrorMessage('Failed to load API key. Please try again.');
-      setApiKey('••••••••••••••••••••••••••••••••••');
-    } finally {
-      setIsLoadingKey(false);
-    }
-  };
-  
-  // Update API Key
-  const updateAPIKey = async () => {
-    setIsLoadingKey(true);
-    setErrorMessage('');
-    setSuccessMessage('');
-    
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL_2}/nexus/v1/key/regenerate`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Token: Cookies.get('__session') || '',
-          },
-        }
-      );
-      
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
-      }
-      
-      const data = await response.json();
-      setApiKey(data.api_key || 'API Key not available');
-      setSuccessMessage('API Key updated successfully!');
-    } catch (error) {
-      console.error('Failed to update API key:', error);
-      setErrorMessage('Failed to update API key. Please try again.');
-    } finally {
-      setIsLoadingKey(false);
-    }
-  };
-  
-  // Fetch available models
-  const fetchModels = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL_2}/nexus/v1/models`,
-        {
-          method: 'GET',
-          headers: {
-            Token: Cookies.get('__session') || '',
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      
-      // Process models into card format
-      const processedModels = processModelsData(data.data);
-      setAvailableModels(processedModels);
-    } catch (error) {
-      console.error('Failed to fetch models:', error);
-    }
+  // Helper function to determine provider from model ID
+  const getProviderFromModel = (modelId) => {
+    if (modelId.includes('gpt')) return 'OpenAI';
+    if (modelId.includes('claude')) return 'Anthropic';
+    if (modelId.includes('gemini')) return 'Google';
+    if (modelId.includes('llama')) return 'Meta';
+    return 'Unknown Provider';
   };
   
   // Process models data into card format with icons and descriptions
@@ -199,13 +102,110 @@ export default function ModelHub() {
     ];
   };
   
-  // Helper function to determine provider from model ID
-  const getProviderFromModel = (modelId) => {
-    if (modelId.includes('gpt')) return 'OpenAI';
-    if (modelId.includes('claude')) return 'Anthropic';
-    if (modelId.includes('gemini')) return 'Google';
-    if (modelId.includes('llama')) return 'Meta';
-    return 'Unknown Provider';
+  // Fetch API key from LiteLLM server
+  const fetchAPIKey = useCallback(async () => {
+    setIsLoadingKey(true);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL_2}/nexus/v1/key`,
+        {
+          method: 'GET',
+          headers: {
+            Token: Cookies.get('__session') || '',
+          },
+        }
+      );
+      
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      setApiKey(data.api_key || '••••••••••••••••••••••••••••••••••');
+    } catch (error) {
+      console.error('Failed to fetch API key:', error);
+      setErrorMessage('Failed to load API key. Please try again.');
+      setApiKey('••••••••••••••••••••••••••••••••••');
+    } finally {
+      setIsLoadingKey(false);
+    }
+  }, []);
+  
+  // Fetch available models
+  const fetchModels = useCallback(async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL_2}/nexus/v1/models`,
+        {
+          method: 'GET',
+          headers: {
+            Token: Cookies.get('__session') || '',
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      
+      // Process models into card format
+      const processedModels = processModelsData(data.data);
+      setAvailableModels(processedModels);
+    } catch (error) {
+      console.error('Failed to fetch models:', error);
+    }
+  }, []);
+  
+  useEffect(() => {
+    fetchAPIKey();
+    fetchModels();
+  }, [fetchAPIKey, fetchModels]);
+  
+  // Clear status messages after 5 seconds
+  useEffect(() => {
+    if (successMessage || errorMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage('');
+        setErrorMessage('');
+      }, 5000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage, errorMessage]);
+  
+  // Update API Key
+  const updateAPIKey = async () => {
+    setIsLoadingKey(true);
+    setErrorMessage('');
+    setSuccessMessage('');
+    
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL_2}/nexus/v1/key/regenerate`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Token: Cookies.get('__session') || '',
+          },
+        }
+      );
+      
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      setApiKey(data.api_key || 'API Key not available');
+      setSuccessMessage('API Key updated successfully!');
+    } catch (error) {
+      console.error('Failed to update API key:', error);
+      setErrorMessage('Failed to update API key. Please try again.');
+    } finally {
+      setIsLoadingKey(false);
+    }
   };
   
   // Copy API key to clipboard

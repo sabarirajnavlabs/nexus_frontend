@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useTheme } from 'next-themes';
 import Cookies from 'js-cookie';
 
@@ -21,34 +21,17 @@ export default function ChatPlayground() {
   const borderColor = theme === 'dark' ? 'border-gray-700' : 'border-gray-200';
   const inputBg = theme === 'dark' ? 'bg-gray-700' : 'bg-white';
   
-  // Fetch available models on component mount
-  useEffect(() => {
-    fetchModels();
-  }, []);
-  
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowModelDropdown(false);
-      }
-    }
-    
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [dropdownRef]);
-  
-  // Auto-scroll to bottom of chat when new messages arrive
-  useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-    }
-  }, [chatHistory]);
+  // Helper function to determine provider from model ID
+  const getProviderFromModel = (modelId) => {
+    if (modelId.includes('gpt')) return 'OpenAI';
+    if (modelId.includes('claude')) return 'Anthropic';
+    if (modelId.includes('gemini')) return 'Google';
+    if (modelId.includes('llama')) return 'Meta';
+    return 'Unknown Provider';
+  };
   
   // Fetch available models from LiteLLM proxy server
-  const fetchModels = async () => {
+  const fetchModels = useCallback(async () => {
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL_2}/nexus/v1/models`,
@@ -84,16 +67,33 @@ export default function ChatPlayground() {
     } catch (error) {
       console.error('Failed to fetch models:', error);
     }
-  };
+  }, [selectedModel]);
   
-  // Helper function to determine provider from model ID
-  const getProviderFromModel = (modelId) => {
-    if (modelId.includes('gpt')) return 'OpenAI';
-    if (modelId.includes('claude')) return 'Anthropic';
-    if (modelId.includes('gemini')) return 'Google';
-    if (modelId.includes('llama')) return 'Meta';
-    return 'Unknown Provider';
-  };
+  // Fetch available models on component mount
+  useEffect(() => {
+    fetchModels();
+  }, [fetchModels]);
+  
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowModelDropdown(false);
+      }
+    }
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [dropdownRef]);
+  
+  // Auto-scroll to bottom of chat when new messages arrive
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [chatHistory]);
   
   // Send message to LiteLLM proxy server
   const sendMessage = async () => {

@@ -1,14 +1,15 @@
 import React from 'react';
 import { useTheme } from 'next-themes';
 
-interface NavbarProps {
-  startDate: string;
-  endDate: string;
-  onStartDateChange: (date: string) => void;
-  onEndDateChange: (date: string) => void;
-}
-
-const Navbar = ({ startDate, endDate, onStartDateChange, onEndDateChange }: NavbarProps) => {
+/**
+ * Navbar component that displays date range filters and user profile.
+ * @param {Object} props
+ * @param {string} props.startDate - The selected start date
+ * @param {string} props.endDate - The selected end date
+ * @param {Function} props.onStartDateChange - Callback when start date changes
+ * @param {Function} props.onEndDateChange - Callback when end date changes
+ */
+const Navbar = ({ startDate, endDate, onStartDateChange, onEndDateChange }) => {
   const { theme, setTheme } = useTheme();
 
   return (

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTheme } from 'next-themes';
 import Cookies from 'js-cookie';
 
@@ -52,10 +52,7 @@ const CustomIcon = {
 
 // Loading spinner component
 const LoadingSpinner = () => (
-  <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-  </svg>
+  <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-blue-500"></div>
 );
 
 // Instance type icons
@@ -77,143 +74,126 @@ const getInstanceIcon = (type) => {
 // Instance card component
 const InstanceCard = ({ instance, isLoading, onLaunch, isActive, activeMetrics }) => {
   const { theme } = useTheme();
-  const [isFavorite, setIsFavorite] = useState(false);
+  const cardBg = theme === 'dark' ? 'bg-gray-800' : 'bg-white';
+  const borderColor = theme === 'dark' ? 'border-gray-700' : 'border-gray-200';
   
   const toggleFavorite = (e) => {
     e.stopPropagation();
-    setIsFavorite(!isFavorite);
+    // Handle favorite toggling logic
   };
-
+  
   const MetricBar = ({ label, value, color }) => (
-    <div className="flex flex-col space-y-1">
-      <div className="flex justify-between text-sm">
-        <span>{label}</span>
-        <span>{value}%</span>
+    <div className="mb-2">
+      <div className="flex justify-between mb-1">
+        <span className="text-xs">{label}</span>
+        <span className="text-xs">{value}%</span>
       </div>
-      <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
         <div 
-          className={`h-full ${color}`} 
-          style={{ width: `${value}%`, transition: 'width 0.5s ease-in-out' }}
-        />
+          className={`h-2.5 rounded-full ${color}`} 
+          style={{ width: `${value}%` }}
+        ></div>
       </div>
     </div>
   );
-
+  
   return (
-    <div className={`
-      relative p-4 rounded-lg border
-      ${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}
-      hover:shadow-lg transition-all duration-200
-      ${isActive ? 'ring-2 ring-green-500' : ''}
-    `}>
-      <div className="absolute top-4 right-4 z-10">
-        <button
+    <div 
+      className={`${cardBg} rounded-lg shadow-md border ${borderColor} p-4 transition-all duration-300 hover:shadow-lg`}
+    >
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center">
+          <div className="text-2xl mr-3">{getInstanceIcon(instance.type)}</div>
+          <div>
+            <h3 className="font-medium">{instance.name}</h3>
+            <p className="text-xs text-gray-500">{instance.provider}</p>
+          </div>
+        </div>
+        <button 
+          className="text-gray-400 hover:text-yellow-500"
           onClick={toggleFavorite}
-          className={`p-1.5 rounded-full transition-colors duration-200
-            ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}
-          `}
         >
-          {isFavorite ? (
-            <CustomIcon.Star className="w-5 h-5 text-yellow-400" />
-          ) : (
-            <CustomIcon.Star className="w-5 h-5 text-gray-400" />
-          )}
+          {/* Star icon */}
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+          </svg>
         </button>
       </div>
-
-      <div className="flex items-start space-x-4">
-        <div className={`
-          p-3 rounded-lg
-          ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100'}
-        `}>
-          {getInstanceIcon(instance.type)}
+      
+      <div className="mb-4">
+        <p className="text-sm">{instance.specs}</p>
+      </div>
+      
+      <div className="mb-4 grid grid-cols-2 gap-x-2 gap-y-1">
+        <div className="text-xs">
+          <span className="text-gray-500">CPUs:</span> {instance.cpus}
         </div>
-
-        <div className="flex-1">
-          <h3 className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-            {instance.name}
-          </h3>
-          <p className="text-sm text-gray-500 mt-1">{instance.provider}</p>
-          
-          <div className="mt-3 space-y-2">
-            <div className="flex items-center space-x-4 text-sm text-gray-500">
-              <span>
-                <CustomIcon.Chip className="w-4 h-4 inline mr-1" />
-                {instance.cpus} CPUs
-              </span>
-              <span>
-                <CustomIcon.Server className="w-4 h-4 inline mr-1" />
-                {instance.ram} GB RAM
-              </span>
-              {instance.vram && (
-                <span>
-                  <CustomIcon.Cube className="w-4 h-4 inline mr-1" />
-                  {instance.vram} GB VRAM
-                </span>
-              )}
-            </div>
-            <p className="text-sm text-gray-500">{instance.specs}</p>
+        <div className="text-xs">
+          <span className="text-gray-500">RAM:</span> {instance.ram}GB
+        </div>
+        {instance.vram && (
+          <div className="text-xs">
+            <span className="text-gray-500">VRAM:</span> {instance.vram}GB
           </div>
-
-          {isActive && activeMetrics && (
-            <div className="mt-4 space-y-2">
-              <MetricBar 
-                label="CPU Usage" 
-                value={activeMetrics.cpu} 
-                color="bg-blue-500"
-              />
-              <MetricBar 
-                label="Memory Usage" 
-                value={activeMetrics.memory} 
-                color="bg-purple-500"
-              />
-              {instance.type === 'gpu' && (
-                <MetricBar 
-                  label="GPU Usage" 
-                  value={activeMetrics.gpu} 
-                  color="bg-green-500"
-                />
-              )}
-            </div>
+        )}
+      </div>
+      
+      {isActive && activeMetrics && (
+        <div className="mb-4">
+          <h4 className="text-sm font-medium mb-2">Current Usage</h4>
+          <MetricBar 
+            label="CPU" 
+            value={activeMetrics.cpu} 
+            color="bg-blue-500" 
+          />
+          <MetricBar 
+            label="Memory" 
+            value={activeMetrics.memory} 
+            color="bg-green-500" 
+          />
+          {activeMetrics.gpu !== null && (
+            <MetricBar 
+              label="GPU" 
+              value={activeMetrics.gpu} 
+              color="bg-purple-500" 
+            />
           )}
-
-          <div className="mt-4 flex justify-between items-center">
-            <div className="flex items-center space-x-2">
-              {isActive ? (
-                <span className="flex items-center text-sm text-green-500">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" />
-                  Active
-                </span>
-              ) : (
-                <span className="flex items-center text-sm text-gray-500">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full mr-2" />
-                  Inactive
-                </span>
-              )}
-            </div>
-
-            <button
-              onClick={() => onLaunch(instance)}
-              disabled={isLoading}
-              className={`
-                px-4 py-2 rounded-lg font-medium text-sm
-                ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}
-                ${theme === 'dark' 
-                  ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-                  : 'bg-blue-500 hover:bg-blue-600 text-white'
-                }
-              `}
-            >
-              {isLoading ? (
-                <LoadingSpinner />
-              ) : isActive ? (
-                'Open Instance'
-              ) : (
-                'Launch Instance'
-              )}
-            </button>
-          </div>
         </div>
+      )}
+      
+      <div className="mt-auto">
+        <button
+          onClick={() => onLaunch(instance)}
+          disabled={isLoading}
+          className={`w-full py-2 px-4 rounded-md font-medium flex items-center justify-center gap-2
+            ${isActive
+              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100'
+              : 'bg-blue-500 text-white hover:bg-blue-600'
+            }
+            transition-colors duration-200
+          `}
+        >
+          {isLoading ? (
+            <>
+              <LoadingSpinner />
+              Launching...
+            </>
+          ) : isActive ? (
+            <>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              Open
+            </>
+          ) : (
+            <>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+              </svg>
+              Launch
+            </>
+          )}
+        </button>
       </div>
     </div>
   );
@@ -221,12 +201,12 @@ const InstanceCard = ({ instance, isLoading, onLaunch, isActive, activeMetrics }
 
 export default function HardwareSuite() {
   const { theme } = useTheme();
-  const [loading, setLoading] = useState({});
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
-  const [orgName, setOrgName] = useState('default-org');
-  const [activeInstances, setActiveInstances] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState({});
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [orgName, setOrgName] = useState('testing');
+  const [activeInstances, setActiveInstances] = useState({});
   const [selectedType, setSelectedType] = useState('all');
   
   const bgColor = theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50';
@@ -234,7 +214,8 @@ export default function HardwareSuite() {
   const borderColor = theme === 'dark' ? 'border-gray-700' : 'border-gray-200';
   const cardBg = theme === 'dark' ? 'bg-gray-800' : 'bg-white';
   
-  const instances = [
+  // Wrap instances in useMemo to prevent it from being recreated on every render
+  const instances = useMemo(() => [
     {
       id: 'vscode-small',
       name: 'VS Code Small',
@@ -282,7 +263,7 @@ export default function HardwareSuite() {
       ram: 32,
       specs: 'Optimized for CPU-based inference',
     }
-  ];
+  ], []);
 
   useEffect(() => {
     const hostname = window.location.hostname;
@@ -295,12 +276,7 @@ export default function HardwareSuite() {
     }
   }, []);
   
-  useEffect(() => {
-    // Check for active instances on component mount
-    checkActiveInstances();
-  }, []);
-
-  const checkActiveInstances = async () => {
+  const checkActiveInstances = useCallback(async () => {
     try {
       const response = await fetch(`/api/instances/active?org=${orgName}`);
       const data = await response.json();
@@ -325,7 +301,12 @@ export default function HardwareSuite() {
     } catch (error) {
       console.error('Error checking active instances:', error);
     }
-  };
+  }, [orgName]);
+
+  useEffect(() => {
+    // Check for active instances on component mount
+    checkActiveInstances();
+  }, [checkActiveInstances]);
 
   const launchInstance = async (instance) => {
     const instanceId = instance.id;
@@ -389,7 +370,7 @@ export default function HardwareSuite() {
       setLoading(prev => ({ ...prev, [instanceId]: false }));
     }
   };
-  
+
   const filteredInstances = useMemo(() => {
     return instances.filter(instance => {
       const matchesSearch = instance.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
