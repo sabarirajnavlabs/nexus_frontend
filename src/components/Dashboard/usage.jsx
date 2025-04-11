@@ -2,9 +2,11 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import Cookies from "js-cookie";
+import { useConfig } from '@/components/config-provider';
 
 const UsageReport = () => {
   const { theme } = useTheme();
+  const { backgroundColor } = useConfig();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [orgName, setOrgName] = useState("testing");
@@ -51,8 +53,9 @@ const UsageReport = () => {
   return (
     <div
       className={`flex flex-col justify-center items-center p-4 ${
-        theme === "dark" ? "bg-[#121212]" : "bg-white"
+        theme === "dark" ? "text-white" : "text-gray-900"
       } ml-16`}
+      style={{ backgroundColor: backgroundColor }}
     >
       {loading ? (
         <div>Loading...</div>

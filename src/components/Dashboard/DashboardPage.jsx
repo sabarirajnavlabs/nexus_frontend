@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useTheme } from 'next-themes';
 import { useUser, UserButton } from '@clerk/nextjs';
+import { useConfig } from '@/components/config-provider';
 
 // Custom icons to avoid heroicons issues
 const CustomIcon = {
@@ -31,6 +32,7 @@ const CustomIcon = {
 export default function DashboardPage() {
   const { theme } = useTheme();
   const { user } = useUser();
+  const { backgroundColor } = useConfig();
   const [startDate, setStartDate] = useState('2024-04-03');
   const [endDate, setEndDate] = useState('2024-04-10');
 
@@ -93,7 +95,7 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="p-6">
+    <div className="p-6" style={{ backgroundColor: backgroundColor }}>
       {/* Header with Date Range and User Profile */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
         <div className="mb-6 lg:mb-0">

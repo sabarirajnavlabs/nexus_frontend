@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTheme } from 'next-themes';
 import Cookies from 'js-cookie';
+import { useConfig } from '@/components/config-provider';
 
 // Custom icons instead of heroicons to avoid import problems
 const CustomIcon = {
@@ -201,6 +202,7 @@ const InstanceCard = ({ instance, isLoading, onLaunch, isActive, activeMetrics }
 
 export default function HardwareSuite() {
   const { theme } = useTheme();
+  const { backgroundColor } = useConfig();
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState({});
   const [error, setError] = useState('');
@@ -399,7 +401,7 @@ export default function HardwareSuite() {
   };
 
   return (
-    <div className={`p-4 sm:p-6 md:p-8 ${bgColor} ${textColor} min-h-screen`}>
+    <div className={`p-4 sm:p-6 md:p-8 ${bgColor} ${textColor} min-h-screen`} style={{ backgroundColor }}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4">
