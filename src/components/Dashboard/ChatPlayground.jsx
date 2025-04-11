@@ -48,6 +48,7 @@ export default function ChatPlayground() {
       }
 
       const data = await response.json();
+      console.log("Fetched models:", data.data);
       
       // Map the models into our format with name and provider
       const formattedModels = data.data.map((model) => {
@@ -58,16 +59,41 @@ export default function ChatPlayground() {
         };
       });
       
-      setAvailableModels(formattedModels);
-      
-      // Set first model as default if we have models and none is selected
-      if (formattedModels.length > 0 && !selectedModel) {
-        setSelectedModel(formattedModels[0].name);
+      if (formattedModels && formattedModels.length > 0) {
+        setAvailableModels(formattedModels);
+        
+        // Set first model as default if we have models and none is selected
+        if (!selectedModel) {
+          setSelectedModel(formattedModels[0].name);
+        }
+      } else {
+        // Set fallback models if API returns empty
+        const fallbackModels = [
+          { name: 'gpt-4', provider: 'OpenAI' },
+          { name: 'claude-3-haiku-20240307', provider: 'Anthropic' },
+          { name: 'gemini-pro', provider: 'Google' },
+          { name: 'llama3-8b-8192', provider: 'Meta' }
+        ];
+        setAvailableModels(fallbackModels);
+        if (!selectedModel) {
+          setSelectedModel(fallbackModels[0].name);
+        }
       }
     } catch (error) {
       console.error('Failed to fetch models:', error);
+      // Set fallback models if API fails
+      const fallbackModels = [
+        { name: 'gpt-4', provider: 'OpenAI' },
+        { name: 'claude-3-haiku-20240307', provider: 'Anthropic' },
+        { name: 'gemini-pro', provider: 'Google' },
+        { name: 'llama3-8b-8192', provider: 'Meta' }
+      ];
+      setAvailableModels(fallbackModels);
+      if (!selectedModel) {
+        setSelectedModel(fallbackModels[0].name);
+      }
     }
-  }, [selectedModel]);
+  }, [selectedModel, getProviderFromModel]);
   
   // Fetch available models on component mount
   useEffect(() => {

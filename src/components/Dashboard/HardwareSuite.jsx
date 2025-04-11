@@ -416,7 +416,7 @@ export default function HardwareSuite() {
               <input
                 type="text"
                 placeholder="Search instances..."
-                className="w-full px-4 py-2 pr-8 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+                className={`w-full px-4 py-2 pr-8 rounded-lg border ${borderColor} ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}
                 value={searchTerm}
                 onChange={(e) => handleSearch(e.target.value)}
               />
@@ -428,7 +428,7 @@ export default function HardwareSuite() {
             </div>
             
             <select 
-              className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 w-full sm:w-auto"
+              className={`px-4 py-2 rounded-lg border ${borderColor} ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} w-full sm:w-auto`}
               value={selectedType}
               onChange={(e) => handleFilter(e.target.value)}
             >

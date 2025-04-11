@@ -169,7 +169,7 @@ export default function DashboardPage() {
                     <span>{lib.name}</span>
                     <span className="text-gray-500">{lib.usage}%</span>
                   </div>
-                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-blue-500 rounded-full"
                       style={{ width: `${lib.usage}%` }}
@@ -196,7 +196,7 @@ export default function DashboardPage() {
                     </div>
                     <span className="text-gray-500">{project.progress}%</span>
                   </div>
-                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-green-500 rounded-full"
                       style={{ width: `${project.progress}%` }}
@@ -232,7 +232,7 @@ export default function DashboardPage() {
                     </div>
                     <span className="text-gray-500">{model.accuracy}% acc.</span>
                   </div>
-                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-purple-500 rounded-full"
                       style={{ width: `${model.accuracy}%` }}
