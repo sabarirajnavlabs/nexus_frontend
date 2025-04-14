@@ -20,8 +20,9 @@ export default function RootLayout({ children }) {
         <ClerkProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
-            enableSystem
+            defaultTheme="light"
+            enableSystem={false}
+            forcedTheme="light"
             disableTransitionOnChange
           >
             <ConfigProvider>

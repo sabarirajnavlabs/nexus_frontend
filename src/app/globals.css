@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --text-color: #000000;
+  --background-color: #ffffff;
+  --input-background-color: #ffffff;
+  --input-text-color: #000000;
+  --card-background-color: #ffffff;
+  --card-text-color: #000000;
+}
+
 * {
   box-sizing: border-box;
   padding: 0;
@@ -10,107 +21,162 @@
 
 body {
   font-family: 'Inter', sans-serif;
+  color: var(--text-color);
+  background-color: var(--background-color);
 }
 
 /* Ensure progress bars are consistently styled */
-.dark .bg-gray-200 {
-  background-color: rgba(55, 65, 81, 0.5); /* gray-700 with opacity */
+.bg-gray-200 {
+  background-color: rgba(229, 231, 235, 0.8); /* gray-200 */
 }
 
-.dark .bg-blue-50 {
-  background-color: rgba(30, 58, 138, 0.2); /* dark blue with opacity */
+.bg-blue-50 {
+  background-color: rgba(239, 246, 255, 0.8); /* blue-50 */
 }
 
-.dark .bg-green-50 {
-  background-color: rgba(6, 95, 70, 0.2); /* dark green with opacity */
+.bg-green-50 {
+  background-color: rgba(236, 253, 245, 0.8); /* green-50 */
 }
 
-.dark .bg-purple-50 {
-  background-color: rgba(91, 33, 182, 0.2); /* dark purple with opacity */
+.bg-purple-50 {
+  background-color: rgba(245, 243, 255, 0.8); /* purple-50 */
 }
 
 /* Ensure form inputs are consistently styled */
-.dark input, .dark select, .dark textarea {
-  color-scheme: dark;
-  background-color: #1f2937; /* bg-gray-800 */
-  color: white !important;
-  border-color: #374151; /* border-gray-700 */
+input, select, textarea {
+  color-scheme: light;
+  background-color: var(--input-background-color);
+  color: var(--input-text-color) !important;
+  border-color: #e5e7eb; /* border-gray-200 */
 }
 
-/* Force text colors in dark mode */
-.dark {
-  color: white;
+/* Force text colors in all modes */
+p, h1, h2, h3, h4, h5, h6, 
+span, div:not([class*="bg-"]):not([class*="text-"]) {
+  color: var(--text-color);
 }
 
-.dark p, .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6, 
-.dark span, .dark div:not([class*="bg-"]):not([class*="text-"]) {
-  color: white;
-}
-
-.dark .text-gray-900 {
-  color: white !important;
+.text-gray-900 {
+  color: var(--text-color) !important;
 }
 
 /* Chat specific fixes */
-.dark [class*="cardBg"], 
-.dark [class*="bg-gray-800"],
-.dark [class*="bg-gray-700"] {
-  color: white !important;
+[class*="cardBg"], 
+[class*="bg-gray-800"],
+[class*="bg-gray-700"] {
+  color: var(--text-color) !important;
 }
 
 /* Ensure option text is visible */
-.dark option {
-  background-color: #1f2937;
-  color: white;
+option {
+  background-color: var(--input-background-color);
+  color: var(--input-text-color);
 }
 
 /* More targeted chat component text overrides */
-.dark #chat-container,
-.dark #chat-input,
-.dark .chat-message,
-.dark .message-text,
-.dark .chat-option,
-.dark .chat-model-selector,
-.dark .chat-placeholder,
-.dark [class*="ChatPage"],
-.dark [class*="ChatPlayground"],
-.dark select[class*="appearance-none"],
-.dark input[type="text"] {
-  color: white !important;
+#chat-container,
+#chat-input,
+.chat-message,
+.message-text,
+.chat-option,
+.chat-model-selector,
+.chat-placeholder,
+[class*="ChatPage"],
+[class*="ChatPlayground"],
+select[class*="appearance-none"],
+input[type="text"] {
+  color: var(--input-text-color) !important;
 }
 
 /* Ensure dropdown options are properly styled */
-.dark option {
-  background-color: #1f2937 !important;
-  color: white !important;
-}
-
-/* Force text inheritance in dark mode containers */
-.dark [class*="bg-gray-"] *:not([class*="text-"]):not(button):not(svg),
-.dark [class*="bg-gray-"] *:not([class*="text-white"]):not(button):not(svg) {
-  color: white !important;
+option {
+  background-color: var(--input-background-color) !important;
+  color: var(--input-text-color) !important;
 }
 
 /* Dashboard specific fixes */
-.dark [class*="DashboardPage"] *,
-.dark .statistics-container,
-.dark .chart-container,
-.dark input[type="date"] {
-  color-scheme: dark;
-  color: white !important;
+[class*="DashboardPage"] *,
+.statistics-container,
+.chart-container,
+input[type="date"] {
+  color-scheme: light;
+  color: var(--text-color) !important;
 }
 
-/* Fix progress bars in dark mode */
-.dark .bg-gray-200 {
-  background-color: rgba(55, 65, 81, 0.5); /* gray-700 with opacity */
+/* Fix stat cards */
+.text-gray-500 {
+  color: rgba(107, 114, 128, 0.8) !important; /* gray-500 with opacity */
 }
 
-/* Fix stat cards in dark mode */
-.dark .text-gray-500 {
-  color: rgba(209, 213, 219, 0.8) !important; /* gray-300 with opacity */
+/* Override any dark mode classes that might be applied */
+.dark {
+  color: var(--text-color) !important;
+  background-color: var(--background-color) !important;
+}
+
+.dark input, 
+.dark select, 
+.dark textarea,
+.dark p, 
+.dark h1, 
+.dark h2, 
+.dark h3, 
+.dark h4, 
+.dark h5, 
+.dark h6,
+.dark span, 
+.dark div {
+  color: var(--text-color) !important;
+  background-color: var(--background-color) !important;
+}
+
+/* Card backgrounds */
+[class*="card"], 
+.card,
+.bg-white {
+  background-color: var(--card-background-color) !important;
+  color: var(--card-text-color) !important;
 }
 
 /* Ensure date inputs display properly */
-.dark input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0);
+}
+
+/* FIX FOR SIDEBAR TEXT COLOR */
+/* Make sidebar text explicitly white */
+[class*="bg-[#0A1628]"] *, 
+[class*="bg-gray-900"] *,
+[class*="bg-gray-800"] * {
+  color: white !important;
+}
+
+[class*="bg-[#0A1628]"] button, 
+[class*="bg-gray-900"] button,
+[class*="bg-gray-800"] button {
+  color: white !important;
+}
+
+[class*="bg-[#0A1628]"] a, 
+[class*="bg-gray-900"] a,
+[class*="bg-gray-800"] a {
+  color: white !important;
+}
+
+[class*="bg-[#0A1628]"] a span, 
+[class*="bg-gray-900"] a span,
+[class*="bg-gray-800"] a span,
+[class*="bg-[#0A1628]"] button span, 
+[class*="bg-gray-900"] button span,
+[class*="bg-gray-800"] button span {
+  color: white !important;
+}
+
+/* Handle specific sidebar components */
+.text-gray-300 {
+  color: rgba(209, 213, 219, 0.9) !important; /* light gray for sidebar text */
+}
+
+.text-white {
+  color: white !important;
 } 
