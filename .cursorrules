@@ -1,0 +1,260 @@
+{
+    "project": {
+        "name": "nexus-ai-frontend",
+        "type": "next.js",
+        "rules": {
+            "components": {
+                "location": "src/components",
+                "naming": {
+                    "files": {
+                        "extension": ".jsx",
+                        "case": "PascalCase",
+                        "clientComponents": "'use client' directive required"
+                    },
+                    "folders": "PascalCase"
+                },
+                "organization": {
+                    "features": [
+                        "Dashboard",
+                        "MainPage",
+                        "models",
+                        "profile",
+                        "whatsnew"
+                    ],
+                    "shared": [
+                        "ErrorBoundary",
+                        "theme-provider",
+                        "Logoutontabclose"
+                    ]
+                }
+            },
+            "pages": {
+                "location": "src/app",
+                "naming": {
+                    "files": {
+                        "page": "page.js",
+                        "layout": "layout.js",
+                        "error": "error.js",
+                        "loading": "loading.js",
+                        "route": "route.js"
+                    },
+                    "folders": "kebab-case"
+                }
+            },
+            "styles": {
+                "framework": "tailwind",
+                "global": "src/app/globals.css",
+                "patterns": {
+                    "className": "string literals",
+                    "darkMode": "next-themes"
+                }
+            }
+        },
+        "conventions": {
+            "components": {
+                "structure": [
+                    "'use client' directive when needed",
+                    "imports",
+                    "component",
+                    "exports"
+                ],
+                "styling": "tailwind-classes",
+                "clientComponents": {
+                    "location": "separate files",
+                    "directive": "'use client'"
+                }
+            },
+            "imports": {
+                "ordering": [
+                    "react",
+                    "next",
+                    "clerk",
+                    "@heroicons/react",
+                    "external-libs",
+                    "components",
+                    "styles"
+                ]
+            }
+        },
+        "constraints": {
+            "strict": {
+                "nextVersion": "14.2.13",
+                "fileExtensions": {
+                    "allowed": [".js", ".jsx"],
+                    "forbidden": [".ts", ".tsx"],
+                    "rules": {
+                        "app/*": ".js",
+                        "components/*": ".jsx"
+                    }
+                },
+                "dependencies": {
+                    "fixed": {
+                        "next": "14.2.13",
+                        "react": "^18",
+                        "react-dom": "^18"
+                    },
+                    "forbidden": [
+                        "@types/*",
+                        "typescript"
+                    ]
+                }
+            },
+            "componentTypes": {
+                "server": {
+                    "extension": ".js",
+                    "location": "app/",
+                    "directive": "none"
+                },
+                "client": {
+                    "extension": ".jsx",
+                    "location": "components/",
+                    "directive": "'use client'"
+                }
+            }
+        },
+        "templates": {
+            "serverComponent": {
+                "extension": ".js",
+                "template": [
+                    "// Server Component",
+                    "import { someImport } from 'some-package';",
+                    "",
+                    "export default function ComponentName() {",
+                    "  return (",
+                    "    <div>",
+                    "      {/* Component content */}",
+                    "    </div>",
+                    "  );",
+                    "}"
+                ]
+            },
+            "clientComponent": {
+                "extension": ".jsx",
+                "template": [
+                    "'use client';",
+                    "",
+                    "import { useState } from 'react';",
+                    "",
+                    "export default function ComponentName() {",
+                    "  const [state, setState] = useState();",
+                    "",
+                    "  return (",
+                    "    <div>",
+                    "      {/* Component content */}",
+                    "    </div>",
+                    "  );",
+                    "}"
+                ]
+            },
+            "pageComponent": {
+                "extension": ".js",
+                "template": [
+                    "export default function Page() {",
+                    "  return (",
+                    "    <main className=\"min-h-screen p-4\">",
+                    "      {/* Page content */}",
+                    "    </main>",
+                    "  );",
+                    "}"
+                ]
+            },
+            "layoutComponent": {
+                "extension": ".js",
+                "template": [
+                    "export default function Layout({ children }) {",
+                    "  return (",
+                    "    <div className=\"layout-container\">",
+                    "      {children}",
+                    "    </div>",
+                    "  );",
+                    "}"
+                ]
+            }
+        },
+        "fileStructure": {
+            "src": {
+                "app/": {
+                    "page.js": "Home page (server component)",
+                    "layout.js": "Root layout (server component)",
+                    "error.js": "Error handling",
+                    "global-error.js": "Global error handling",
+                    "protected/": "Protected routes",
+                    "profile/": "Profile pages",
+                    "sign-in/": "Authentication pages"
+                },
+                "components/": {
+                    "Dashboard/": "Dashboard related components",
+                    "MainPage/": "Main page components",
+                    "models/": "Model hub related components",
+                    "profile/": "User profile components",
+                    "whatsnew/": "New features components",
+                    "ui/": {
+                        "atoms/": "Basic UI components",
+                        "molecules/": "Composite components",
+                        "organisms/": "Complex components"
+                    }
+                }
+            }
+        },
+        "versionControl": {
+            "nextjs": {
+                "version": "14.2.13",
+                "features": {
+                    "appRouter": true,
+                    "serverComponents": true,
+                    "serverActions": false
+                }
+            },
+            "react": {
+                "version": "^18",
+                "features": {
+                    "hooks": true,
+                    "suspense": true
+                }
+            }
+        },
+        "dependencies": {
+            "core": {
+                "next": "14.2.13",
+                "react": "^18",
+                "react-dom": "^18"
+            },
+            "auth": {
+                "@clerk/nextjs": "^5.6.0",
+                "@clerk/clerk-react": "^5.9.1"
+            },
+            "ui": {
+                "@heroicons/react": "^1.0.6",
+                "framer-motion": "^11.5.6",
+                "next-themes": "^0.3.0"
+            },
+            "charts": {
+                "chart.js": "^4.4.7",
+                "react-chartjs-2": "^5.2.0",
+                "react-apexcharts": "^1.7.0"
+            }
+        },
+        "tooling": {
+            "packageManager": "npm",
+            "linting": {
+                "eslint": true,
+                "config": "next/core-web-vitals"
+            },
+            "styling": {
+                "tailwind": "^3.4.1",
+                "config": "tailwind.config.js"
+            }
+        },
+        "development": {
+            "scripts": {
+                "dev": "next dev",
+                "build": "next build",
+                "start": "next start",
+                "lint": "next lint"
+            },
+            "environment": {
+                "node": ">=18.17.0"
+            }
+        }
+    }
+}

@@ -1,0 +1,38 @@
+/* General slider styles */
+.slider {
+    -webkit-appearance: none; /* Remove default slider appearance */
+    width: 100%; /* Full width */
+    height: 4px; /* Thin track */
+    background: #000000; /* Dark background for the unfilled portion */
+    outline: none; /* Remove outline */
+    opacity: 0.7; /* Slightly transparent */
+    transition: opacity 0.2s; /* Smooth transition */
+    position: relative; /* Needed for pseudo-element positioning */
+  }
+  
+  .slider:hover {
+    opacity: 1; /* Fully opaque when hovered */
+  }
+  
+  /* Slider thumb (the knob) */
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Remove default thumb */
+    appearance: none; /* Remove default thumb */
+    width: 15px; /* Thumb width */
+    height: 15px; /* Thumb height */
+    background: #2DD4BF; /* Green color */
+    cursor: pointer; /* Pointer cursor */
+    border-radius: 50%; /* Rounded thumb */
+    position: relative; /* For correct positioning */
+    z-index: 1; /* Ensure it stays above the filled background */
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    background: #2DD4BF;
+    cursor: pointer;
+    border-radius: 50%;
+    position: relative;
+    z-index: 1;
+  }
