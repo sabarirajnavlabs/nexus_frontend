@@ -1,12 +1,14 @@
 import { authMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from 'next/server';
 
-// Define public routes as a constant so it can be reused
+// Only allow unauthenticated access to sign-in, sign-up, and nexus-admin routes
 const PUBLIC_ROUTES = [
-  '/',
-  '/sign-in(.*)',
-  '/sign-up(.*)',
-  '/super-admin/sign-in(.*)'
+  '/sign-in',
+  '/sign-in/(.*)',
+  '/sign-up',
+  '/sign-up/(.*)',
+  '/nexus-admin',
+  '/nexus-admin/(.*)'
 ];
 
 // More specific public routes with better pattern matching
@@ -23,23 +25,15 @@ export default authMiddleware({
       userId: auth.userId || 'not authenticated'
     });
 
-    // Check if the route is public
-    const isPublicRoute = PUBLIC_ROUTES.some(pattern => 
-      new RegExp(`^${pattern.replace(/\*/g, '.*')}$`).test(req.nextUrl.pathname)
-    );
-
-    console.log('Middleware: Checking if public route', {
-      isPublicRoute,
-      pathname: req.nextUrl.pathname
-    });
-
-    if (!isPublicRoute && !auth.userId) {
-      console.log('Middleware: Unauthorized access attempt, redirecting to sign-in');
-      return NextResponse.redirect(new URL('/sign-in', req.url));
+    // If user is signed in and trying to access auth pages, redirect to dashboard
+    // But don't redirect if they're accessing nexus-admin routes
+    if (auth.userId && 
+        !req.nextUrl.pathname.startsWith('/nexus-admin') && 
+        (req.nextUrl.pathname === '/' || req.nextUrl.pathname.startsWith('/sign-in') || req.nextUrl.pathname.startsWith('/sign-up'))) {
+      return NextResponse.redirect(new URL('/dashboard', req.url));
     }
 
-    console.log('Middleware: ' + (auth.userId ? 'Authenticated access to protected route' : 'Access to public route'));
-    console.log('Middleware: Proceeding to next middleware/route');
+    // Let Clerk handle the auth check using publicRoutes configuration
     return NextResponse.next();
   }
 });

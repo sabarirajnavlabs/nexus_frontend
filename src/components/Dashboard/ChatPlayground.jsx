@@ -18,6 +18,7 @@ export default function ChatPlayground() {
   const chatContainerRef = useRef(null);
   const dropdownRef = useRef(null);
   const { isLoaded, session } = useSession();
+  const hasFetched = useRef(false);
   
   const cardBg = theme === 'dark' ? 'bg-gray-800' : 'bg-white';
   const textColorClass = theme === 'dark' ? 'text-white' : 'text-gray-900';
@@ -44,107 +45,118 @@ export default function ChatPlayground() {
   // ...existing code...
 
 // Fetch user details and then models
-const fetchUserDetails = useCallback(async () => {
-  if (!isLoaded || !session) {
-    console.log('Session not loaded or not available');
-    return;
-  }
+// const fetchUserDetails = useCallback(async () => {
+//   if (!isLoaded || !session || hasFetched.current) return;
+//       hasFetched.current = true;
+  
 
-  // setIsLoadingUser(true);
-  try {
-    const token = await session.getToken();
-    console.log('Token:', token);
+//   // setIsLoadingUser(true);
+//   try {
+//     const token = await session.getToken();
+//     console.log('Token:', token);
     
-    if (!token) {
-      throw new Error('No token available from session');
-    }
+//     if (!token) {
+//       throw new Error('No token available from session');
+//     }
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/users/me`,
-      {
+//     const response = await fetch(
+//       `${process.env.NEXT_PUBLIC_API_URL}/users/me`,
+//       {
+//         method: 'GET',
+//         headers: {
+//           'Authorization': `Bearer ${token}`,
+//           'Content-Type': 'application/json'
+//         }
+//       }
+//     );
+    
+//     if (!response.ok) {
+//       const errorData = await response.json();
+//       throw new Error(`Error: ${response.status} ${response.statusText}`);
+//     }
+    
+//     const data = await response.json();
+//     setUserDetails(data);
+//   } catch (error) {
+//     // setErrorMessage('Failed to load user details. Please try again.');
+//     console.error('Failed to fetch user details:', error);
+//   } finally {
+//     // setIsLoadingUser(false);
+//     // setIsLoadingKey(false);
+//   }
+// }, [isLoaded, session]);
+
+useEffect(() => {
+  const fetchUserAndModels = async () => {
+    if (!isLoaded || !session || hasFetched.current) return;
+    hasFetched.current = true;
+
+    try {
+      // 1️⃣ Get token
+      const token = await session.getToken();
+      console.log('Token:', token);
+      if (!token) throw new Error('No token available from session');
+
+      // 2️⃣ Fetch user details
+      const userRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
-      }
-    );
-    
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`Error: ${response.status} ${response.statusText}`);
-    }
-    
-    const data = await response.json();
-    setUserDetails(data);
-  } catch (error) {
-    // setErrorMessage('Failed to load user details. Please try again.');
-    console.error('Failed to fetch user details:', error);
-  } finally {
-    // setIsLoadingUser(false);
-    // setIsLoadingKey(false);
-  }
-}, [isLoaded, session]);
-
-useEffect(() => {
-  if (isLoaded && session) {
-    fetchUserDetails();
-  }
-}, [isLoaded, session, fetchUserDetails]);
-
-// ...existing code...
-  const fetchModels = useCallback(async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL_2}/v1/models`,
-        {
-          method: 'GET',
-          headers: {
-            // Token: Cookies.get('__session') || '',
-            Authorization: `Bearer ${userDetails.lite_llm_key}`
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      console.log("Fetched models:", data.data);
-      
-      // Map the models into our format with name and provider
-      const formattedModels = data.data.map((model) => {
-        const provider = getProviderFromModel(model.id);
-        return {
-          name: model.id,
-          provider: provider
-        };
       });
-      
-      if (formattedModels && formattedModels.length > 0) {
-        setAvailableModels(formattedModels);
-        
-        // Set first model as default if we have models and none is selected
-        if (!selectedModel) {
-          setSelectedModel(formattedModels[0].name);
+
+      if (!userRes.ok) {
+        const errorData = await userRes.json();
+        throw new Error(`User fetch failed: ${userRes.status} ${userRes.statusText}`);
+      }
+
+      const userData = await userRes.json();
+      setUserDetails(userData);
+
+      const apiKey = userData.lite_llm_key;
+      if (!apiKey) throw new Error('Missing lite_llm_key in user data');
+
+      // 3️⃣ Fetch models using lite_llm_key
+      const modelsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL_2}/v1/models`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${apiKey}`
         }
-      } else {
-        // Set fallback models if API returns empty
-        const fallbackModels = [
+      });
+
+      let formattedModels = [];
+
+      if (modelsRes.ok) {
+        const modelsData = await modelsRes.json();
+        console.log("Fetched models:", modelsData.data);
+
+        formattedModels = modelsData.data.map((model) => ({
+          name: model.id,
+          provider: getProviderFromModel(model.id)
+        }));
+      }
+
+      // 4️⃣ Fallback if model API fails or returns empty
+      if (!modelsRes.ok || !formattedModels.length) {
+        formattedModels = [
           { name: 'gpt-4', provider: 'OpenAI' },
           { name: 'claude-3-haiku-20240307', provider: 'Anthropic' },
           { name: 'gemini-pro', provider: 'Google' },
           { name: 'llama3-8b-8192', provider: 'Meta' }
         ];
-        setAvailableModels(fallbackModels);
-        if (!selectedModel) {
-          setSelectedModel(fallbackModels[0].name);
-        }
       }
+
+      setAvailableModels(formattedModels);
+
+      if (!selectedModel) {
+        setSelectedModel(formattedModels[0].name);
+      }
+
     } catch (error) {
-      console.error('Failed to fetch models:', error);
-      // Set fallback models if API fails
+      console.error('Failed in fetchUserAndModels:', error);
+
+      // Fallback models in case of any failure
       const fallbackModels = [
         { name: 'gpt-4', provider: 'OpenAI' },
         { name: 'claude-3-haiku-20240307', provider: 'Anthropic' },
@@ -156,12 +168,88 @@ useEffect(() => {
         setSelectedModel(fallbackModels[0].name);
       }
     }
-  }, [selectedModel, getProviderFromModel]);
+  };
+
+  fetchUserAndModels();
+}, [isLoaded, session, selectedModel, getProviderFromModel]);
+
+
+// useEffect(() => {
+//   if (isLoaded && session) {
+//     fetchUserDetails();
+//   }
+// }, [isLoaded, session, fetchUserDetails]);
+
+// ...existing code...
+  // const fetchModels = useCallback(async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `${process.env.NEXT_PUBLIC_API_URL_2}/v1/models`,
+  //       {
+  //         method: 'GET',
+  //         headers: {
+  //           // Token: Cookies.get('__session') || '',
+  //           Authorization: `Bearer ${userDetails.lite_llm_key}`
+  //         },
+  //       }
+  //     );
+
+  //     if (!response.ok) {
+  //       throw new Error(`Error: ${response.status} ${response.statusText}`);
+  //     }
+
+  //     const data = await response.json();
+  //     console.log("Fetched models:", data.data);
+      
+  //     // Map the models into our format with name and provider
+  //     const formattedModels = data.data.map((model) => {
+  //       const provider = getProviderFromModel(model.id);
+  //       return {
+  //         name: model.id,
+  //         provider: provider
+  //       };
+  //     });
+      
+  //     if (formattedModels && formattedModels.length > 0) {
+  //       setAvailableModels(formattedModels);
+        
+  //       // Set first model as default if we have models and none is selected
+  //       if (!selectedModel) {
+  //         setSelectedModel(formattedModels[0].name);
+  //       }
+  //     } else {
+  //       // Set fallback models if API returns empty
+  //       const fallbackModels = [
+  //         { name: 'gpt-4', provider: 'OpenAI' },
+  //         { name: 'claude-3-haiku-20240307', provider: 'Anthropic' },
+  //         { name: 'gemini-pro', provider: 'Google' },
+  //         { name: 'llama3-8b-8192', provider: 'Meta' }
+  //       ];
+  //       setAvailableModels(fallbackModels);
+  //       if (!selectedModel) {
+  //         setSelectedModel(fallbackModels[0].name);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error('Failed to fetch models:', error);
+  //     // Set fallback models if API fails
+  //     const fallbackModels = [
+  //       { name: 'gpt-4', provider: 'OpenAI' },
+  //       { name: 'claude-3-haiku-20240307', provider: 'Anthropic' },
+  //       { name: 'gemini-pro', provider: 'Google' },
+  //       { name: 'llama3-8b-8192', provider: 'Meta' }
+  //     ];
+  //     setAvailableModels(fallbackModels);
+  //     if (!selectedModel) {
+  //       setSelectedModel(fallbackModels[0].name);
+  //     }
+  //   }
+  // }, [selectedModel, getProviderFromModel]);
   
   // Fetch available models on component mount
-  useEffect(() => {
-    fetchModels();
-  }, [selectedModel]);
+  // useEffect(() => {
+  //   fetchModels();
+  // }, [selectedModel]);
   
   // Close dropdown when clicking outside
   useEffect(() => {

@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTheme } from 'next-themes';
-import { useUser, UserButton } from '@clerk/nextjs';
+import { useUser, UserButton, useSession } from '@clerk/nextjs';
 import { useConfig } from '@/components/config-provider';
+import { usePathname } from 'next/navigation';
 
 // Custom icons to avoid heroicons issues
 const CustomIcon = {
@@ -32,9 +33,23 @@ const CustomIcon = {
 export default function DashboardPage() {
   const { theme } = useTheme();
   const { user } = useUser();
+  const { session, isLoaded } = useSession();
   const { backgroundColor, textColor: configTextColor } = useConfig();
   const [startDate, setStartDate] = useState('2024-04-03');
   const [endDate, setEndDate] = useState('2024-04-10');
+  const [availableModels, setAvailableModels] = useState([]);
+  const [budget, setBudget] = useState(null);
+  const [spent, setSpent] = useState(null);
+  const [loadingModels, setLoadingModels] = useState(true);
+  const [loadingSpent, setLoadingSpent] = useState(true);
+  const [userDetails, setUserDetails] = useState(null);
+  const pathname = usePathname();
+  const hasFetched = useRef(false);
+
+  // Reset hasFetched on route change
+  useEffect(() => {
+    hasFetched.current = false;
+  }, [pathname]);
 
   // Theme-based styles
   const cardBg = theme === 'dark' ? 'bg-gray-800' : 'bg-white';
@@ -94,6 +109,75 @@ export default function DashboardPage() {
     </svg>
   );
 
+  // Fetch user details from /users/me, then fetch /spend
+  useEffect(() => {
+    if (!isLoaded || !session || hasFetched.current) return;
+    hasFetched.current = true;
+    let isMounted = true;
+    const fetchData = async () => {
+      const token = await session.getToken();
+      if (!token) return;
+      setLoadingModels(true);
+      setLoadingSpent(true);
+      try {
+        // Fetch user details
+        const userRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        if (!userRes.ok) throw new Error('Failed to fetch user details');
+        const userData = await userRes.json();
+        if (isMounted) setUserDetails(userData);
+        // Fetch spend (with api_key query param)
+        try {
+          if (userData.lite_llm_key) {
+            const spendRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/spend?api_key=${userData.lite_llm_key}`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+            if (!spendRes.ok) throw new Error('Failed to fetch spend');
+            const spendData = await spendRes.json();
+            if (isMounted) setSpent(spendData.spend);
+          } else {
+            if (isMounted) setSpent(null);
+          }
+        } catch (spendErr) {
+          if (isMounted) setSpent(null);
+        }
+      } catch (err) {
+        if (isMounted) setUserDetails(null);
+        if (isMounted) setSpent(null);
+      } finally {
+        if (isMounted) {
+          setLoadingModels(false);
+          setLoadingSpent(false);
+        }
+      }
+    };
+    fetchData();
+    return () => {
+      isMounted = false;
+    };
+  }, [isLoaded, session]);
+  
+
+  useEffect(() => {
+    if (userDetails?.max_budget) {
+      setBudget(userDetails.max_budget);
+    }
+  }, [userDetails?.max_budget]);
+
+  useEffect(() => {
+    console.log('User Details:', userDetails);
+    console.log('Models:', userDetails?.models);
+    console.log('Max Budget:', userDetails?.max_budget);
+  }, [userDetails]);
+
   return (
     <div className={`p-6 ${textColorClass}`} style={{ backgroundColor, color: theme === 'dark' ? 'white' : 'inherit' }}>
       {/* Header with Date Range and User Profile */}
@@ -134,139 +218,166 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* AI Hardware Suite Metrics */}
+      {/* AI Model Metrics Section */}
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
-          <span className="text-blue-500">&lt;/&gt;</span>
-          AI Hardware Suite Metrics
+          <CustomIcon.ChartBar className="h-5 w-5 text-blue-500" />
+          AI Model Metrics
         </h2>
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* App Usage Time */}
-          <div className={`${cardBg} rounded-2xl border ${borderColor} p-6`}>
-            <h3 className="text-base font-medium mb-6 flex items-center gap-2">
-              <CustomIcon.Clock className="h-5 w-5 text-gray-500 dark:text-gray-300" />
-              App Usage Time
-            </h3>
-            <div className="space-y-4">
-              {appUsage.map((app, index) => (
-                <div key={index} className="flex justify-between items-center">
-                  <span className="text-base">{app.name}</span>
-                  <span className="text-base text-gray-500 dark:text-gray-300">{app.hours}h</span>
-                </div>
-              ))}
+          {/* Available Models */}
+          <div className={`${cardBg} rounded-2xl border ${borderColor} p-6 flex flex-col items-center`}>
+            <div className="text-3xl font-bold text-blue-600 mb-2">
+              {loadingModels ? '...' : userDetails && userDetails.models ? userDetails.models.length : '0'}
             </div>
+            <div className="text-base text-black dark:text-gray-300">Available Models</div>
           </div>
-
-          {/* AI Libraries Usage */}
-          <div className={`${cardBg} rounded-2xl border ${borderColor} p-6`}>
-            <h3 className="text-base font-medium mb-6 flex items-center gap-2">
-              <CustomIcon.Beaker className="h-5 w-5 text-gray-500 dark:text-gray-300" />
-              AI Libraries Usage
-            </h3>
-            <div className="space-y-6">
-              {aiLibraries.map((lib, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex justify-between text-base">
-                    <span>{lib.name}</span>
-                    <span className="text-gray-500 dark:text-gray-300">{lib.usage}%</span>
-                  </div>
-                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-blue-500 rounded-full"
-                      style={{ width: `${lib.usage}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
+          {/* Budget */}
+          <div className={`${cardBg} rounded-2xl border ${borderColor} p-6 flex flex-col items-center`}>
+            <div className="text-3xl font-bold text-green-600 mb-2">
+              {loadingModels ? '...' : userDetails && userDetails.max_budget !== undefined ? userDetails.max_budget : '0'}
             </div>
+            <div className="text-base text-black dark:text-gray-300">Budget</div>
           </div>
-
-          {/* Active Projects */}
-          <div className={`${cardBg} rounded-2xl border ${borderColor} p-6`}>
-            <h3 className="text-base font-medium mb-6 flex items-center gap-2">
-              <Lightning className="h-5 w-5 text-gray-500 dark:text-gray-300" />
-              Active Projects
-            </h3>
-            <div className="space-y-6">
-              {activeProjects.map((project, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex justify-between text-base">
-                    <div>
-                      <p>{project.name}</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-300">{project.category}</p>
-                    </div>
-                    <span className="text-gray-500 dark:text-gray-300">{project.progress}%</span>
-                  </div>
-                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-green-500 rounded-full"
-                      style={{ width: `${project.progress}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
+          {/* Spent */}
+          <div className={`${cardBg} rounded-2xl border ${borderColor} p-6 flex flex-col items-center`}>
+            <div className="text-3xl font-bold text-red-600 mb-2">
+              {loadingSpent ? '...' : spent !== null ? spent : '0'}
             </div>
+            <div className="text-base text-black dark:text-gray-300">Spent</div>
           </div>
         </div>
       </div>
 
-      {/* AI Model Hub Metrics */}
-      <div>
-        <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
-          <CustomIcon.ChartBar className="h-5 w-5 text-blue-500" />
-          AI Model Hub Metrics
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Top Models */}
-          <div className={`${cardBg} rounded-2xl border ${borderColor} p-6`}>
-            <h3 className="text-base font-medium mb-6 flex items-center gap-2">
-              <CustomIcon.Clock className="h-5 w-5 text-gray-500 dark:text-gray-300" />
-              Top Models
-            </h3>
-            <div className="space-y-6">
-              {topModels.map((model, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex justify-between text-base">
-                    <div>
-                      <p>{model.name}</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-300">{model.uses} uses this month</p>
-                    </div>
-                    <span className="text-gray-500 dark:text-gray-300">{model.accuracy}% acc.</span>
-                  </div>
-                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-purple-500 rounded-full"
-                      style={{ width: `${model.accuracy}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
+      {/* Learning Streak Section */}
+      {/* <div className={`mb-8 ${cardBg} rounded-2xl border ${borderColor} p-6`}> 
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full">
+          <div className="flex flex-1 gap-4 md:gap-8">
+            <div className="flex-1 flex flex-col items-center justify-center bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-4">
+              <div className="text-3xl font-bold text-yellow-600 mb-1">7</div>
+              <div className="text-base text-black dark:text-gray-300">Current Streak</div>
+            </div>
+            <div className="flex-1 flex flex-col items-center justify-center bg-purple-50 dark:bg-purple-900/20 rounded-xl p-4">
+              <div className="text-3xl font-bold text-purple-600 mb-1">15</div>
+              <div className="text-base text-black dark:text-gray-300">Longest Streak</div>
+            </div>
+            <div className="flex-1 flex flex-col items-center justify-center bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4">
+              <div className="text-3xl font-bold text-blue-600 mb-1">5</div>
+              <div className="text-base text-black dark:text-gray-300">This Week</div>
             </div>
           </div>
+          <div className="flex-1 flex justify-end items-center mt-6 md:mt-0">
+            <span className="text-green-600 font-medium flex items-center gap-1">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+              Today's goal completed
+            </span>
+          </div>
+        </div>
+      </div> */}
 
-          {/* Training Statistics */}
-          <div className={`${cardBg} rounded-2xl border ${borderColor} p-6`}>
-            <h3 className="text-base font-medium mb-6">Training Statistics</h3>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <div className="text-3xl font-semibold text-blue-600 dark:text-blue-400">
-                  {trainingStats.hours}
-                </div>
-                <div className="text-sm text-gray-500 dark:text-gray-300 mt-1">Training Hours</div>
+      {/* Stats Cards Section */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        {/* Learning Paths */}
+        <div className={`${cardBg} rounded-2xl border ${borderColor} p-6 flex flex-col items-start`}>
+          <div className="flex items-center mb-2">
+            <svg className="w-6 h-6 text-blue-500 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4" /></svg>
+            <span className="font-semibold text-black dark:text-gray-300">Learning Paths</span>
+          </div>
+          <div className="text-3xl font-bold text-blue-600 mb-1">3</div>
+          <div className="text-black dark:text-gray-300">Paths in progress</div>
+          <div className="text-sm text-black dark:text-gray-300">2 completed</div>
+          <div className="text-sm text-blue-500 mt-1 cursor-pointer underline">45 hours</div>
+        </div>
+        {/* Courses */}
+        <div className={`${cardBg} rounded-2xl border ${borderColor} p-6 flex flex-col items-start`}>
+          <div className="flex items-center mb-2">
+            <svg className="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /></svg>
+            <span className="font-semibold text-black dark:text-gray-300">Courses</span>
+          </div>
+          <div className="text-3xl font-bold text-green-600 mb-1">4</div>
+          <div className="text-black dark:text-gray-300">Courses in progress</div>
+          <div className="text-sm text-black dark:text-gray-300">8 completed</div>
+          <div className="text-sm text-green-500 mt-1">92% avg</div>
+        </div>
+        {/* Assessments */}
+        <div className={`${cardBg} rounded-2xl border ${borderColor} p-6 flex flex-col items-start`}>
+          <div className="flex items-center mb-2">
+            <svg className="w-6 h-6 text-purple-500 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" /></svg>
+            <span className="font-semibold text-black dark:text-gray-300">Assessments</span>
+          </div>
+          <div className="text-3xl font-bold text-purple-600 mb-1">12</div>
+          <div className="text-black dark:text-gray-300">Assessments taken</div>
+          <div className="text-sm text-black dark:text-gray-300">10 passed</div>
+          <div className="text-sm text-purple-500 mt-1">85% avg</div>
+        </div>
+        {/* Practice */}
+        <div className={`${cardBg} rounded-2xl border ${borderColor} p-6 flex flex-col items-start`}>
+          <div className="flex items-center mb-2">
+            <svg className="w-6 h-6 text-yellow-500 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 2v20" /></svg>
+            <span className="font-semibold text-black dark:text-gray-300">Practice</span>
+          </div>
+          <div className="text-3xl font-bold text-yellow-600 mb-1">24</div>
+          <div className="text-black dark:text-gray-300">Exercises completed</div>
+          <div className="text-sm text-black dark:text-gray-300">5 this week</div>
+          <div className="text-sm text-orange-500 mt-1">7 day streak</div>
+        </div>
+      </div>
+
+      {/* Recent Activity & Upcoming Goals Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Recent Activity */}
+        <div className={`${cardBg} rounded-2xl border ${borderColor} p-6`}>
+          <h3 className="text-base font-semibold mb-6 flex items-center gap-2 text-black dark:text-gray-300">
+            <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h2l1 2h13" /></svg>
+            Recent Activity
+          </h3>
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-green-50 dark:bg-green-900/20">
+              <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /></svg>
+              <div>
+                <div className="font-medium text-black dark:text-gray-300">Prompt Engineering for LLMs</div>
+                <div className="text-xs text-black dark:text-gray-300">65% complete · 2 hours ago</div>
               </div>
-              <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                <div className="text-3xl font-semibold text-green-600 dark:text-green-400">
-                  {trainingStats.successRate}%
-                </div>
-                <div className="text-sm text-gray-500 dark:text-gray-300 mt-1">Success Rate</div>
+            </div>
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20">
+              <svg className="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" /></svg>
+              <div>
+                <div className="font-medium text-black dark:text-gray-300">AI Fundamentals Quiz</div>
+                <div className="text-xs text-black dark:text-gray-300">90% score · 1 day ago</div>
               </div>
-              <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                <div className="text-3xl font-semibold text-purple-600 dark:text-purple-400">
-                  {trainingStats.modelsDeployed}
-                </div>
-                <div className="text-sm text-gray-500 dark:text-gray-300 mt-1">Models Deployed</div>
+            </div>
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-yellow-50 dark:bg-yellow-900/20">
+              <svg className="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 2v20" /></svg>
+              <div>
+                <div className="font-medium text-black dark:text-gray-300">RAG Implementation</div>
+                <div className="text-xs text-black dark:text-gray-300">Completed · 2 days ago</div>
               </div>
+            </div>
+          </div>
+        </div>
+        {/* Upcoming Goals */}
+        <div className={`${cardBg} rounded-2xl border ${borderColor} p-6`}>
+          <h3 className="text-base font-semibold mb-6 flex items-center gap-2 text-black dark:text-gray-300">
+            <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /></svg>
+            Upcoming Goals
+          </h3>
+          <div className="space-y-4">
+            <div>
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-black dark:text-gray-300">Complete RAG Course</span>
+                <span className="text-xs text-black dark:text-gray-300">3 days left</span>
+              </div>
+              <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden mb-2">
+                <div className="h-full bg-blue-500 rounded-full" style={{ width: '80%' }} />
+              </div>
+            </div>
+            <div className="flex justify-between items-center mb-1">
+              <span className="text-black dark:text-gray-300">AI Agents Assessment</span>
+              <span className="text-xs text-black dark:text-gray-300">5 days left</span>
+            </div>
+            <div className="flex justify-between items-center mb-1">
+              <span className="text-black dark:text-gray-300">Practice Multi-Modal Models</span>
+              <span className="text-xs text-black dark:text-gray-300">1 week left</span>
             </div>
           </div>
         </div>

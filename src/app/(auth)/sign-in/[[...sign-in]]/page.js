@@ -37,7 +37,6 @@ export default function Page() {
         color: textColor
       },
       card: 'shadow-xl rounded-xl',
-      socialButtonsBlockButton: 'hidden',
       footerActionLink: {
         color: primaryColor,
         '&:hover': {
@@ -50,7 +49,12 @@ export default function Page() {
       formFieldInput: 'rounded-md',
       formFieldAction: {
         color: secondaryColor
-      }
+      },
+      footer: 'hidden',
+      formButtonSecondary: 'hidden',
+      formFieldAction__signUp: 'hidden',
+      formFieldAction__signIn: 'hidden',
+      formFieldAction__forgotPassword: 'hidden',
     }
   };
 
@@ -91,62 +95,26 @@ export default function Page() {
               style={{ backgroundColor: primaryColor }}
             ></div>
             
-            {isRegistering ? (
-              <>
-                <h1 className="text-4xl lg:text-5xl text-white font-semibold mb-4">
-                  Register
-                </h1>
-                <h2 className="text-2xl lg:text-3xl text-white mb-6">
-                  {tagline}
-                </h2>
-                <SignUp
-                  path="/sign-up"
-                  routing="path"
-                  signUpOptions={{
-                    allowedIdentifiers: ["email"],
-                  }}
-                />
-                <button
-                  onClick={() => setIsRegistering(false)}
-                  className="font-semibold flex items-center gap-2 mt-4"
-                  style={{ color: secondaryColor }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M15 19l-7-7 7-7"
-                    />
-                  </svg>
-                  Back
-                </button>
-              </>
-            ) : (
-              <>
                 <h1 className="text-4xl lg:text-5xl text-white font-semibold mb-4">
                   Welcome
                 </h1>
                 <h2 className="text-2xl lg:text-3xl text-white mb-6">
                   {tagline}
                 </h2>
+            <div className="bg-white/10 p-4 rounded-lg mb-6">
+              <p className="text-white text-center">
+                This platform is invite-only. Please contact your administrator for access.
+              </p>
+            </div>
                 <SignIn
                   path="/sign-in"
                   routing="path"
                   signInOptions={{
                     allowedIdentifiers: ["email"],
-                    oauthProviders: [],
+                oauthProviders: ["google", "github"],
                   }}
+              appearance={clerkAppearance}
                 />
-              </>
-            )}
           </div>
         </div>
         
@@ -208,7 +176,7 @@ export default function Page() {
             </h2>
             
             <p className="text-gray-600 text-sm mt-4 px-4">
-              Access your advanced AI platform with a secure login.
+              This platform is invite-only. Please contact your administrator for access.
             </p>
           </div>
           
@@ -219,7 +187,7 @@ export default function Page() {
               routing="path"
               signInOptions={{
                 allowedIdentifiers: ["email"],
-                oauthProviders: [],
+                oauthProviders: ["google", "github"],
               }}
               appearance={clerkAppearance}
             />
@@ -278,7 +246,7 @@ export default function Page() {
                 routing="path"
                 signInOptions={{
                   allowedIdentifiers: ["email"],
-                  oauthProviders: [],
+                  oauthProviders: ["google", "github"],
                 }}
                 appearance={clerkAppearance}
               />

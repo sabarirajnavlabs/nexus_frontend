@@ -1,5 +1,6 @@
 'use client';
 
+import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/nextjs";
 import ChatPlayground from '@/components/Dashboard/ChatPlayground';
 import ChatPage from '@/components/Dashboard/ChatPage';
 import { useState } from 'react';
@@ -17,6 +18,8 @@ export default function ChatPageContainer() {
   const useSimpleChat = false;
   
   return (
+    <>
+      <SignedIn>
     <div 
       className={`w-full h-full ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}
       style={{ color: theme === 'dark' ? 'white' : 'inherit' }}
@@ -25,5 +28,10 @@ export default function ChatPageContainer() {
         <ChatPage model={defaultModel} /> : 
         <ChatPlayground />}
     </div>
+      </SignedIn>
+      <SignedOut>
+        <RedirectToSignIn redirectUrl="/sign-in" />
+      </SignedOut>
+    </>
   );
 } 

@@ -188,17 +188,6 @@ export default function Sidebar() {
           </ul>
         </nav>
 
-        {/* Admin Switch */}
-        <div className="p-4 border-t border-gray-700">
-          <button
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 transition-colors"
-          >
-            <span className="text-xl">👑</span>
-            <span>Switch to Admin</span>
-          </button>
-        </div>
-
         {/* Logout */}
         <div className="p-4">
           <button

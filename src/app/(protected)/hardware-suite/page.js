@@ -1,5 +1,6 @@
 'use client';
 
+import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/nextjs";
 import dynamic from 'next/dynamic';
 import { useConfig } from '@/components/config-provider';
 import { useTheme } from 'next-themes';
@@ -13,6 +14,8 @@ export default function HardwareSuitePage() {
   const { theme } = useTheme();
   
   return (
+    <>
+      <SignedIn>
     <div 
       className={`min-h-screen ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`} 
       style={{ 
@@ -22,5 +25,10 @@ export default function HardwareSuitePage() {
     >
       <HardwareSuite />
     </div>
+      </SignedIn>
+      <SignedOut>
+        <RedirectToSignIn redirectUrl="/sign-in" />
+      </SignedOut>
+    </>
   );
 } 

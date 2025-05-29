@@ -123,7 +123,7 @@ export default function Navbar() {
         {/* Bottom Actions */}
         <div className="p-4 border-t border-gray-800">
           <Link
-            href="/admin"
+            href="/nexus-admin"
             onClick={() => setIsMobileMenuOpen(false)}
             className={`
               flex items-center px-4 py-3 rounded-lg mb-2

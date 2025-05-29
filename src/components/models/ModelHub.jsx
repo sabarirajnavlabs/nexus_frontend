@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback,useRef } from 'react';
 import { useTheme } from 'next-themes';
 import { useSession } from '@clerk/nextjs';
 import Cookies from 'js-cookie';
@@ -55,6 +55,7 @@ export default function ModelHub() {
     if (modelId.includes('llama')) return 'Meta';
     return 'Unknown Provider';
   };
+  const hasFetched = useRef(false);
   
   // Process models data into card format with icons and descriptions
   const processModelsData = (modelsData) => {
@@ -130,10 +131,8 @@ export default function ModelHub() {
   
   // Fetch user details from backend
   const fetchUserDetails = useCallback(async () => {
-    if (!isLoaded || !session) {
-      console.log('Session not loaded or not available');
-      return;
-    }
+    if (!isLoaded || !session || hasFetched.current) return;
+    hasFetched.current = true;
 
     setIsLoadingUser(true);
     try {
