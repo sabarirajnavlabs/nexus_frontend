@@ -138,8 +138,8 @@ export default function CoursesPage() {
               </div>
               <div className="text-xs text-gray-400 mb-2">By {course.author}</div>
             </div>
-            <button className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition flex items-center justify-between">
-              Start Course
+            <button disabled className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 opacity-60 cursor-not-allowed transition flex items-center justify-between">
+              Coming Soon
               <span className="ml-2">&rarr;</span>
             </button>
           </div>

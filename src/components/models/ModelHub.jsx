@@ -32,6 +32,7 @@ export default function ModelHub() {
   });
   const [isLoadingUser, setIsLoadingUser] = useState(true);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [expandedCards, setExpandedCards] = useState({});
   
   // Debug environment variables
   useEffect(() => {
@@ -56,78 +57,6 @@ export default function ModelHub() {
     return 'Unknown Provider';
   };
   const hasFetched = useRef(false);
-  
-  // Process models data into card format with icons and descriptions
-  const processModelsData = (modelsData) => {
-    const modelGroups = {};
-    
-    // Group models by provider
-    modelsData.forEach(model => {
-      const provider = getProviderFromModel(model.id);
-      if (!modelGroups[provider]) {
-        modelGroups[provider] = [];
-      }
-      modelGroups[provider].push(model.id);
-    });
-    
-    // Create cards for each provider group
-    return [
-      {
-        id: 1,
-        name: 'OpenAI GPT Models',
-        description: 'State-of-the-art language models from OpenAI',
-        icon: '/models/logos/openai-logomark.svg',
-        type: 'access',
-        provider: 'OpenAI',
-        models: modelGroups['OpenAI'] || []
-      },
-      {
-        id: 2,
-        name: 'Anthropic Claude Models',
-        description: 'Efficient and powerful models from Anthropic',
-        icon: '/models/logos/claude-ai-icon.svg',
-        type: 'access',
-        provider: 'Anthropic',
-        models: modelGroups['Anthropic'] || []
-      },
-      {
-        id: 3,
-        name: 'Google Gemini Models',
-        description: 'High-performance AI models by Google',
-        icon: '/models/logos/google-gemini-icon.svg',
-        type: 'access',
-        provider: 'Google',
-        models: modelGroups['Google'] || []
-      },
-      {
-        id: 4,
-        name: 'Meta Llama Models',
-        description: 'Open-source large language models from Meta AI',
-        icon: '/models/logos/meta-icon.svg',
-        type: 'explore',
-        provider: 'Meta',
-        models: modelGroups['Meta'] || []
-      },
-      {
-        id: 5,
-        name: 'DeepSeek Models',
-        description: 'Advanced open-source AI models for various tasks',
-        icon: '/models/logos/deepseek-logo-icon.svg',
-        type: 'explore',
-        provider: 'DeepSeek',
-        models: modelGroups['Unknown Provider'] || []
-      },
-      {
-        id: 6,
-        name: 'Huggingface Models',
-        description: 'Community-driven open-source models and tools',
-        icon: '/models/logos/huggingface-icon.svg',
-        type: 'explore',
-        provider: 'Huggingface',
-        models: modelGroups['Huggingface'] || []
-      }
-    ];
-  };
   
   // Fetch user details from backend
   const fetchUserDetails = useCallback(async () => {
@@ -203,7 +132,26 @@ export default function ModelHub() {
   // Fetch available models
   const fetchModels = useCallback(async () => {
     try {
-      const response = await fetch(
+      // First API call to get all models from LiteLLM
+      const allModelsResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_LITELLM_API_URL}/v1/models`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer sabari`
+          },
+        }
+      );
+
+      if (!allModelsResponse.ok) {
+        throw new Error(`Error: ${allModelsResponse.status} ${allModelsResponse.statusText}`);
+      }
+
+      const allModelsData = await allModelsResponse.json();
+      console.log('All models data:', allModelsData); // Debug log
+      
+      // Second API call to get user's available models
+      const userModelsResponse = await fetch(
         `${process.env.NEXT_PUBLIC_LITELLM_API_URL}/v1/models`,
         {
           method: 'GET',
@@ -213,82 +161,112 @@ export default function ModelHub() {
         }
       );
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      if (!userModelsResponse.ok) {
+        throw new Error(`Error: ${userModelsResponse.status} ${userModelsResponse.statusText}`);
       }
 
-      const data = await response.json();
+      const userModelsData = await userModelsResponse.json();
+      console.log('User models data:', userModelsData); // Debug log
       
-      // Process models into card format
-      const processedModels = processModelsData(data.data);
+      // Process models into card format with both all models and user's available models
+      const processedModels = processModelsData(
+        Array.isArray(allModelsData.data) ? allModelsData.data : [],
+        Array.isArray(userModelsData.data) ? userModelsData.data : []
+      );
+      console.log('Processed models:', processedModels); // Debug log
       setAvailableModels(processedModels);
     } catch (error) {
       console.error('Failed to fetch models:', error);
+      setErrorMessage('Failed to fetch models. Please try again.');
     }
   }, [userDetails.lite_llm_key]);
   
-  // Update API Key
-  const updateAPIKey = async () => {
-    setIsLoadingKey(true);
-    setErrorMessage('');
-    setSuccessMessage('');
+  // Process models data into card format with icons and descriptions
+  const processModelsData = (allModelsData, userModelsData) => {
+    const modelGroups = {};
+    const userModelGroups = {};
     
-    try {
-      // First, generate a new key
-      const generateResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/key/generate`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${userDetails.lite_llm_key}`
-          }
-        }
-      );
-      
-      if (!generateResponse.ok) {
-        throw new Error(`Error generating key: ${generateResponse.status} ${generateResponse.statusText}`);
+    // Group all models by provider
+    allModelsData.forEach(model => {
+      const provider = getProviderFromModel(model.id);
+      if (!modelGroups[provider]) {
+        modelGroups[provider] = [];
       }
-      
-      const generateData = await generateResponse.json();
-      const newKey = generateData.key;
-      
-      if (!newKey) {
-        throw new Error('No key received from generate endpoint');
+      modelGroups[provider].push(model.id);
+    });
+
+    // Group user's available models by provider
+    userModelsData.forEach(model => {
+      const provider = getProviderFromModel(model.id);
+      if (!userModelGroups[provider]) {
+        userModelGroups[provider] = [];
       }
-      
-      // Get the current key before updating
-      const currentKey = apiKey === '••••••••••••••••••••••••••••••••••' ? '' : apiKey;
-      
-      // Then, update the key
-      const updateResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/key/update`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${userDetails.lite_llm_key}`
-          },
-          body: JSON.stringify({
-            old_key: currentKey,
-            new_key: newKey
-          })
-        }
-      );
-      
-      if (!updateResponse.ok) {
-        const errorData = await updateResponse.json();
-        throw new Error(errorData.detail?.[0]?.msg || `Error updating key: ${updateResponse.status} ${updateResponse.statusText}`);
+      userModelGroups[provider].push(model.id);
+    });
+    
+    // Create cards for each provider group
+    return [
+      {
+        id: 1,
+        name: 'OpenAI GPT Models',
+        description: 'State-of-the-art language models from OpenAI',
+        icon: '/models/logos/openai-logomark.svg',
+        type: 'access',
+        provider: 'OpenAI',
+        models: modelGroups['OpenAI'] || [],
+        availableModels: userModelGroups['OpenAI'] || []
+      },
+      {
+        id: 2,
+        name: 'Anthropic Claude Models',
+        description: 'Efficient and powerful models from Anthropic',
+        icon: '/models/logos/claude-ai-icon.svg',
+        type: 'access',
+        provider: 'Anthropic',
+        models: modelGroups['Anthropic'] || [],
+        availableModels: userModelGroups['Anthropic'] || []
+      },
+      {
+        id: 3,
+        name: 'Google Gemini Models',
+        description: 'High-performance AI models by Google',
+        icon: '/models/logos/google-gemini-icon.svg',
+        type: 'access',
+        provider: 'Google',
+        models: modelGroups['Google'] || [],
+        availableModels: userModelGroups['Google'] || []
+      },
+      {
+        id: 4,
+        name: 'Meta Llama Models',
+        description: 'Open-source large language models from Meta AI',
+        icon: '/models/logos/meta-icon.svg',
+        type: 'explore',
+        provider: 'Meta',
+        models: modelGroups['Meta'] || [],
+        availableModels: userModelGroups['Meta'] || []
+      },
+      {
+        id: 5,
+        name: 'DeepSeek Models',
+        description: 'Advanced open-source AI models for various tasks',
+        icon: '/models/logos/deepseek-logo-icon.svg',
+        type: 'explore',
+        provider: 'DeepSeek',
+        models: modelGroups['Unknown Provider'] || [],
+        availableModels: userModelGroups['Unknown Provider'] || []
+      },
+      {
+        id: 6,
+        name: 'Huggingface Models',
+        description: 'Community-driven open-source models and tools',
+        icon: '/models/logos/huggingface-icon.svg',
+        type: 'explore',
+        provider: 'Huggingface',
+        models: modelGroups['Huggingface'] || [],
+        availableModels: userModelGroups['Huggingface'] || []
       }
-      
-      // Update the UI with the new key
-      setApiKey(newKey);
-      setSuccessMessage('API Key updated successfully!');
-    } catch (error) {
-      console.error('Failed to update API key:', error);
-      setErrorMessage(error.message || 'Failed to update API key. Please try again.');
-    } finally {
-      setIsLoadingKey(false);
-    }
+    ];
   };
   
   // Initial data fetch
@@ -353,11 +331,97 @@ export default function ModelHub() {
     }));
   };
 
-  // Add this function to handle model access
+  // Add this function to handle card expansion
+  const handleCardExpand = (cardId) => {
+    setExpandedCards(prev => ({
+      ...prev,
+      [cardId]: !prev[cardId]
+    }));
+  };
+
+  // Modify the handleModelAccess function
   const handleModelAccess = (providerId) => {
+    if (!expandedCards[providerId]) {
+      // If card is not expanded, expand it
+      handleCardExpand(providerId);
+      return;
+    }
+
+    // If card is expanded and model is selected
     const selectedModel = selectedModels[providerId];
     if (selectedModel) {
-      router.push(`/chat?model=${selectedModel}`);
+      const model = availableModels.find(m => m.id === providerId);
+      if (model && model.availableModels.includes(selectedModel)) {
+        // If user has access to the selected model, navigate to chat
+        router.push(`/chat?model=${selectedModel}`);
+      } else {
+        // If user doesn't have access, show request access message
+        setErrorMessage('You need to request access to use this model. Please contact your administrator.');
+      }
+    }
+  };
+
+  // Update API Key
+  const updateAPIKey = async () => {
+    setIsLoadingKey(true);
+    setErrorMessage('');
+    setSuccessMessage('');
+    
+    try {
+      // First, generate a new key
+      const generateResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/key/generate`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${userDetails.lite_llm_key}`
+          }
+        }
+      );
+      
+      if (!generateResponse.ok) {
+        throw new Error(`Error generating key: ${generateResponse.status} ${generateResponse.statusText}`);
+      }
+      
+      const generateData = await generateResponse.json();
+      const newKey = generateData.key;
+      
+      if (!newKey) {
+        throw new Error('No key received from generate endpoint');
+      }
+      
+      // Get the current key before updating
+      const currentKey = apiKey === '••••••••••••••••••••••••••••••••••' ? '' : apiKey;
+      
+      // Then, update the key
+      const updateResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/key/update`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${userDetails.lite_llm_key}`
+          },
+          body: JSON.stringify({
+            old_key: currentKey,
+            new_key: newKey
+          })
+        }
+      );
+      
+      if (!updateResponse.ok) {
+        const errorData = await updateResponse.json();
+        throw new Error(errorData.detail?.[0]?.msg || `Error updating key: ${updateResponse.status} ${updateResponse.statusText}`);
+      }
+      
+      // Update the UI with the new key
+      setApiKey(newKey);
+      setSuccessMessage('API Key updated successfully!');
+    } catch (error) {
+      console.error('Failed to update API key:', error);
+      setErrorMessage(error.message || 'Failed to update API key. Please try again.');
+    } finally {
+      setIsLoadingKey(false);
     }
   };
   
@@ -446,7 +510,7 @@ export default function ModelHub() {
           </div>
           
           <div className="flex flex-col sm:flex-row gap-3 mt-4">
-            <button 
+            {/* <button 
               className={`px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition flex items-center justify-center text-sm ${isLoadingKey ? 'opacity-50 cursor-not-allowed' : ''}`}
               onClick={updateAPIKey}
               disabled={isLoadingKey}
@@ -467,7 +531,7 @@ export default function ModelHub() {
                   Update API Key
                 </>
               )}
-            </button>
+            </button> */}
             
             <button 
               className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition flex items-center justify-center text-sm"
@@ -533,31 +597,66 @@ export default function ModelHub() {
                 <h3 className="text-base sm:text-lg font-semibold mb-2">{model.name}</h3>
                 <p className="text-sm text-gray-500 mb-4">{model.description}</p>
                 
-                {model.models.length > 0 && (
+                {expandedCards[model.id] && (
                   <div className="mb-4">
-                    <select
-                      value={selectedModels[model.id] || ''}
-                      onChange={(e) => handleModelSelect(model.id, e.target.value)}
-                      className={`w-full p-2 rounded-lg border ${borderColor} ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} text-sm mb-3`}
-                    >
-                      <option value="">Select a model</option>
-                      {model.models.map((modelId) => (
-                        <option key={modelId} value={modelId}>
-                          {modelId}
-                        </option>
-                      ))}
-                    </select>
+                    {model.models.length > 0 ? (
+                      <>
+                        <select
+                          value={selectedModels[model.id] || ''}
+                          onChange={(e) => handleModelSelect(model.id, e.target.value)}
+                          className={`w-full p-2 rounded-lg border ${borderColor} ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} text-sm mb-3`}
+                        >
+                          <option value="">Select a model</option>
+                          {model.models.map((modelId) => (
+                            <option 
+                              key={modelId} 
+                              value={modelId}
+                              className={model.availableModels.includes(modelId) ? 'text-green-500' : ''}
+                            >
+                              {modelId} {model.availableModels.includes(modelId) ? '(Available)' : ''}
+                            </option>
+                          ))}
+                        </select>
+                        
+                        {model.availableModels.length > 0 && (
+                          <div className="mt-2 text-sm text-gray-500">
+                            <p>Your available models:</p>
+                            <ul className="list-disc list-inside">
+                              {model.availableModels.map(modelId => (
+                                <li key={modelId} className="text-green-500">{modelId}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="text-center py-4">
+                        <div className="text-3xl mb-2">🔍</div>
+                        <p className="text-gray-500 font-medium">No Models Available</p>
+                        <p className="text-sm text-gray-400 mt-1">There are no models available for this provider at the moment.</p>
+                      </div>
+                    )}
                   </div>
                 )}
                 
                 <button 
                   onClick={() => handleModelAccess(model.id)}
                   className={`w-full py-2 px-4 rounded text-white text-sm ${
-                    model.models.length > 0 ? 'bg-blue-500 hover:bg-blue-600' : 'bg-green-500 hover:bg-green-600'
-                  } transition ${!selectedModels[model.id] && model.models.length > 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  disabled={model.models.length > 0 && !selectedModels[model.id]}
+                    expandedCards[model.id] && selectedModels[model.id] 
+                      ? (model.availableModels.includes(selectedModels[model.id]) 
+                          ? 'bg-blue-500 hover:bg-blue-600' 
+                          : 'bg-yellow-500 hover:bg-yellow-600')
+                      : 'bg-green-500 hover:bg-green-600'
+                  } transition ${expandedCards[model.id] && !selectedModels[model.id] ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  disabled={expandedCards[model.id] && !selectedModels[model.id]}
                 >
-                  {model.models.length > 0 ? 'Access Model' : 'Explore Models'}
+                  {expandedCards[model.id] 
+                    ? (selectedModels[model.id] 
+                        ? (model.availableModels.includes(selectedModels[model.id]) 
+                            ? 'Access Model' 
+                            : 'Request Access')
+                        : 'Select a Model')
+                    : 'Explore Models'}
                 </button>
               </div>
             </div>

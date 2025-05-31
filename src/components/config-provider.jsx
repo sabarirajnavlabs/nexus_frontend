@@ -7,7 +7,7 @@ const defaultConfig = {
   deploymentType: 'nexus',
   orgName: 'Nexus AI Platform',
   logoPath: '/logos/nexus-logo.png',
-  logoCirclePath: '/Navbar/logo-circle.png',
+  logoCirclePath: '/NavigateLabs-CIR.png',
   backgroundImg: '/SignIn/background.png',
   primaryColor: '#3B82F6',
   secondaryColor: '#1E40AF',

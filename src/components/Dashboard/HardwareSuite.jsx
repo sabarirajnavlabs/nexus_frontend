@@ -549,14 +549,15 @@ export default function HardwareSuite() {
                   {/* Launch Button */}
                   <button
                     onClick={() => launchInstance(instance)}
-                    disabled={loading[instance.id]}
+                    // disabled={loading[instance.id]}
+                    disabled={true}
                     className={`
                       w-full py-2 px-4 rounded-lg font-medium
                       ${loading[instance.id]
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         : 'bg-blue-500 hover:bg-blue-600 text-white'
                       }
-                      transition-colors duration-200
+                      transition-colors duration-200 opacity-50 cursor-not-allowed
                     `}
                   >
                     {loading[instance.id] ? (
@@ -568,7 +569,7 @@ export default function HardwareSuite() {
                         Launching...
                       </div>
                     ) : (
-                      'Launch Instance'
+                      'Coming Soon'
                     )}
                   </button>
                 </div>

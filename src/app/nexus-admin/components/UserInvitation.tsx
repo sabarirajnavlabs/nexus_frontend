@@ -77,15 +77,14 @@ const UserInvitation: React.FC<UserInvitationProps> = ({ setLoading, loading }) 
         mode: 'cors',
       });
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to fetch organizations');
+        window.location.href = '/dashboard';
+        return;
       }
       const data = await response.json();
       setOrganizations(data);
       setOrgsLoaded(true);
     } catch (error) {
-      message.error(error instanceof Error ? error.message : 'Failed to fetch organizations');
-      setOrgsLoaded(true); // allow UI to render error state
+      window.location.href = '/dashboard';
     } finally {
       setLoading(false);
     }
@@ -300,17 +299,12 @@ const UserInvitation: React.FC<UserInvitationProps> = ({ setLoading, loading }) 
 
       <div className="mb-4">
         <Select
-          placeholder="Select Organization"
-          className="w-full"
           value={selectedOrg}
           onChange={setSelectedOrg}
-        >
-          {organizations.map((org) => (
-            <Select.Option key={org.id} value={org.id.toString()}>
-              {org.full_name}
-            </Select.Option>
-          ))}
-        </Select>
+          options={organizations.map(org => ({ value: org.id, label: org.full_name }))}
+          placeholder="Select Organization"
+          style={{ width: '100%' }}
+        />
       </div>
 
       <Tabs

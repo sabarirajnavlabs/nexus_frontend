@@ -4,15 +4,18 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
-import { UserButton, useClerk } from '@clerk/nextjs';
-import { ChevronDownIcon, ChevronUpIcon, BookOpenIcon, ChatBubbleLeftRightIcon, Cog6ToothIcon, ComputerDesktopIcon, Squares2X2Icon, AcademicCapIcon, ClipboardDocumentListIcon, PuzzlePieceIcon, UsersIcon, ArrowRightOnRectangleIcon, HomeIcon, WindowIcon } from '@heroicons/react/24/outline';
+import { UserButton, useClerk, useUser, useAuth } from '@clerk/nextjs';
+import { ChevronDownIcon, ChevronUpIcon, BookOpenIcon, ChatBubbleLeftRightIcon, Cog6ToothIcon, ComputerDesktopIcon, Squares2X2Icon, AcademicCapIcon, ClipboardDocumentListIcon, PuzzlePieceIcon, UsersIcon, ArrowRightOnRectangleIcon, HomeIcon, WindowIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 
 export default function Sidebar() {
   const pathname = usePathname();
   const { theme } = useTheme();
   const { signOut } = useClerk();
+  const { user } = useUser();
+  const { getToken } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isExploreOpen, setIsExploreOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // Close mobile menu when route changes
   useEffect(() => {
@@ -31,6 +34,31 @@ export default function Sidebar() {
     };
   }, [isMobileMenuOpen]);
   
+  useEffect(() => {
+    const checkRole = async () => {
+      if (!user) return;
+      const token = await getToken();
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (data && (data.role === 'admin' || data.role === 'super_admin')) {
+          setIsAdmin(true);
+        } else {
+          setIsAdmin(false);
+        }
+      } else {
+        setIsAdmin(false);
+      }
+    };
+    checkRole();
+  }, [user, getToken]);
+  
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <HomeIcon className="w-6 h-6" /> },
     { name: 'Model Hub', path: '/model-hub', icon: <BookOpenIcon className="w-6 h-6" /> },
@@ -39,8 +67,8 @@ export default function Sidebar() {
   ];
 
   const exploreItems = [
-    { name: 'Learning Paths', path: '/explore/learning-paths', icon: <AcademicCapIcon className="w-5 h-5" /> },
     { name: 'Courses', path: '/explore/courses', icon: <BookOpenIcon className="w-5 h-5" /> },
+    { name: 'Learning Paths', path: '/explore/learning-paths', icon: <AcademicCapIcon className="w-5 h-5" /> },
     { name: 'Practice', path: '/explore/practice', icon: <PuzzlePieceIcon className="w-5 h-5" /> },
     { name: 'Assessments', path: '/explore/assessments', icon: <ClipboardDocumentListIcon className="w-5 h-5" /> },
     { name: 'Mock Interviews', path: '/explore/mock-interviews', icon: <UsersIcon className="w-5 h-5" /> },
@@ -52,7 +80,7 @@ export default function Sidebar() {
       <div className="lg:hidden fixed top-0 right-0 left-0 h-16 z-[100] bg-[#0A1628]">
         <div className="h-full px-4 flex justify-between items-center">
           <Link href="/" className="flex items-center space-x-2">
-            <span className="text-2xl">🧠</span>
+           <img src="/NavigateLabs-CIR.png" alt="" srcset="" className='w-10 h-10'/>
             <span className="text-xl font-semibold text-white">Nexus AI</span>
           </Link>
           <button
@@ -98,7 +126,7 @@ export default function Sidebar() {
         {/* Logo Section */}
         <div className="p-6 border-b border-gray-700 hidden lg:block">
           <Link href="/" className="flex items-center space-x-2">
-            <span className="text-2xl">🧠</span>
+            <img src="/NavigateLabs-CIR.png" alt="" srcset="" className='w-10 h-10'/>
             <span className="text-xl font-semibold">Nexus AI</span>
           </Link>
         </div>
@@ -158,9 +186,10 @@ export default function Sidebar() {
             </li>
             {/* End Explore Section */}
             <li>
-              <Link
-                href="/ai-app-builder"
-                onClick={() => setIsMobileMenuOpen(false)}
+              <a
+                href="https://dify.ai/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
                   pathname === '/ai-app-builder'
                     ? 'bg-blue-600 text-white'
@@ -169,7 +198,7 @@ export default function Sidebar() {
               >
                 <WindowIcon className="w-6 h-6" />
                 <span>AI App Builder</span>
-              </Link>
+              </a>
             </li>
             <li>
               <Link
@@ -185,11 +214,24 @@ export default function Sidebar() {
                 <span>Settings</span>
               </Link>
             </li>
+           
           </ul>
         </nav>
 
         {/* Logout */}
         <div className="p-4">
+           {/* Switch to Admin Button (only for admin/super_admin) */}
+           {isAdmin && (
+              <div className="p-2 border-t border-gray-700">
+              <Link
+                className="w-full flex items-center space-x-2 px-4 py-3 rounded-lg bg-blue-600"
+                href="/nexus-admin/dashboard"
+              >
+                <ShieldCheckIcon className="w-6 h-6" />
+                <span>Switch to Admin</span>
+              </Link>
+            </div>
+            )}
           <button
             onClick={() => {
               setIsMobileMenuOpen(false);

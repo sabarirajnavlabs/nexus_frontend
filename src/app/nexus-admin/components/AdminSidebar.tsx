@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
+import { ArrowRightOnRectangleIcon, HomeIcon } from '@heroicons/react/24/outline';
 import { useClerk } from '@clerk/nextjs';
+import Link from 'next/link';
 
 const sidebarItems = [
   { key: 'organizations', label: 'Organizations', icon: '🏢' },
@@ -30,7 +31,7 @@ export default function AdminSidebar({ selected, onSelect }) {
       <div className="lg:hidden fixed top-0 right-0 left-0 h-16 z-[100] bg-[#0A1628]">
         <div className="h-full px-4 flex justify-between items-center">
           <span className="flex items-center space-x-2">
-            <span className="text-2xl">👑</span>
+            <img src="/NavigateLabs-CIR.png" alt=""  className='w-10 h-10'/>
             <span className="text-xl font-semibold text-white">Admin</span>
           </span>
           <button
@@ -76,7 +77,7 @@ export default function AdminSidebar({ selected, onSelect }) {
         {/* Logo Section */}
         <div className="p-6 border-b border-gray-700 hidden lg:block">
           <span className="flex items-center space-x-2">
-            <span className="text-2xl">👑</span>
+            <img src="/NavigateLabs-CIR.png" alt=""  className='w-10 h-10'/>
             <span className="text-xl font-semibold">Admin</span>
           </span>
         </div>
@@ -103,13 +104,13 @@ export default function AdminSidebar({ selected, onSelect }) {
         </nav>
         {/* Switch to Admin (disabled in admin sidebar) */}
         <div className="p-4 border-t border-gray-700">
-          <button
-            disabled
-            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg bg-blue-600 opacity-60 cursor-not-allowed"
+          <Link
+            className="w-full flex items-center space-x-3 px-2 py-3 rounded-lg bg-blue-600"
+            href="/dashboard"
           >
-            <span className="text-xl">👑</span>
-            <span>Switch to Admin</span>
-          </button>
+            <HomeIcon className="w-6 h-6" />
+            <span>Switch to Dashboard</span>
+          </Link>
         </div>
         {/* Logout Button */}
         <div className="p-4">
