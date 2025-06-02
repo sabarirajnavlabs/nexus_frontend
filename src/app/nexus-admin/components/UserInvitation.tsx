@@ -176,8 +176,10 @@ const UserInvitation: React.FC<UserInvitationProps> = ({ setLoading, loading }) 
         const workbook = XLSX.read(data, { type: 'binary' });
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-        const emails = jsonData.flat().filter((email: string) => email && email.includes('@'));
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as unknown[][];
+        const emails = jsonData.flat().filter((email): email is string => 
+          typeof email === 'string' && email.includes('@')
+        );
         setBulkEmails(emails);
       };
       reader.readAsBinaryString(file as Blob);

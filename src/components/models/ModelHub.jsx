@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState, useEffect, useCallback,useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTheme } from 'next-themes';
 import { useSession } from '@clerk/nextjs';
 import Cookies from 'js-cookie';
 import { useConfig } from '@/components/config-provider';
 import UpdateUserConfigModal from '@/components/UpdateUserConfigModal';
 import { useRouter } from 'next/navigation';
+
 // import model1 from '/public/models/model1.png'
 
 export default function ModelHub() {
@@ -33,6 +34,7 @@ export default function ModelHub() {
   const [isLoadingUser, setIsLoadingUser] = useState(true);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [expandedCards, setExpandedCards] = useState({});
+  const hasFetched = useRef(false);
   
   // Debug environment variables
   useEffect(() => {
@@ -56,7 +58,6 @@ export default function ModelHub() {
     if (modelId.includes('llama')) return 'Meta';
     return 'Unknown Provider';
   };
-  const hasFetched = useRef(false);
   
   // Fetch user details from backend
   const fetchUserDetails = useCallback(async () => {
@@ -138,7 +139,7 @@ export default function ModelHub() {
         {
           method: 'GET',
           headers: {
-            Authorization: `Bearer sabari`
+            Authorization: `Bearer sk-nexusgateway`
           },
         }
       );
@@ -271,10 +272,10 @@ export default function ModelHub() {
   
   // Initial data fetch
   useEffect(() => {
-    if (isLoaded && session) {
+    if (isLoaded && session && !hasFetched.current) {
       fetchUserDetails();
     }
-  }, [isLoaded, session, fetchUserDetails]);
+  }, [isLoaded, session]);
   
   // Fetch models after user details are loaded
   useEffect(() => {
@@ -425,6 +426,21 @@ export default function ModelHub() {
     }
   };
   
+  // If session is not loaded yet, show loading state
+  if (!isLoaded) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  // If there's no session, redirect to sign in
+  if (!session) {
+    router.push('/sign-in');
+    return null;
+  }
+
   return (
     <div className={`p-6 ${textColor}`} style={{ backgroundColor }}>
       <div className="max-w-7xl mx-auto">

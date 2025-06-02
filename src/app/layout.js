@@ -17,7 +17,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ClerkProvider>
+        <ClerkProvider
+          publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+          appearance={{
+            baseTheme: undefined,
+            variables: {
+              colorPrimary: '#0F172A',
+            },
+          }}
+        >
           <ThemeProvider
             attribute="class"
             defaultTheme="light"
@@ -30,7 +38,7 @@ export default function RootLayout({ children }) {
             </ConfigProvider>
           </ThemeProvider>
         </ClerkProvider>
-        </body>
-      </html>
+      </body>
+    </html>
   );
 }

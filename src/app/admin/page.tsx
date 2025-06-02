@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { Tabs } from 'antd';
-import OrganizationManagement from '@/components/admin/OrganizationManagement';
-import UserInvitation from '@/components/admin/UserInvitation';
+import OrganizationManagement from '../../components/admin/OrganizationManagement';
+import UserInvitation from '../../components/admin/UserInvitation';
 import { useUser, useAuth } from '@clerk/clerk-react';
 import { useEffect, useState } from 'react';
 
