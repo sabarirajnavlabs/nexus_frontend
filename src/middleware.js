@@ -26,11 +26,21 @@ export default authMiddleware({
     });
 
     // If user is signed in and trying to access auth pages, redirect to dashboard
-    // But don't redirect if they're accessing nexus-admin routes
     if (auth.userId && 
         !req.nextUrl.pathname.startsWith('/nexus-admin') && 
-        (req.nextUrl.pathname === '/' || req.nextUrl.pathname.startsWith('/sign-in') || req.nextUrl.pathname.startsWith('/sign-up'))) {
-      return NextResponse.redirect(new URL('/dashboard', req.url));
+        (req.nextUrl.pathname === '/' || 
+         req.nextUrl.pathname.startsWith('/sign-in') || 
+         req.nextUrl.pathname.startsWith('/sign-up'))) {
+      const dashboardUrl = new URL('/dashboard', req.url);
+      return NextResponse.redirect(dashboardUrl);
+    }
+
+    // If user is not signed in and trying to access protected routes, redirect to sign-in
+    if (!auth.userId && 
+        !PUBLIC_ROUTES.some(route => req.nextUrl.pathname.startsWith(route)) &&
+        !req.nextUrl.pathname.startsWith('/api/')) {
+      const signInUrl = new URL('/sign-in', req.url);
+      return NextResponse.redirect(signInUrl);
     }
 
     // Let Clerk handle the auth check using publicRoutes configuration

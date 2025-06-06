@@ -25,6 +25,10 @@ export default function RootLayout({ children }) {
               colorPrimary: '#0F172A',
             },
           }}
+          afterSignInUrl="/dashboard"
+          afterSignUpUrl="/dashboard"
+          signInUrl="/sign-in"
+          signUpUrl="/sign-up"
         >
           <ThemeProvider
             attribute="class"
