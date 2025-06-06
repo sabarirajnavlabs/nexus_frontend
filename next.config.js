@@ -1,13 +1,19 @@
 /** @type {import('next').NextConfig} */
+const path = require('path');
+
 const nextConfig = {
+  output: 'standalone', // ✅ Important for SSR on Amplify
+  reactStrictMode: true,
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@': require('path').resolve(__dirname, 'src'),
+      '@': path.resolve(__dirname, 'src'),
     };
     return config;
   },
-  // Add any other Next.js config options here
+  experimental: {
+    serverActions: true, // optional, safe to include
+  },
 };
 
 module.exports = nextConfig;
