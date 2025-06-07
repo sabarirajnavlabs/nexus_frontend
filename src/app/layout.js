@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google';
 import { ThemeProvider } from '../components/theme-provider';
 import { ClerkProvider } from '@clerk/nextjs';
 import { ConfigProvider } from '../components/config-provider';
-import { useConfig } from '../components/config-provider';
+import { Suspense } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -39,7 +39,9 @@ export default function RootLayout({ children }) {
             disableTransitionOnChange
           >
             <ConfigProvider>
-              {children}
+              <Suspense fallback={<div>Loading...</div>}>
+                {children}
+              </Suspense>
             </ConfigProvider>
           </ThemeProvider>
         </ClerkProvider>
