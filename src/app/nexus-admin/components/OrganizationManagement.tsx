@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Input, Table, Modal, message, Form, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { useUser, useAuth } from '@clerk/clerk-react';
+import { useUser, useAuth, useClerk } from '@clerk/clerk-react';
 
 interface Organization {
   id: number;
@@ -28,6 +28,7 @@ const OrganizationManagement: React.FC<OrganizationManagementProps> = ({ setLoad
   const [role, setRole] = useState('admin');
   const { user } = useUser();
   const { getToken } = useAuth();
+  const { client } = useClerk();
 
   const fetchOrganizations = async () => {
     try {
@@ -54,6 +55,23 @@ const OrganizationManagement: React.FC<OrganizationManagementProps> = ({ setLoad
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  async function inviteUser(email: string) {
+    try {
+      // Call a Next.js API route to proxy the Clerk invite (secure, recommended for production)
+      const res = await fetch('/api/clerk-invite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (!res.ok) {
+        throw new Error('Failed to send Clerk invite');
+      }
+      message.success(`Clerk invite sent to ${email}!`);
+    } catch (err: any) {
+      message.error('Failed to send Clerk invite: ' + (err.message || err));
+    }
+  }
+
   const handleCreateOrg = async () => {
     try {
       const values = await form.validateFields();
@@ -70,6 +88,7 @@ const OrganizationManagement: React.FC<OrganizationManagementProps> = ({ setLoad
       if (!response.ok) {
         throw new Error('Failed to create organization');
       }
+      await inviteUser(values.adminEmail);
       message.success('Organization created successfully');
       setIsModalVisible(false);
       form.resetFields();

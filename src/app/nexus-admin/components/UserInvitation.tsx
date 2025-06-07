@@ -5,7 +5,7 @@ import { Button, Input, Table, Modal, message, Upload, Select, Tabs, Popconfirm,
 import { UploadOutlined, MailOutlined, ReloadOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import * as XLSX from 'xlsx';
-import { useUser, useAuth } from '@clerk/clerk-react';
+import { useUser, useAuth, useClerk } from '@clerk/clerk-react';
 
 interface Invite {
   email: string;
@@ -35,6 +35,7 @@ const UserInvitation: React.FC<UserInvitationProps> = ({ setLoading, loading }) 
   const { user } = useUser();
   const { getToken } = useAuth();
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'accepted' | 'revoked'>('all');
+  const { client } = useClerk();
 
   const fetchInvites = async () => {
     if (!selectedOrg) return;
@@ -102,6 +103,23 @@ const UserInvitation: React.FC<UserInvitationProps> = ({ setLoading, loading }) 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedOrg]);
 
+  async function inviteUser(email: string) {
+    try {
+      const res = await fetch('/api/clerk-invite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || 'Failed to invite');
+      }
+      message.success(`Clerk invite sent to ${email}!`);
+    } catch (err: any) {
+      message.error('Failed to send Clerk invite: ' + (err.message || err));
+    }
+  }
+
   const handleInvite = async () => {
     if (!selectedOrg || !user?.id) return;
     try {
@@ -123,7 +141,7 @@ const UserInvitation: React.FC<UserInvitationProps> = ({ setLoading, loading }) 
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to send invite');
       }
-      message.success('Invite sent successfully');
+      await inviteUser(email);
       setIsModalVisible(false);
       setEmail('');
       fetchInvites();
@@ -156,7 +174,9 @@ const UserInvitation: React.FC<UserInvitationProps> = ({ setLoading, loading }) 
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to send bulk invites');
       }
-      message.success('Bulk invites sent successfully');
+      for (const email of bulkEmails) {
+        await inviteUser(email);
+      }
       setIsModalVisible(false);
       setBulkEmails([]);
       fetchInvites();

@@ -29,6 +29,7 @@ export default function RootLayout({ children }) {
           afterSignUpUrl="/dashboard"
           signInUrl="/sign-in"
           signUpUrl="/sign-up"
+          
         >
           <ThemeProvider
             attribute="class"
