@@ -175,6 +175,26 @@ const UserInvitation: React.FC = () => {
     try {
       setLoading(true);
       const token = await getToken();
+      // Call Clerk API to delete the user
+      const clerkResponse = await fetch('https://api.clerk.com/v1/users', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_CLERK_SECRET_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      const clerkData = await clerkResponse.json();
+      const user = clerkData.find((u: any) => u.email_addresses.some((e: any) => e.email_address === invite.email));
+      if (user) {
+        await fetch(`https://api.clerk.com/v1/users/${user.id}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_CLERK_SECRET_KEY}`,
+            'Content-Type': 'application/json',
+          },
+        });
+      }
+      // Call backend to update status
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/organizations/${selectedOrg}/invites/${encodeURIComponent(invite.email)}`, {
         method: 'DELETE',
         headers: {

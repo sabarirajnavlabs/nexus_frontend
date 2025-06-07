@@ -212,6 +212,16 @@ const UserInvitation: React.FC<UserInvitationProps> = ({ setLoading, loading }) 
     if (!selectedOrg || !invite.email) return;
     try {
       setLoading(true);
+      // Call clerk-invite.ts DELETE endpoint to delete from Clerk
+      const clerkResponse = await fetch('/api/clerk-invite', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: invite.email }),
+      });
+      if (!clerkResponse.ok) {
+        throw new Error('Failed to delete user from Clerk');
+      }
+      // Call backend to update status
       const token = await getToken();
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/organizations/${selectedOrg}/invites/${encodeURIComponent(invite.email)}`, {
         method: 'DELETE',
