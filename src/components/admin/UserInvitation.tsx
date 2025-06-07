@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Button, Input, Table, Modal, message, Upload, Select, Tabs, Popconfirm } from 'antd';
+import { Button, Input, Table, Modal, message, Upload, Select, Tabs, Popconfirm, Space } from 'antd';
 import { UploadOutlined, MailOutlined, ReloadOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import * as XLSX from 'xlsx';
@@ -217,6 +217,33 @@ const UserInvitation: React.FC = () => {
     }
   };
 
+  const handleResendMail = async (invite: Invite) => {
+    if (!invite.email) return;
+    try {
+      setLoading(true);
+      // Call the clerk-invite API to resend the mail
+      const response = await fetch('/api/clerk-invite', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: invite.email }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to resend invite');
+      }
+
+      message.success('Invite email resent successfully');
+    } catch (error) {
+      console.error('Error resending invite:', error);
+      message.error(error instanceof Error ? error.message : 'Failed to resend invite');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const columns = [
     {
       title: 'Email',
@@ -249,19 +276,27 @@ const UserInvitation: React.FC = () => {
       render: (date: string) => new Date(date).toLocaleString(),
     },
     {
-      title: 'Action',
-      key: 'action',
+      title: 'Actions',
+      key: 'actions',
       render: (_: any, invite: Invite) => (
-        invite.status !== 'revoked' ? (
-          <Popconfirm
-            title="Are you sure to revoke this user's access?"
-            onConfirm={() => handleRevoke(invite)}
-            okText="Yes"
-            cancelText="No"
+        <Space>
+          {invite.status === 'pending' && (
+            <Button
+              type="primary"
+              onClick={() => handleResendMail(invite)}
+              loading={loading}
+            >
+              Resend Mail
+            </Button>
+          )}
+          <Button
+            danger
+            onClick={() => handleRevoke(invite)}
+            loading={loading}
           >
-            <Button danger size="small">Revoke</Button>
-          </Popconfirm>
-        ) : <span className="text-gray-400">Revoked</span>
+            Revoke
+          </Button>
+        </Space>
       ),
     },
   ];

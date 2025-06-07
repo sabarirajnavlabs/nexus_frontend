@@ -30,7 +30,7 @@ const UsageReport = () => {
   const [loading, setLoading] = useState(true);
   const [orgName, setOrgName] = useState("testing");
   const endpoint = process.env.NEXT_PUBLIC_API_URL;
-// hellow
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
